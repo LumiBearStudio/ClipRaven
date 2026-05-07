@@ -1,3 +1,4 @@
+import Sentry
 import SwiftUI
 import GRDB
 import os.log
@@ -103,6 +104,17 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        // Crash reporting — strictly opt-in (toggle in Settings)
+        if UserDefaults.standard.bool(forKey: "crashReportsEnabled") {
+            SentrySDK.start { options in
+                options.dsn = "https://2e87dafa4228a756923fbb0e0d914949@o4510949994266624.ingest.de.sentry.io/4511348636778576"
+                options.environment = "production"
+                options.sendDefaultPii = false
+                options.attachScreenshot = false
+                options.attachViewHierarchy = false
+            }
+        }
+
         // Force AppDatabase initialization so migrations run before any
         // code touches Clip (UI loads list immediately on launch).
         _ = AppDatabase.shared
