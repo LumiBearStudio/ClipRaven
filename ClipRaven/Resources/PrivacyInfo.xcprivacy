@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- ClipRaven does not collect, transmit, or track any user data.
+	     Clipboard contents, tags, and rules live only in the local GRDB
+	     SQLite database inside the app sandbox. There is no analytics SDK,
+	     no remote logging, no device ID beacon. OG-metadata and favicon
+	     fetches send only the URL that the user already copied, and the
+	     response is cached locally — nothing flows back to us or a
+	     third party. -->
+	<key>NSPrivacyTracking</key>
+	<false/>
+
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<!-- UserDefaults (@AppStorage): remembers the user's own
+		     preferences across launches — theme, sounds, hotkey, AI
+		     toggle, panel layout, capture-mode choice, onboarding-
+		     completed flag. No identifiers are stored or shared. -->
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
