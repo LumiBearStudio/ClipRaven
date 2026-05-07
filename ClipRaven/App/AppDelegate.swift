@@ -42,6 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 options.attachScreenshot = false
                 options.attachViewHierarchy = false
             }
+            SentrySDK.captureMessage("ClipRaven Mac launched", level: .info)
         }
 
         // Register default UserDefaults values

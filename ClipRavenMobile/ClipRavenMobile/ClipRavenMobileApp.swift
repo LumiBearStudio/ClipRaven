@@ -113,6 +113,7 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                 options.attachScreenshot = false
                 options.attachViewHierarchy = false
             }
+            SentrySDK.captureMessage("ClipRaven iOS launched", level: .info)
         }
 
         // Force AppDatabase initialization so migrations run before any
