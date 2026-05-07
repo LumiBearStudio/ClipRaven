@@ -41,7 +41,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 options.sendDefaultPii = false
                 options.attachScreenshot = false
                 options.attachViewHierarchy = false
+                options.maxBreadcrumbs = 200
+                // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
+                if #available(macOS 12.0, *) {
+                    options.beforeSend = { event in
+                        if let logs = CRSentry.recentLogLines() {
+                            var extra = event.extra ?? [:]
+                            extra["recent_oslog"] = logs
+                            event.extra = extra
+                        }
+                        return event
+                    }
+                }
             }
+            CRSentry.breadcrumb("app launched", category: "app")
             SentrySDK.captureMessage("ClipRaven Mac launched", level: .info)
         }
 
@@ -70,7 +83,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 이미지 binary TTL cleanup — 30일 이상 된 non-pinned 이미지 원본 삭제.
         // 백그라운드 detached task — 메인 launch 차단하지 않음.
         Task.detached(priority: .utility) {
-            _ = try? await ImageBinaryCleanup.run(dbPool: AppDatabase.shared.dbPool)
+            do {
+                _ = try await ImageBinaryCleanup.run(dbPool: AppDatabase.shared.dbPool)
+            } catch {
+                ClipRavenLog.cleanup.error("ImageBinaryCleanup failed: \(String(describing: error), privacy: .public)")
+                CRSentry.capture(error, context: "ImageBinaryCleanup on launch")
+            }
         }
 
         // Restore Dock icon visibility from saved preference. Info.plist sets
@@ -147,6 +165,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Start clipboard monitoring
         clipboardMonitor.start()
+        CRSentry.breadcrumb("clipboard monitoring started", category: "app")
 
         // 우리가 직접 NSPasteboard에 write 한 직후 ClipboardMonitor가
         // 그 변경을 자기 changeCount로 갱신해서 echo-back capture를 막음.
@@ -284,7 +303,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// hop to a different context.
     private func triggerSyncFetch(reason: String) {
         if #available(macOS 14.0, *), let engine = syncEngineBox as? SyncEngine {
-            NSLog("ClipRaven: triggerSyncFetch reason=\(reason)")
+            ClipRavenLog.app.debug("triggerSyncFetch reason=\(reason, privacy: .public)")
+            CRSentry.breadcrumb("syncFetch: \(reason)", category: "sync")
             MainActor.assumeIsolated {
                 engine.fetchChangesOnWake()
             }
@@ -307,7 +327,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Token isn't used — CloudKit resolves push routing server-side
         // via the container identifier. Log length for diagnostics only.
         let tokenBytes = deviceToken.count
-        NSLog("ClipRaven: registered for remote notifications (\(tokenBytes) byte token)")
+        ClipRavenLog.app.info("registered for remote notifications (\(tokenBytes, privacy: .public) byte token)")
+        CRSentry.breadcrumb("APNs registered (\(tokenBytes)B token)", category: "app")
     }
 
     func application(
@@ -324,9 +345,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         //     typically a stale profile that predates Push capability.
         //   - Anything else → look up `domain` + `code` in Apple docs.
         let ns = error as NSError
-        NSLog(
-            "ClipRaven: remote notification registration failed — domain=\(ns.domain) code=\(ns.code) description=\(ns.localizedDescription) userInfo=\(ns.userInfo)"
-        )
+        ClipRavenLog.app.error("APNs registration failed — domain=\(ns.domain, privacy: .public) code=\(ns.code, privacy: .public) \(ns.localizedDescription, privacy: .public)")
+        CRSentry.capture(error, context: "APNs registration failed — domain=\(ns.domain) code=\(ns.code)")
     }
 
     func application(

@@ -112,7 +112,20 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                 options.sendDefaultPii = false
                 options.attachScreenshot = false
                 options.attachViewHierarchy = false
+                options.maxBreadcrumbs = 200
+                // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
+                if #available(iOS 15.0, *) {
+                    options.beforeSend = { event in
+                        if let logs = CRSentry.recentLogLines() {
+                            var extra = event.extra ?? [:]
+                            extra["recent_oslog"] = logs
+                            event.extra = extra
+                        }
+                        return event
+                    }
+                }
             }
+            CRSentry.breadcrumb("app launched", category: "app")
             SentrySDK.captureMessage("ClipRaven iOS launched", level: .info)
         }
 
@@ -134,7 +147,12 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
         // 이미지 binary TTL cleanup — 30일 이상 된 non-pinned 이미지 원본 삭제.
         // .utility 우선순위로 백그라운드 실행, 메인 launch 차단 안 함.
         Task.detached(priority: .utility) {
-            _ = try? await ImageBinaryCleanup.run(dbPool: AppDatabase.shared.dbPool)
+            do {
+                _ = try await ImageBinaryCleanup.run(dbPool: AppDatabase.shared.dbPool)
+            } catch {
+                ClipRavenLog.cleanup.error("ImageBinaryCleanup failed: \(String(describing: error), privacy: .public)")
+                CRSentry.capture(error, context: "ImageBinaryCleanup on launch")
+            }
         }
 
         // 키보드 익스텐션이 백그라운드 동안 capture 한 pending clips 처리.
@@ -230,7 +248,8 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                         try db.execute(sql: "PRAGMA wal_checkpoint(TRUNCATE)")
                     }
                 } catch {
-                    NSLog("⚠️ ClipRaven: background checkpoint failed — \(error)")
+                    ClipRavenLog.database.error("WAL checkpoint failed: \(String(describing: error), privacy: .public)")
+                    CRSentry.capture(error, context: "background WAL checkpoint")
                 }
             }
         }
@@ -244,6 +263,7 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
     func triggerSyncFetch(reason: String) {
         guard let engine = syncEngine else { return }
         log.debug("triggerSyncFetch reason=\(reason, privacy: .public)")
+        CRSentry.breadcrumb("syncFetch: \(reason)", category: "sync")
         engine.fetchChangesOnWake()
     }
 
@@ -360,4 +380,5 @@ private func drainKeyboardCaptures() async {
     }
 
     log.info("드레인 완료 — 텍스트 \(insertedText, privacy: .public)개, 이미지 \(insertedImage, privacy: .public)개 추가, dedup skip \(skippedDup, privacy: .public)개")
+    CRSentry.breadcrumb("drain: text=\(insertedText) image=\(insertedImage) skip=\(skippedDup)", category: "drain")
 }

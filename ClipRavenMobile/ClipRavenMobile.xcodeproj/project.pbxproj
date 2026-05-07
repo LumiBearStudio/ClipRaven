@@ -24,6 +24,8 @@
 		AA1B2C3D4E5F6A7B8C9D0E11 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6A7B8C9D0E10 /* Localizable.xcstrings */; };
 		AA4E9EDCAD3DBD2C79A40CB7 /* PasteboardCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8E32D1B7977FB19ABCDAB6 /* PasteboardCaptureService.swift */; };
 		ANIM00000000000000000002 /* AppAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ANIM00000000000000000001 /* AppAnimations.swift */; };
+		E4802F0A64B0406A98351EEF /* CRSentry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6036F6195B2345A6AF07FFEA /* CRSentry.swift */; };
+		15D807ACA1C94FC191F087B6 /* ClipRavenLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762E6E732AEB4DEBB902EC97 /* ClipRavenLog.swift */; };
 		B1C2D3E4F5A6B7C8D9E0F1A2 /* ImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A8B9C0D1E2F3 /* ImageStorageService.swift */; };
 		B3C4D5E6F7A2B3C4D5E6F7A2 /* SecondaryFilterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A2B3C4D5E6F7 /* SecondaryFilterRow.swift */; };
 		BB22CC33DD44EE55FF66AA11 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* RootView.swift */; };
@@ -103,6 +105,8 @@
 		AA11BB22CC33DD44EE55FF66 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		AA1B2C3D4E5F6A7B8C9D0E10 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ANIM00000000000000000001 /* AppAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAnimations.swift; sourceTree = "<group>"; };
+		6036F6195B2345A6AF07FFEA /* CRSentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRSentry.swift; sourceTree = "<group>"; };
+		762E6E732AEB4DEBB902EC97 /* ClipRavenLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipRavenLog.swift; sourceTree = "<group>"; };
 		B2C3D4E5F6A1B2C3D4E5F601 /* TagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRepository.swift; sourceTree = "<group>"; };
 		B4C5D6E7F8A3B4C5D6E7F8A3 /* IPadSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPadSidebarView.swift; sourceTree = "<group>"; };
 		B569BEC8925158349D8BD2B5 /* IosMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosMigrations.swift; sourceTree = "<group>"; };
@@ -342,6 +346,8 @@
 			children = (
 				F0A1B2C3D4E5F6A7B8C9D0E1 /* ChosungConverter.swift */,
 				ANIM00000000000000000001 /* AppAnimations.swift */,
+				762E6E732AEB4DEBB902EC97 /* ClipRavenLog.swift */,
+				6036F6195B2345A6AF07FFEA /* CRSentry.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -581,6 +587,8 @@
 				D5E6F7A2B3C4D5E6F7A2B3C4 /* ImageOCRService.swift in Sources */,
 				A1C2D3E4F5A6B7C8D9E0F1A2 /* ChosungConverter.swift in Sources */,
 				ANIM00000000000000000002 /* AppAnimations.swift in Sources */,
+				15D807ACA1C94FC191F087B6 /* ClipRavenLog.swift in Sources */,
+				E4802F0A64B0406A98351EEF /* CRSentry.swift in Sources */,
 				D6E7F8A3B4C5D6E7F8A3B4C5 /* ClipDetailView.swift in Sources */,
 				E7F8A3B4C5D6E7F8A3B4C5D6 /* IPadSidebarView.swift in Sources */,
 				F8A3B4C5D6E7F8A3B4C5D6E7 /* IPadInspectorView.swift in Sources */,
