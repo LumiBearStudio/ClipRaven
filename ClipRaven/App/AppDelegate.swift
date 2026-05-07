@@ -1,5 +1,6 @@
 import AppKit
 import Carbon
+import Sentry
 import WebKit
 import ClipRavenSync
 
@@ -32,6 +33,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var syncChangeCapture: SyncChangeCapture?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Crash reporting — strictly opt-in (toggle on onboarding last page)
+        if UserDefaults.standard.bool(forKey: "crashReportsEnabled") {
+            SentrySDK.start { options in
+                options.dsn = "https://c5f56450b1edd3c00bbe4efb757a3bc1@o4510949994266624.ingest.de.sentry.io/4511348541489232"
+                options.environment = "production"
+                options.sendDefaultPii = false
+                options.attachScreenshot = false
+                options.attachViewHierarchy = false
+            }
+        }
+
         // Register default UserDefaults values
         UserDefaults.standard.register(defaults: [
             "blockSensitive": true,

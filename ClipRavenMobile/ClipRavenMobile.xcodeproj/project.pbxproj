@@ -23,13 +23,13 @@
 		A9BDE610D280F09037865C06 /* AddClipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B0A3E8B5E62A1D5F13F829 /* AddClipView.swift */; };
 		AA1B2C3D4E5F6A7B8C9D0E11 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6A7B8C9D0E10 /* Localizable.xcstrings */; };
 		AA4E9EDCAD3DBD2C79A40CB7 /* PasteboardCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8E32D1B7977FB19ABCDAB6 /* PasteboardCaptureService.swift */; };
+		ANIM00000000000000000002 /* AppAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ANIM00000000000000000001 /* AppAnimations.swift */; };
 		B1C2D3E4F5A6B7C8D9E0F1A2 /* ImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A8B9C0D1E2F3 /* ImageStorageService.swift */; };
 		B3C4D5E6F7A2B3C4D5E6F7A2 /* SecondaryFilterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A2B3C4D5E6F7 /* SecondaryFilterRow.swift */; };
 		BB22CC33DD44EE55FF66AA11 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* RootView.swift */; };
 		BDC00E4677ACE9EA4DBAD966 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFEAB97373CB20CA19B811 /* AppDatabase.swift */; };
 		C00010000000000000GRDB03 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000GRDB02 /* GRDB */; };
 		C00010000000000000SQLT01 /* GRDBSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000SQLT02 /* GRDBSQLite */; };
-		C00010000000000000WIDG10 /* ClipRavenWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C00010000000000000WIDG05 /* ClipRavenWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C00010000000000000WIDG14 /* ClipRavenSync in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000WIDG13 /* ClipRavenSync */; };
 		C1AD529BCF91C9B1611F8EC7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F46172EBA38E2371341741F /* SettingsView.swift */; };
 		C3D4E5F6A1B2C3D4E5F6A1B2 /* FilterChipRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A1B2C3D4E5F6A1B203 /* FilterChipRow.swift */; };
@@ -45,7 +45,6 @@
 		F97264D22F9E290000104341 /* ClipRavenSync in Frameworks */ = {isa = PBXBuildFile; productRef = F97264D12F9E290000104341 /* ClipRavenSync */; };
 		F97264D42F9E290000104341 /* ClipRavenSync in Frameworks */ = {isa = PBXBuildFile; productRef = F97264D32F9E290000104341 /* ClipRavenSync */; };
 		FFCD595137076465BCA03318 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE36B5303527FC1D8138A62A /* Preview Assets.xcassets */; };
-		ANIM00000000000000000002 /* AppAnimations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ANIM00000000000000000001 /* AppAnimations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +102,7 @@
 		A9D409DEC3099ADFF2CA21BF /* ClipRavenMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipRavenMobileApp.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE55FF66 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		AA1B2C3D4E5F6A7B8C9D0E10 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		ANIM00000000000000000001 /* AppAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAnimations.swift; sourceTree = "<group>"; };
 		B2C3D4E5F6A1B2C3D4E5F601 /* TagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRepository.swift; sourceTree = "<group>"; };
 		B4C5D6E7F8A3B4C5D6E7F8A3 /* IPadSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPadSidebarView.swift; sourceTree = "<group>"; };
 		B569BEC8925158349D8BD2B5 /* IosMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosMigrations.swift; sourceTree = "<group>"; };
@@ -121,10 +121,16 @@
 		F6A1B2C3D4E5F6A1B2C3D405 /* TagFilterRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagFilterRow.swift; sourceTree = "<group>"; };
 		F97264AC2F9E25ED00104341 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F97264C22F9E264C00104341 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		ANIM00000000000000000001 /* AppAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAnimations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C00010000000000000WIDG15 /* Exceptions for "WidgetExtension" folder in "ClipRavenWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C00010000000000000WIDG01 /* ClipRavenWidget */;
+		};
 		F97264B72F9E25ED00104341 /* Exceptions for "ShareExtension" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -138,13 +144,6 @@
 				Info.plist,
 			);
 			target = F97264C12F9E264C00104341 /* KeyboardExtension */;
-		};
-		C00010000000000000WIDG15 /* Exceptions for "WidgetExtension" folder in "ClipRavenWidget" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = C00010000000000000WIDG01 /* ClipRavenWidget */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -506,6 +505,7 @@
 			packageReferences = (
 				1DB4841B3F42E439B4D8A510 /* XCLocalSwiftPackageReference "../Packages/ClipRavenSync" */,
 				C00010000000000000GRDB01 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				F90E94672FACBA5F00A566AD /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CB4DE7F86A4FE4AAF4474ABC /* Products */;
@@ -1101,6 +1101,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 7.5.0;
+			};
+		};
+		F90E94672FACBA5F00A566AD /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.12.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

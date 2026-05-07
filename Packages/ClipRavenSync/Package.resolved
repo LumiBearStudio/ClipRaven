@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "54d5fbcdea46c37a5de01bab5fef48dc78baec84",
+        "version" : "9.12.1"
+      }
+    },
+    {
       "identity" : "xxhash-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/daisuke-t-jp/xxHash-Swift",
