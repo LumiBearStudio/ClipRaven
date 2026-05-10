@@ -30,6 +30,7 @@
 		B3C4D5E6F7A2B3C4D5E6F7A2 /* SecondaryFilterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A2B3C4D5E6F7 /* SecondaryFilterRow.swift */; };
 		BB22CC33DD44EE55FF66AA11 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* RootView.swift */; };
 		PWIOS000200000000000001BB /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PWIOS000100000000000001AA /* PaywallView.swift */; };
+		SNIOS000200000000000001BB /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = SNIOS000100000000000001AA /* Sentry */; };
 		BDC00E4677ACE9EA4DBAD966 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFEAB97373CB20CA19B811 /* AppDatabase.swift */; };
 		C00010000000000000GRDB03 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000GRDB02 /* GRDB */; };
 		C00010000000000000SQLT01 /* GRDBSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000SQLT02 /* GRDBSQLite */; };
@@ -191,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				622489B9523718EFAC4579AB /* ClipRavenSync in Frameworks */,
+				SNIOS000200000000000001BB /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +423,7 @@
 			name = ClipRavenMobile;
 			packageProductDependencies = (
 				BA3CA3E2DBF607E72D7B1FC0 /* ClipRavenSync */,
+				SNIOS000100000000000001AA /* Sentry */,
 			);
 			productName = ClipRavenMobile;
 			productReference = 03C289AB98AB1C881B1EF657 /* ClipRavenMobile.app */;
@@ -1155,6 +1158,11 @@
 		F97264D32F9E290000104341 /* ClipRavenSync */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ClipRavenSync;
+		};
+		SNIOS000100000000000001AA /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F90E94672FACBA5F00A566AD /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

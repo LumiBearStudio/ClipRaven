@@ -71,6 +71,7 @@
 		8C049AAC7E1FAD988BC1ABE7 /* TextNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC28F7DDC8DCF9CAD6B0F8DB /* TextNormalizerTests.swift */; };
 		9001CD5F51E21DA4C415540C /* ImageCardBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79B6DAF8FF6117355820069 /* ImageCardBody.swift */; };
 		91A710A14D9A0769273CA003 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6CF05C8ED28C52364034035B /* GRDB */; };
+		SNMAC000200000000000001BB /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = SNMAC000100000000000001AA /* Sentry */; };
 		95B8C8B964F86064A8B6671B /* ClipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C2D22B56BC50852C634867 /* ClipTests.swift */; };
 		96789C3E8C8537DF1DD0282C /* URLNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD4C69BB3AE93BFAA36B8F69 /* URLNormalizer.swift */; };
 		96A967181E640E6FEBC18416 /* SearchRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4139CD0E5E88BECFF5D379 /* SearchRepository.swift */; };
@@ -348,6 +349,7 @@
 				91A710A14D9A0769273CA003 /* GRDB in Frameworks */,
 				B80627B1BF659039B6810F3A /* ClipRavenSync in Frameworks */,
 				3C56411B4B39470DED90682F /* xxHash-Swift in Frameworks */,
+				SNMAC000200000000000001BB /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -817,6 +819,7 @@
 				6CF05C8ED28C52364034035B /* GRDB */,
 				C8E4203936D99C837D59823C /* xxHash-Swift */,
 				24127D691B8F246D03F708A7 /* ClipRavenSync */,
+				SNMAC000100000000000001AA /* Sentry */,
 			);
 			productName = ClipRaven;
 			productReference = C0C37D8426A094B00E3BD59E /* ClipRaven.app */;
@@ -1491,6 +1494,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 70AED01B80BF53C3F720F066 /* XCRemoteSwiftPackageReference "xxHash-Swift" */;
 			productName = "xxHash-Swift";
+		};
+		SNMAC000100000000000001AA /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F90E94662FACBA3A00A566AD /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
