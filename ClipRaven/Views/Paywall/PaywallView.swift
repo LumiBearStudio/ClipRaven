@@ -31,7 +31,7 @@ struct PaywallView: View {
                 if let product = pm.product {
                     Text(product.displayPrice)
                         .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(theme.accentColor)
+                        .foregroundStyle(theme.colorPreset.accentColor)
                 } else {
                     ProgressView()
                         .controlSize(.small)
@@ -96,7 +96,7 @@ struct TrialBannerView: View {
         HStack(spacing: 8) {
             Image(systemName: "clock")
                 .font(.caption)
-                .foregroundStyle(theme.accentColor)
+                .foregroundStyle(theme.colorPreset.accentColor)
             Text("무료 체험 \(daysLeft)일 남음")
                 .font(.caption)
                 .foregroundStyle(.secondary)
