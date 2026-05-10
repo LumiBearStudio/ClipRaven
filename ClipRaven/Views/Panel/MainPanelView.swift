@@ -172,11 +172,6 @@ struct MainPanelView: View {
             // Paste stack bar (only when stack has items)
             StackBarView(engine: viewModel.pasteStackEngine)
 
-            // Trial banner — 체험 중에만 표시
-            if case .trial(let days) = pm.lockState {
-                TrialBannerView(daysLeft: days)
-            }
-
             // Bottom bar with keyboard hints
             BottomBarView()
         }

@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import SwiftUI
+import ClipRavenSync
 
 final class StatusItemController {
     private var statusItem: NSStatusItem?
@@ -122,6 +123,50 @@ final class StatusItemController {
         menu.addItem(aboutItem)
         menu.addItem(NSMenuItem.separator())
 
+        // 체험 / 만료 상태 표시
+        let lockState = PurchaseManager.shared.lockState
+        if case .trial(let days) = lockState {
+            let trialItem = NSMenuItem()
+            trialItem.attributedTitle = NSAttributedString(
+                string: "⏱  무료 체험 \(days)일 남음",
+                attributes: [
+                    .foregroundColor: NSColor.secondaryLabelColor,
+                    .font: NSFont.systemFont(ofSize: 12)
+                ]
+            )
+            trialItem.isEnabled = false
+            menu.addItem(trialItem)
+
+            let upgradeItem = NSMenuItem(
+                title: NSLocalizedString("지금 구매하기...", comment: "Upgrade menu item"),
+                action: #selector(openPaywall(_:)),
+                keyEquivalent: ""
+            )
+            upgradeItem.target = self
+            menu.addItem(upgradeItem)
+            menu.addItem(NSMenuItem.separator())
+        } else if lockState == .expired {
+            let expiredItem = NSMenuItem()
+            expiredItem.attributedTitle = NSAttributedString(
+                string: "🔒  무료 체험 만료",
+                attributes: [
+                    .foregroundColor: NSColor.systemRed,
+                    .font: NSFont.systemFont(ofSize: 12)
+                ]
+            )
+            expiredItem.isEnabled = false
+            menu.addItem(expiredItem)
+
+            let upgradeItem = NSMenuItem(
+                title: NSLocalizedString("지금 구매하기...", comment: "Upgrade menu item"),
+                action: #selector(openPaywall(_:)),
+                keyEquivalent: ""
+            )
+            upgradeItem.target = self
+            menu.addItem(upgradeItem)
+            menu.addItem(NSMenuItem.separator())
+        }
+
         // Current capture state indicator (non-clickable, colored)
         let stateItem = NSMenuItem()
         let stateText: String
@@ -176,6 +221,11 @@ final class StatusItemController {
         statusItem?.menu = menu
         statusItem?.button?.performClick(nil)
         statusItem?.menu = nil  // Reset to allow left-click again
+    }
+
+    @objc private func openPaywall(_ sender: NSMenuItem) {
+        // 패널을 열면 PaywallView overlay 가 자동으로 표시됨
+        panelController?.show()
     }
 
     @objc private func togglePause(_ sender: NSMenuItem) {
