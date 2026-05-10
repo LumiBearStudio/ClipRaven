@@ -39,8 +39,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 options.dsn = "https://c5f56450b1edd3c00bbe4efb757a3bc1@o4510949994266624.ingest.de.sentry.io/4511348541489232"
                 options.environment = "production"
                 options.sendDefaultPii = false
-                options.attachScreenshot = false
-                options.attachViewHierarchy = false
                 options.maxBreadcrumbs = 200
                 // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
                 if #available(macOS 12.0, *) {
@@ -55,7 +53,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
             CRSentry.breadcrumb("app launched", category: "app")
-            SentrySDK.captureMessage("ClipRaven Mac launched", level: .info)
+            SentrySDK.capture(message: "ClipRaven Mac launched")
         }
 
         // Register default UserDefaults values

@@ -110,8 +110,6 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                 options.dsn = "https://2e87dafa4228a756923fbb0e0d914949@o4510949994266624.ingest.de.sentry.io/4511348636778576"
                 options.environment = "production"
                 options.sendDefaultPii = false
-                options.attachScreenshot = false
-                options.attachViewHierarchy = false
                 options.maxBreadcrumbs = 200
                 // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
                 if #available(iOS 15.0, *) {
@@ -126,7 +124,7 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                 }
             }
             CRSentry.breadcrumb("app launched", category: "app")
-            SentrySDK.captureMessage("ClipRaven iOS launched", level: .info)
+            SentrySDK.capture(message: "ClipRaven iOS launched")
         }
 
         // Force AppDatabase initialization so migrations run before any
