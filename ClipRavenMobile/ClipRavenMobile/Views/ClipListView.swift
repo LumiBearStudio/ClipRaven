@@ -4,6 +4,7 @@ import ClipRavenSync
 struct ClipListView: View {
 
     @StateObject private var viewModel = ClipListViewModel()
+    @ObservedObject private var pm = PurchaseManager.shared
     @State private var showAddSheet = false
     @State private var showSettings = false
     @State private var selectedClip: Clip?
@@ -59,6 +60,11 @@ struct ClipListView: View {
                 .overlay(alignment: .bottom) { errorBanner }
                 .background(Color(.systemGroupedBackground))
         }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if case .trial(let days) = pm.lockState {
+                TrialBannerView(daysLeft: days)
+            }
+        }
         .overlay(alignment: .top) { copyToastBanner }
         .searchable(
             text: $viewModel.searchQuery,
@@ -99,6 +105,11 @@ struct ClipListView: View {
                     .refreshable { await viewModel.refreshAwaiting() }
                     .overlay(alignment: .bottom) { errorBanner }
                     .background(Color(.systemGroupedBackground))
+            }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if case .trial(let days) = pm.lockState {
+                    TrialBannerView(daysLeft: days)
+                }
             }
             .inspector(isPresented: isInspectorPresented) {
                 IPadInspectorView(clip: selectedClip, onDismiss: { selectedClip = nil })

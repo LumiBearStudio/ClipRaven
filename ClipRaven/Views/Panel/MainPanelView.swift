@@ -4,6 +4,7 @@ import ClipRavenSync
 struct MainPanelView: View {
     @StateObject private var viewModel = MainPanelViewModel()
     @ObservedObject private var theme = ThemeManager.shared
+    @ObservedObject private var pm = PurchaseManager.shared
     @State private var panelHeight: CGFloat = {
         let saved = UserDefaults.standard.double(forKey: "clipraven.panelHeight")
         return saved > 0 ? min(max(saved, 200), 600) : 320
@@ -171,10 +172,23 @@ struct MainPanelView: View {
             // Paste stack bar (only when stack has items)
             StackBarView(engine: viewModel.pasteStackEngine)
 
+            // Trial banner — 체험 중에만 표시
+            if case .trial(let days) = pm.lockState {
+                TrialBannerView(daysLeft: days)
+            }
+
             // Bottom bar with keyboard hints
             BottomBarView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Paywall overlay — 체험 만료 시 전체 덮기
+        .overlay {
+            if pm.lockState == .expired {
+                PaywallView()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: pm.lockState == .expired)
         .tint(theme.colorPreset.accentColor)
         .preferredColorScheme(theme.themePreference == "dark" ? .dark : theme.themePreference == "light" ? .light : nil)
         .overlay(alignment: .top) {

@@ -1,4 +1,5 @@
 import SwiftUI
+import ClipRavenSync
 
 /// 앱의 최상위 뷰.
 ///
@@ -8,8 +9,14 @@ import SwiftUI
 /// OnboardingView fullScreenCover 는 `ClipRavenMobileApp` 에서 이 RootView
 /// 위에 덮어씌운다.
 struct RootView: View {
+    @ObservedObject private var pm = PurchaseManager.shared
+
     var body: some View {
         ClipListView()
+            .fullScreenCover(isPresented: .constant(pm.lockState == .expired)) {
+                PaywallView()
+            }
+            .task { await pm.refresh() }
     }
 }
 

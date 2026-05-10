@@ -29,6 +29,7 @@
 		B1C2D3E4F5A6B7C8D9E0F1A2 /* ImageStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A8B9C0D1E2F3 /* ImageStorageService.swift */; };
 		B3C4D5E6F7A2B3C4D5E6F7A2 /* SecondaryFilterRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B3C4D5E6F7A2B3C4D5E6F7 /* SecondaryFilterRow.swift */; };
 		BB22CC33DD44EE55FF66AA11 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* RootView.swift */; };
+		PWIOS000200000000000001BB /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PWIOS000100000000000001AA /* PaywallView.swift */; };
 		BDC00E4677ACE9EA4DBAD966 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFEAB97373CB20CA19B811 /* AppDatabase.swift */; };
 		C00010000000000000GRDB03 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000GRDB02 /* GRDB */; };
 		C00010000000000000SQLT01 /* GRDBSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C00010000000000000SQLT02 /* GRDBSQLite */; };
@@ -103,6 +104,7 @@
 		A3B4C5D6E7F8A3B4C5D6E7F8 /* ClipDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipDetailView.swift; sourceTree = "<group>"; };
 		A9D409DEC3099ADFF2CA21BF /* ClipRavenMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipRavenMobileApp.swift; sourceTree = "<group>"; };
 		AA11BB22CC33DD44EE55FF66 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		PWIOS000100000000000001AA /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		AA1B2C3D4E5F6A7B8C9D0E10 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		ANIM00000000000000000001 /* AppAnimations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAnimations.swift; sourceTree = "<group>"; };
 		6036F6195B2345A6AF07FFEA /* CRSentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRSentry.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				CD18EC8EC97A305DF727D71F /* ClipListView.swift */,
 				3F46172EBA38E2371341741F /* SettingsView.swift */,
 				AA11BB22CC33DD44EE55FF66 /* RootView.swift */,
+				PWIOS000100000000000001AA /* PaywallView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -594,6 +597,7 @@
 				F8A3B4C5D6E7F8A3B4C5D6E7 /* IPadInspectorView.swift in Sources */,
 				A0B1C2D3E4F5A0B1C2D3E4F5 /* OnboardingView.swift in Sources */,
 				BB22CC33DD44EE55FF66AA11 /* RootView.swift in Sources */,
+				PWIOS000200000000000001BB /* PaywallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

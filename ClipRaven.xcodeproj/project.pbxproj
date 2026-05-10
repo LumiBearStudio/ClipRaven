@@ -85,6 +85,7 @@
 		A58D252D375F3878E50687B0 /* ClipboardMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82531390E0DD7D7353A19D7 /* ClipboardMarker.swift */; };
 		A9BA1E8AFD90FD731AED14B8 /* ClipRavenLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B6466B62E21FA07D32DD4F /* ClipRavenLog.swift */; };
 		2D3F814ADFB743B68E81A362 /* CRSentry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959F9CAC0214603AE0D2B51 /* CRSentry.swift */; };
+		PWMAC000200000000000001BB /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PWMAC000100000000000001AA /* PaywallView.swift */; };
 		AF00A87915661867A9A1597A /* ChosungConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2409875641531339471722 /* ChosungConverter.swift */; };
 		AI00000100000000000001AA /* AICategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI00000100000000000001BB /* AICategoryService.swift */; };
 		AI00000200000000000001AA /* AISummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI00000200000000000001BB /* AISummaryService.swift */; };
@@ -213,6 +214,7 @@
 		80398EC2378828A813A7E678 /* SensitiveDataFilterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SensitiveDataFilterTests.swift; sourceTree = "<group>"; };
 		81B6466B62E21FA07D32DD4F /* ClipRavenLog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipRavenLog.swift; sourceTree = "<group>"; };
 		0959F9CAC0214603AE0D2B51 /* CRSentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRSentry.swift; sourceTree = "<group>"; };
+		PWMAC000100000000000001AA /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		828A1F21D476080DED80ED49 /* PreviewPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPanelView.swift; sourceTree = "<group>"; };
 		83F32D416CA3185F16083195 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		8568D6756B72E4BB0FDE72D4 /* DHash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DHash.swift; sourceTree = "<group>"; };
@@ -549,6 +551,14 @@
 			path = Panel;
 			sourceTree = "<group>";
 		};
+		PWMAC000300000000000001CC /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				PWMAC000100000000000001AA /* PaywallView.swift */,
+			);
+			path = Paywall;
+			sourceTree = "<group>";
+		};
 		A2CB67C51E2A6F21F25ECABF /* Cards */ = {
 			isa = PBXGroup;
 			children = (
@@ -722,6 +732,7 @@
 				56093181745DCEAA7DE87DF5 /* MenuBar */,
 				2D6155210F146857F7E687FF /* Onboarding */,
 				9DE455A5112CBD88CD83FC75 /* Panel */,
+				PWMAC000300000000000001CC /* Paywall */,
 				E8681B9C755ED185B7AAC48A /* Preview */,
 				6F7065FA6D4323BEE590679B /* Search */,
 				FFE86F96C87B839256B1C4FE /* Settings */,
@@ -999,6 +1010,7 @@
 				BKUP000100000000000001AA /* BackupService.swift in Sources */,
 				BKUP000200000000000001AA /* BackupSettingsView.swift in Sources */,
 				FB105E5B339FEC0CF88CB3B2 /* IcloudSyncSettingsView.swift in Sources */,
+				PWMAC000200000000000001BB /* PaywallView.swift in Sources */,
 				A4F9B10501DF91A7B333212E /* SmartRule.swift in Sources */,
 				F3FB89E43AAE399EDBFC5DD2 /* SmartRuleEngine.swift in Sources */,
 				C14C2D0FA906FCDDE03C8A78 /* SmartRuleRepository.swift in Sources */,

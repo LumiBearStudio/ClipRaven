@@ -163,6 +163,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
+        // 구매 상태 로드 — trial 카운트다운 + 기존 구매자 자동 잠금 해제
+        Task { await PurchaseManager.shared.refresh() }
+
         // Start clipboard monitoring
         clipboardMonitor.start()
         CRSentry.breadcrumb("clipboard monitoring started", category: "app")

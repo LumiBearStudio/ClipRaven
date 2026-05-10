@@ -155,6 +155,9 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
             }
         }
 
+        // 구매 상태 로드 — trial 카운트다운 + 기존 구매자 자동 잠금 해제
+        Task { await PurchaseManager.shared.refresh() }
+
         // 키보드 익스텐션이 백그라운드 동안 capture 한 pending clips 처리.
         // 메인 앱이 깨어날 때마다 호출 — main DB 로 이관 + sync 자동 trigger.
         Task.detached(priority: .userInitiated) {
