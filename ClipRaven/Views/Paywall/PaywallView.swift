@@ -4,7 +4,6 @@ import ClipRavenSync
 /// 체험 만료 시 패널 위에 덮이는 전체 페이월.
 struct PaywallView: View {
     @ObservedObject private var pm = PurchaseManager.shared
-    @ObservedObject private var theme = ThemeManager.shared
 
     var body: some View {
         ZStack {
@@ -31,7 +30,7 @@ struct PaywallView: View {
                 if let product = pm.product {
                     Text(product.displayPrice)
                         .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(theme.colorPreset.accentColor)
+                        .foregroundStyle(.accent)
                 } else {
                     ProgressView()
                         .controlSize(.small)
@@ -90,13 +89,12 @@ struct PaywallView: View {
 /// 체험 중 패널 하단에 표시되는 배너.
 struct TrialBannerView: View {
     let daysLeft: Int
-    @ObservedObject private var theme = ThemeManager.shared
 
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "clock")
                 .font(.caption)
-                .foregroundStyle(theme.colorPreset.accentColor)
+                .foregroundStyle(.accent)
             Text("무료 체험 \(daysLeft)일 남음")
                 .font(.caption)
                 .foregroundStyle(.secondary)

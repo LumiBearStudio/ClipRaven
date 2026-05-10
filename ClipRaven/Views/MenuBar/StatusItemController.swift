@@ -111,7 +111,7 @@ final class StatusItemController {
         panelController?.toggle()
     }
 
-    private func showContextMenu() {
+    @MainActor private func showContextMenu() {
         let menu = NSMenu()
 
         let aboutItem = NSMenuItem(
