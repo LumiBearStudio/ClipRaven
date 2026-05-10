@@ -20,7 +20,7 @@ struct PaywallView: View {
                 } else {
                     Image(systemName: "doc.on.clipboard")
                         .font(.system(size: 56))
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(Color.accentColor)
                 }
 
                 VStack(spacing: 8) {
@@ -107,7 +107,7 @@ private struct FeatureRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .foregroundStyle(.accent)
+                .foregroundStyle(Color.accentColor)
                 .frame(width: 20)
             Text(text)
                 .font(.subheadline)
@@ -123,7 +123,7 @@ struct TrialBannerView: View {
         HStack(spacing: 8) {
             Image(systemName: "clock")
                 .font(.caption)
-                .foregroundStyle(.accent)
+                .foregroundStyle(Color.accentColor)
             Text("무료 체험 **\(daysLeft)일** 남음")
                 .font(.caption)
             Spacer()

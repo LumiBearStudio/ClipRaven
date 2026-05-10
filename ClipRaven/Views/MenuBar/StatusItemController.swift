@@ -97,7 +97,7 @@ final class StatusItemController {
         }
     }
 
-    @objc private func statusItemClicked(_ sender: NSStatusBarButton) {
+    @objc @MainActor private func statusItemClicked(_ sender: NSStatusBarButton) {
         guard let event = NSApp.currentEvent else { return }
 
         if event.type == .rightMouseUp {
