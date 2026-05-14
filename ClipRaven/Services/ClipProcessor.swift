@@ -3,23 +3,8 @@ import Foundation
 import CryptoKit
 import ClipRavenSync
 
-private func debugLog(_ msg: String) {
-    ClipRavenLog.processor.debug("\(msg, privacy: .public)")
-    #if DEBUG
-    // Also mirror to a file next to the .app bundle so Terminal `tail -f` works.
-    let line = "\(Date()): \(msg)\n"
-    let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-        .appendingPathComponent("clipraven_debug.log").path
-    let data = Data(line.utf8)
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(data)
-        handle.closeFile()
-    } else {
-        FileManager.default.createFile(atPath: logPath, contents: data)
-    }
-    #endif
-}
+// 이전엔 로컬 `debugLog` private 함수를 정의했으나, `ClipRavenLog.write(.processor, …)`
+// 단일 진입점으로 통합 (Utilities/ClipRavenLog.swift 참고).
 
 actor ClipProcessor {
     private let clipRepository: ClipRepository
@@ -86,20 +71,20 @@ actor ClipProcessor {
 
         if stripInvisible && cleanedText != text {
             let removed = text.count - cleanedText.count
-            debugLog("[ClipProc] stripInvisible ON — removed \(removed) invisible chars from text")
+            ClipRavenLog.write(.processor, "[ClipProc] stripInvisible ON — removed \(removed) invisible chars from text")
         } else if !stripInvisible {
-            debugLog("[ClipProc] stripInvisible DISABLED by setting")
+            ClipRavenLog.write(.processor, "[ClipProc] stripInvisible DISABLED by setting")
         }
 
         let normalized = TextNormalizer.normalize(cleanedText)
         let hash = XXHash64Wrapper.hash(normalized)
 
-        debugLog("[ClipProc] processText type=\(contentType.rawValue) hash=\(hash.prefix(12)) text=\"\(cleanedText.prefix(60))\"")
+        ClipRavenLog.write(.processor, "[ClipProc] processText type=\(contentType.rawValue) hash=\(hash.prefix(12)) text=\"\(cleanedText.prefix(60))\"")
 
         // In-memory dedupe check (prevents race condition)
         cleanExpiredHashes()
         if recentHashes[hash] != nil {
-            debugLog("[ClipProc] DEDUP: in-memory cache hit for \(hash.prefix(12))")
+            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: in-memory cache hit for \(hash.prefix(12))")
             if let existing = try? clipRepository.fetchByHash(hash),
                let existingId = existing.id {
                 try? clipRepository.incrementCopyCount(id: existingId)
@@ -114,7 +99,7 @@ actor ClipProcessor {
         // DB duplicate check
         if let existing = try? clipRepository.fetchByHash(hash),
            let existingId = existing.id {
-            debugLog("[ClipProc] DEDUP: DB hit for \(hash.prefix(12)), incrementing id=\(existingId)")
+            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: DB hit for \(hash.prefix(12)), incrementing id=\(existingId)")
             try? clipRepository.incrementCopyCount(id: existingId)
             recentHashes[hash] = Date()
             // Retry AI categorization if never classified before
@@ -138,7 +123,7 @@ actor ClipProcessor {
             otherThanDeviceId: DeviceIdentity.deviceId,
             window: 30
         ) {
-            debugLog("[ClipProc] DEDUP: cross-device sync race for \"\(cleanedText.prefix(40))\", existing=\(recent.id ?? -1)")
+            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: cross-device sync race for \"\(cleanedText.prefix(40))\", existing=\(recent.id ?? -1)")
             recentHashes[hash] = Date()
             return
         }
@@ -162,7 +147,7 @@ actor ClipProcessor {
 
         do {
             try clipRepository.save(&clip)
-            debugLog("[ClipProc] SAVED id=\(clip.id ?? -1) hash=\(hash.prefix(12))")
+            ClipRavenLog.write(.processor, "[ClipProc] SAVED id=\(clip.id ?? -1) hash=\(hash.prefix(12))")
 
             // Apply smart rules for auto-tagging
             smartRuleEngine.applyRulesAndAssignTags(to: clip)
@@ -172,7 +157,7 @@ actor ClipProcessor {
                 triggerAICategory(clipId: clipId, text: cleanedText)
             }
         } catch {
-            debugLog("[ClipProc] SAVE ERROR: \(error)")
+            ClipRavenLog.write(.processor, "[ClipProc] SAVE ERROR: \(error)")
         }
     }
 
@@ -215,7 +200,7 @@ actor ClipProcessor {
             otherThanDeviceId: DeviceIdentity.deviceId,
             window: 30
         ) {
-            debugLog("[ClipProc] DEDUP: cross-device image sync race (hash), existing=\(recent.id ?? -1)")
+            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: cross-device image sync race (hash), existing=\(recent.id ?? -1)")
             recentHashes[imageHash] = Date()
             return
         }
@@ -230,7 +215,7 @@ actor ClipProcessor {
                otherThanDeviceId: DeviceIdentity.deviceId,
                window: 90
            ) {
-            debugLog("[ClipProc] DEDUP: UC Stage-2 suppressed (Stage-1 skip \(Int(Date().timeIntervalSince(skipTime)))s ago, existing=\(recent.id ?? -1))")
+            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: UC Stage-2 suppressed (Stage-1 skip \(Int(Date().timeIntervalSince(skipTime)))s ago, existing=\(recent.id ?? -1))")
             recentHashes[imageHash] = Date()
             lastUCSkipTime = nil
             return
@@ -253,7 +238,7 @@ actor ClipProcessor {
            !paths.contains("\n"),          // single-file only
            let prevId = prev.id,
            Self.isImageFilePath(paths) {
-            debugLog("[ClipProc] UC 2-stage: upgrading file clip \(prevId) → image")
+            ClipRavenLog.write(.processor, "[ClipProc] UC 2-stage: upgrading file clip \(prevId) → image")
             try? clipRepository.upgradeFileClipToImage(
                 id: prevId,
                 imageHash: imageHash,
@@ -305,14 +290,14 @@ actor ClipProcessor {
     // MARK: - File Processing
 
     private func processFileURLs(_ fileURLs: [URL], sourceApp: SourceAppInfo) async {
-        debugLog("[ClipProc] processFileURLs count=\(fileURLs.count) urls=\(fileURLs.map(\.path))")
+        ClipRavenLog.write(.processor, "[ClipProc] processFileURLs count=\(fileURLs.count) urls=\(fileURLs.map(\.path))")
 
         // Represent the file set as a sorted path list for hashing
         let sortedPaths = fileURLs.map(\.path).sorted()
         let combined = sortedPaths.joined(separator: "|")
         let hash = XXHash64Wrapper.hash(combined)
 
-        debugLog("[ClipProc] fileURLs hash=\(hash.prefix(12)) paths=\(sortedPaths)")
+        ClipRavenLog.write(.processor, "[ClipProc] fileURLs hash=\(hash.prefix(12)) paths=\(sortedPaths)")
 
         cleanExpiredHashes()
         if recentHashes[hash] != nil {
@@ -320,7 +305,7 @@ actor ClipProcessor {
                let existingId = existing.id {
                 try? clipRepository.incrementCopyCount(id: existingId)
             }
-            debugLog("[ClipProc] fileURLs DEDUP: in-memory")
+            ClipRavenLog.write(.processor, "[ClipProc] fileURLs DEDUP: in-memory")
             return
         }
 
@@ -328,7 +313,7 @@ actor ClipProcessor {
            let existingId = existing.id {
             try? clipRepository.incrementCopyCount(id: existingId)
             recentHashes[hash] = Date()
-            debugLog("[ClipProc] fileURLs DEDUP: DB hit id=\(existingId)")
+            ClipRavenLog.write(.processor, "[ClipProc] fileURLs DEDUP: DB hit id=\(existingId)")
             return
         }
 
@@ -357,7 +342,7 @@ actor ClipProcessor {
 
         // Store first file path (for single file) or paths joined by newline (multi)
         let contentText = sortedPaths.joined(separator: "\n")
-        debugLog("[ClipProc] fileURLs contentText=\(contentText)")
+        ClipRavenLog.write(.processor, "[ClipProc] fileURLs contentText=\(contentText)")
 
         // Generate thumbnail from file icon of first file
         let thumbnail: Data? = await MainActor.run {
@@ -384,9 +369,9 @@ actor ClipProcessor {
 
         do {
             try clipRepository.save(&clip)
-            debugLog("[ClipProc] fileURLs SAVED id=\(clip.id ?? -1) contentText=\(contentText)")
+            ClipRavenLog.write(.processor, "[ClipProc] fileURLs SAVED id=\(clip.id ?? -1) contentText=\(contentText)")
         } catch {
-            debugLog("[ClipProc] fileURLs SAVE ERROR: \(error)")
+            ClipRavenLog.write(.processor, "[ClipProc] fileURLs SAVE ERROR: \(error)")
         }
         smartRuleEngine.applyRulesAndAssignTags(to: clip)
     }
@@ -411,7 +396,7 @@ actor ClipProcessor {
         if let existing = try? clipRepository.fetchByImageHash(imageHash),
            let existingId = existing.id {
             try? clipRepository.incrementCopyCount(id: existingId)
-            debugLog("[ClipProc] file→image DEDUP: imageHash hit id=\(existingId)")
+            ClipRavenLog.write(.processor, "[ClipProc] file→image DEDUP: imageHash hit id=\(existingId)")
             return
         }
 
@@ -435,9 +420,9 @@ actor ClipProcessor {
 
         do {
             try clipRepository.save(&clip)
-            debugLog("[ClipProc] file→image SAVED id=\(clip.id ?? -1) imageHash=\(imageHash.prefix(12))")
+            ClipRavenLog.write(.processor, "[ClipProc] file→image SAVED id=\(clip.id ?? -1) imageHash=\(imageHash.prefix(12))")
         } catch {
-            debugLog("[ClipProc] file→image SAVE ERROR: \(error)")
+            ClipRavenLog.write(.processor, "[ClipProc] file→image SAVE ERROR: \(error)")
         }
 
         smartRuleEngine.applyRulesAndAssignTags(to: clip)

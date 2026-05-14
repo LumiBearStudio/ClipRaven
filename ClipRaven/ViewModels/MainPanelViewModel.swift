@@ -56,22 +56,7 @@ enum AccessibilityPrompter {
     }
 }
 
-private func debugLog(_ msg: String) {
-    ClipRavenLog.paste.debug("\(msg, privacy: .public)")
-    #if DEBUG
-    let line = "\(Date()): \(msg)\n"
-    let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-        .appendingPathComponent("clipraven_debug.log").path
-    let data = Data(line.utf8)
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(data)
-        handle.closeFile()
-    } else {
-        FileManager.default.createFile(atPath: logPath, contents: data)
-    }
-    #endif
-}
+// 로컬 `debugLog` 함수는 `ClipRavenLog.write(.paste, …)` 으로 통합됨.
 
 // MARK: - 날짜 범위 필터
 enum DateRangeFilter: Equatable {
@@ -125,18 +110,8 @@ enum DateRangeFilter: Equatable {
     }
 }
 
-private func vmDebugLog(_ msg: String) {
-    let line = "\(Date()): \(msg)\n"
-    let logPath = "/tmp/clipraven_debug.log"
-    let data = Data(line.utf8)
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(data)
-        handle.closeFile()
-    } else {
-        FileManager.default.createFile(atPath: logPath, contents: data)
-    }
-}
+// 로컬 `vmDebugLog` 함수도 `ClipRavenLog.write(.ui, …)` 으로 통합됨.
+// (이전엔 /tmp/clipraven_debug.log 에 별도 기록했지만 이제 동일 경로로 합쳐짐.)
 
 @MainActor
 final class MainPanelViewModel: ObservableObject {
@@ -250,7 +225,7 @@ final class MainPanelViewModel: ObservableObject {
         ) { [weak self] notification in
             guard let self,
                   let index = notification.userInfo?["index"] as? Int else { return }
-            debugLog("[VM.quickPaste] received index=\(index) clipsCount=\(self.clips.count)")
+            ClipRavenLog.write(.paste, "[VM.quickPaste] received index=\(index) clipsCount=\(self.clips.count)")
             self.quickPaste(index: index)
         }
 
@@ -603,12 +578,12 @@ final class MainPanelViewModel: ObservableObject {
             // Gate 1: Accessibility permission. Without it, CGEvent.post silently drops
             // since macOS 10.14 — this was the root cause of the long-standing paste bug.
             if !AXIsProcessTrusted() {
-                debugLog("[simulatePaste] BLOCKED: AXIsProcessTrusted=false — showing permission alert")
+                ClipRavenLog.write(.paste, "[simulatePaste] BLOCKED: AXIsProcessTrusted=false — showing permission alert")
                 AccessibilityPrompter.requestIfNeeded()
                 return
             }
 
-            debugLog("[simulatePaste] entering target=\(targetName) pid=\(targetPid) AXTrusted=true")
+            ClipRavenLog.write(.paste, "[simulatePaste] entering target=\(targetName) pid=\(targetPid) AXTrusted=true")
 
             let source = CGEventSource(stateID: .combinedSessionState)
 
@@ -629,11 +604,11 @@ final class MainPanelViewModel: ObservableObject {
             if targetPid > 0 {
                 keyDown?.postToPid(targetPid)
                 keyUp?.postToPid(targetPid)
-                debugLog("[simulatePaste] posted ⌘V via postToPid=\(targetPid) (\(targetName))")
+                ClipRavenLog.write(.paste, "[simulatePaste] posted ⌘V via postToPid=\(targetPid) (\(targetName))")
             } else {
                 keyDown?.post(tap: .cgSessionEventTap)
                 keyUp?.post(tap: .cgSessionEventTap)
-                debugLog("[simulatePaste] posted ⌘V via session tap (no target pid)")
+                ClipRavenLog.write(.paste, "[simulatePaste] posted ⌘V via session tap (no target pid)")
             }
         }
     }

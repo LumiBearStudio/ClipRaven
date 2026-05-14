@@ -3,22 +3,7 @@ import Combine
 import CryptoKit
 import os.log
 
-private func debugLog(_ msg: String) {
-    ClipRavenLog.clipboard.debug("\(msg, privacy: .public)")
-    #if DEBUG
-    let line = "\(Date()): \(msg)\n"
-    let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-        .appendingPathComponent("clipraven_debug.log").path
-    let data = Data(line.utf8)
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(data)
-        handle.closeFile()
-    } else {
-        FileManager.default.createFile(atPath: logPath, contents: data)
-    }
-    #endif
-}
+// 로컬 `debugLog` 함수는 ClipRavenLog 으로 통합됨 (Utilities/ClipRavenLog.swift).
 
 // MARK: - Selective Mode Pending State
 
@@ -97,7 +82,7 @@ final class ClipboardMonitor: ObservableObject {
         // Capture current clipboard content hash to avoid processing existing content on launch
         let initialData = readPasteboardData()
         lastContentHash = computeContentHash(initialData)
-        debugLog("[ClipMon] START changeCount=\(lastChangeCount) initialHash=\(lastContentHash.prefix(12))")
+        ClipRavenLog.write(.clipboard, "[ClipMon] START changeCount=\(lastChangeCount) initialHash=\(lastContentHash.prefix(12))")
 
         // Prevent App Nap
         activity = ProcessInfo.processInfo.beginActivity(
@@ -160,11 +145,11 @@ final class ClipboardMonitor: ObservableObject {
 
         // Log all pasteboard types for debugging
         let types = pasteboard.types?.map { $0.rawValue } ?? []
-        debugLog("[ClipMon] CHANGE \(prevCount)→\(currentCount) types=[\(types.joined(separator: ", "))]")
+        ClipRavenLog.write(.clipboard, "[ClipMon] CHANGE \(prevCount)→\(currentCount) types=[\(types.joined(separator: ", "))]")
 
         // Skip ClipRaven's own pastes (self-detection)
         if pasteboard.types?.contains(ClipboardMarker.selfType) == true {
-            debugLog("[ClipMon] SKIP: self-detection marker")
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: self-detection marker")
             return
         }
 
@@ -174,7 +159,7 @@ final class ClipboardMonitor: ObservableObject {
         // Also notify ClipProcessor so Stage-2 (actual image data arriving after
         // paste, without the UC marker) can be suppressed as well.
         if pasteboard.types?.contains(.init(rawValue: "com.apple.is-remote-clipboard")) == true {
-            debugLog("[ClipMon] SKIP: Universal Clipboard remote item")
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: Universal Clipboard remote item")
             Task { await clipProcessor.notifyUniversalClipboardSkipped() }
             return
         }
@@ -189,32 +174,32 @@ final class ClipboardMonitor: ObservableObject {
             .init(rawValue: "com.typeit4me.clipping"),
         ]
         if let pbTypes = pasteboard.types, pbTypes.contains(where: { skipTypes.contains($0) }) {
-            debugLog("[ClipMon] SKIP: transient/concealed type")
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: transient/concealed type")
             return
         }
 
         // Check excluded apps
         let sourceApp = SourceAppTracker.currentApp()
         if let bundleId = sourceApp.bundleId, excludedApps.contains(bundleId) {
-            debugLog("[ClipMon] SKIP: excluded app \(bundleId)")
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: excluded app \(bundleId)")
             return
         }
 
         // Check sensitive data (ConcealedType already handled above via skipTypes)
         let blockSensitiveOn = UserDefaults.standard.bool(forKey: "blockSensitive")
-        debugLog("[ClipMon] sensitive check: blockSensitive=\(blockSensitiveOn) source=\(sourceApp.bundleId ?? "?") name=\(sourceApp.name ?? "?")")
+        ClipRavenLog.write(.clipboard, "[ClipMon] sensitive check: blockSensitive=\(blockSensitiveOn) source=\(sourceApp.bundleId ?? "?") name=\(sourceApp.name ?? "?")")
         if blockSensitiveOn {
             if SensitiveDataFilter.isSensitive(pasteboard: pasteboard) {
-                debugLog("[ClipMon] SKIP: sensitive data detected (pasteboard ConcealedType)")
+                ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: sensitive data detected (pasteboard ConcealedType)")
                 return
             }
             if let text = pasteboard.string(forType: .string) {
                 let is2FA = SensitiveDataFilter.isLikelyTwoFactorCode(text)
                 let hasPhrase = SensitiveDataFilter.containsTwoFactorPhrase(text)
                 let filter2FAOn = UserDefaults.standard.object(forKey: "filter2FA") as? Bool ?? true
-                debugLog("[ClipMon] text=\"\(text.prefix(50))\" is2FACandidate=\(is2FA) hasPhrase=\(hasPhrase) filter2FAOn=\(filter2FAOn)")
+                ClipRavenLog.write(.clipboard, "[ClipMon] text=\"\(text.prefix(50))\" is2FACandidate=\(is2FA) hasPhrase=\(hasPhrase) filter2FAOn=\(filter2FAOn)")
                 if SensitiveDataFilter.isSensitiveWithContext(text, sourceApp: sourceApp) {
-                    debugLog("[ClipMon] SKIP: sensitive/2FA pattern detected (source=\(sourceApp.bundleId ?? "?"))")
+                    ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: sensitive/2FA pattern detected (source=\(sourceApp.bundleId ?? "?"))")
                     return
                 }
             }
@@ -225,7 +210,7 @@ final class ClipboardMonitor: ObservableObject {
 
         let textPreview = String(clipboardData.text?.prefix(80) ?? "nil")
         let hasImage = clipboardData.imageData != nil
-        debugLog("[ClipMon] READ text=\"\(textPreview)\" hasImage=\(hasImage) source=\(sourceApp.name ?? "?")")
+        ClipRavenLog.write(.clipboard, "[ClipMon] READ text=\"\(textPreview)\" hasImage=\(hasImage) source=\(sourceApp.name ?? "?")")
 
         // Content-based dedup
         let contentHash = computeContentHash(clipboardData)
@@ -234,20 +219,20 @@ final class ClipboardMonitor: ObservableObject {
             if selectiveModeEnabled, let pending = pendingSelectiveText, pending.hash == contentHash {
                 let elapsed = Date().timeIntervalSince(pending.capturedAt) * 1000
                 if elapsed >= 80 && elapsed <= doubleCopyWindowMs && !doubleCopyConfirmLock {
-                    debugLog("[ClipMon] SELECTIVE: double-copy confirmed elapsed=\(Int(elapsed))ms")
+                    ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: double-copy confirmed elapsed=\(Int(elapsed))ms")
                     confirmPendingText(pending)
                     return
                 }
             }
-            debugLog("[ClipMon] SKIP: same content hash \(contentHash.prefix(16))")
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: same content hash \(contentHash.prefix(16))")
             return
         }
-        debugLog("[ClipMon] NEW hash=\(contentHash.prefix(16)) prev=\(lastContentHash.prefix(16))")
+        ClipRavenLog.write(.clipboard, "[ClipMon] NEW hash=\(contentHash.prefix(16)) prev=\(lastContentHash.prefix(16))")
         lastContentHash = contentHash
 
         // Guard against empty clipboard
         guard clipboardData.text != nil || clipboardData.imageData != nil || clipboardData.fileURLs != nil else {
-            debugLog("[ClipMon] SKIP: empty clipboard")
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: empty clipboard")
             return
         }
 
@@ -261,7 +246,7 @@ final class ClipboardMonitor: ObservableObject {
                     hash: contentHash,
                     capturedAt: Date()
                 )
-                debugLog("[ClipMon] SELECTIVE: text queued, waiting for double-copy")
+                ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: text queued, waiting for double-copy")
                 return
             } else if let imageData = clipboardData.imageData {
                 // Queue image for popup confirmation
@@ -270,7 +255,7 @@ final class ClipboardMonitor: ObservableObject {
                     imageData: imageData,
                     sourceApp: sourceApp
                 )
-                debugLog("[ClipMon] SELECTIVE: image queued id=\(captureId)")
+                ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: image queued id=\(captureId)")
                 Task.detached(priority: .userInitiated) { [weak self] in
                     guard let self else { return }
                     let thumbnail = ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
@@ -297,7 +282,7 @@ final class ClipboardMonitor: ObservableObject {
         }
 
         // Normal mode: process asynchronously
-        debugLog("[ClipMon] → PROCESSING")
+        ClipRavenLog.write(.clipboard, "[ClipMon] → PROCESSING")
         Task.detached(priority: .userInitiated) { [weak self] in
             await self?.clipProcessor.process(
                 clipboardData: clipboardData,
@@ -406,7 +391,7 @@ final class ClipboardMonitor: ObservableObject {
 
     private func discardPendingImage(id: String) {
         pendingImageCaptures.removeValue(forKey: id)
-        debugLog("[ClipMon] SELECTIVE: image discarded id=\(id)")
+        ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: image discarded id=\(id)")
     }
 
     private func startConfirmLockTimer() {

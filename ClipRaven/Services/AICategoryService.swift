@@ -1,21 +1,7 @@
 import Foundation
 import ClipRavenSync
 
-private func aiDebugLog(_ msg: String) {
-    ClipRavenLog.ai.debug("\(msg, privacy: .public)")
-    #if DEBUG
-    let line = "\(Date()): [AICategory] \(msg)\n"
-    let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-        .appendingPathComponent("clipraven_debug.log").path
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(Data(line.utf8))
-        try? handle.close()
-    } else {
-        try? Data(line.utf8).write(to: URL(fileURLWithPath: logPath))
-    }
-    #endif
-}
+// 로컬 `aiDebugLog` 함수는 `ClipRavenLog.write(.ai, …)` 으로 통합됨.
 
 // MARK: - AI Category constants (shared across all OS versions)
 
@@ -90,34 +76,34 @@ actor AICategoryService {
     }
 
     func categorize(clipId: Int64, text: String) async {
-        aiDebugLog("categorize called clipId=\(clipId) textLen=\(text.count)")
+        ClipRavenLog.write(.ai, "categorize called clipId=\(clipId) textLen=\(text.count)")
 
         // 기본값 ON — @AppStorage 기본값이 UserDefaults에 쓰여지지 않는 문제 회피
         let enabled = UserDefaults.standard.object(forKey: "aiCategorizationEnabled") as? Bool ?? true
         guard enabled else {
-            aiDebugLog("skip: disabled in settings")
+            ClipRavenLog.write(.ai, "skip: disabled in settings")
             return
         }
 
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.count >= 5 else {
-            aiDebugLog("skip: too short (\(trimmed.count) chars)")
+            ClipRavenLog.write(.ai, "skip: too short (\(trimmed.count) chars)")
             return
         }
 
         // Heuristic shortcut for structured content (email/phone/link)
         if let heuristic = heuristicCategory(for: trimmed) {
             try? clipRepository.updateAICategory(id: clipId, category: heuristic, generatedAt: Date())
-            aiDebugLog("heuristic id=\(clipId) → \(heuristic)")
+            ClipRavenLog.write(.ai, "heuristic id=\(clipId) → \(heuristic)")
             return
         }
 
         let model = SystemLanguageModel.default
         guard model.availability == .available else {
-            aiDebugLog("skip: model unavailable — \(String(describing: model.availability))")
+            ClipRavenLog.write(.ai, "skip: model unavailable — \(String(describing: model.availability))")
             return
         }
-        aiDebugLog("model available, starting classification for id=\(clipId)")
+        ClipRavenLog.write(.ai, "model available, starting classification for id=\(clipId)")
 
         do {
             if session == nil {
@@ -151,9 +137,9 @@ actor AICategoryService {
             let finalCategory = validCategories.contains(raw) ? raw : AICategory.other.rawValue
 
             try? clipRepository.updateAICategory(id: clipId, category: finalCategory, generatedAt: Date())
-            aiDebugLog("classified id=\(clipId) raw=\"\(raw)\" → \(finalCategory)")
+            ClipRavenLog.write(.ai, "classified id=\(clipId) raw=\"\(raw)\" → \(finalCategory)")
         } catch {
-            aiDebugLog("classify FAILED — \(error)")
+            ClipRavenLog.write(.ai, "classify FAILED — \(error)")
             session = nil
         }
     }
@@ -172,12 +158,12 @@ actor AICategoryService {
 
     @discardableResult
     func batchReclassifyUnclassified(progress: @Sendable (Int, Int) -> Void = { _, _ in }) async -> Int {
-        aiDebugLog("batch reclassify requested")
+        ClipRavenLog.write(.ai, "batch reclassify requested")
         guard let targets = try? clipRepository.fetchUnclassifiedTextClips() else {
-            aiDebugLog("batch: fetch failed")
+            ClipRavenLog.write(.ai, "batch: fetch failed")
             return 0
         }
-        aiDebugLog("batch: \(targets.count) candidates")
+        ClipRavenLog.write(.ai, "batch: \(targets.count) candidates")
         var done = 0
         for clip in targets {
             guard let id = clip.id, let text = textForClassification(clip) else { continue }
@@ -185,20 +171,20 @@ actor AICategoryService {
             done += 1
             progress(done, targets.count)
         }
-        aiDebugLog("batch done: processed=\(done)")
+        ClipRavenLog.write(.ai, "batch done: processed=\(done)")
         return done
     }
 
     /// Force re-classify ALL eligible clips (clears existing aiCategory first).
     @discardableResult
     func batchReclassifyAll(progress: @Sendable (Int, Int) -> Void = { _, _ in }) async -> Int {
-        aiDebugLog("FORCE batch reclassify requested")
+        ClipRavenLog.write(.ai, "FORCE batch reclassify requested")
         try? clipRepository.clearAllAICategories()
         guard let targets = try? clipRepository.fetchAllTextClips() else {
-            aiDebugLog("force batch: fetch failed")
+            ClipRavenLog.write(.ai, "force batch: fetch failed")
             return 0
         }
-        aiDebugLog("force batch: \(targets.count) candidates")
+        ClipRavenLog.write(.ai, "force batch: \(targets.count) candidates")
         var done = 0
         for clip in targets {
             guard let id = clip.id, let text = textForClassification(clip) else { continue }
@@ -206,7 +192,7 @@ actor AICategoryService {
             done += 1
             progress(done, targets.count)
         }
-        aiDebugLog("force batch done: processed=\(done)")
+        ClipRavenLog.write(.ai, "force batch done: processed=\(done)")
         return done
     }
 }
