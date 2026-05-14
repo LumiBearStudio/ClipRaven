@@ -138,6 +138,7 @@
 		E7D50A080D0DA73CD19E9280 /* FilterBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F5AACAFC259CC21DC8120F /* FilterBarView.swift */; };
 		EF5E5D04C2DBF44DEFA9669B /* HashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E3065860D6AA0E5C920ABC3 /* HashTests.swift */; };
 		F1D3651784A846EAF110C253 /* TextTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3496F21381F6ED54A6AE423 /* TextTransform.swift */; };
+		CTFLTR0000000000111A /* ContentTypeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CTFLTR0000000000001A /* ContentTypeFilter.swift */; };
 		F3FB89E43AAE399EDBFC5DD2 /* SmartRuleEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BB4603CA4B00575D865E9A /* SmartRuleEngine.swift */; };
 		F84465927197C1BB397DC259 /* SearchRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 402BE52D6D743E64DDE6CFF5 /* SearchRepositoryTests.swift */; };
 		F935E597303200BD27518E9D /* CardScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051F7E34180D24AC1A39437E /* CardScrollView.swift */; };
@@ -298,6 +299,7 @@
 		DA5E1D14A5538DACA479717F /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
 		E129FEE3D47B1F99FB3547B1 /* TagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewModel.swift; sourceTree = "<group>"; };
 		E3496F21381F6ED54A6AE423 /* TextTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTransform.swift; sourceTree = "<group>"; };
+		CTFLTR0000000000001A /* ContentTypeFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTypeFilter.swift; sourceTree = "<group>"; };
 		E82531390E0DD7D7353A19D7 /* ClipboardMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardMarker.swift; sourceTree = "<group>"; };
 		EBCA03C941814C3481639DF3 /* ClipRavenWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClipRavenWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC28F7DDC8DCF9CAD6B0F8DB /* TextNormalizerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TextNormalizerTests.swift; sourceTree = "<group>"; };
@@ -449,6 +451,7 @@
 				F1F62AE082D24EE59BB0735C /* PasteStackItem.swift */,
 				B270506F04FFFE9F3DAFC37E /* SmartRule.swift */,
 				E3496F21381F6ED54A6AE423 /* TextTransform.swift */,
+				CTFLTR0000000000001A /* ContentTypeFilter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1069,6 +1072,7 @@
 				77013C175F4A431CDBDEC61A /* TagViewModel.swift in Sources */,
 				8151508E74F3E69FE2C64BF2 /* TextCardBody.swift in Sources */,
 				F1D3651784A846EAF110C253 /* TextTransform.swift in Sources */,
+				CTFLTR0000000000111A /* ContentTypeFilter.swift in Sources */,
 				06885BF6A17FC0EAA245F6D2 /* ThemeManager.swift in Sources */,
 				59CB54482A846D5BA79A87BF /* TitlebarFilterView.swift in Sources */,
 				6332AA96714EEA63FEC03AC8 /* TopBarView.swift in Sources */,

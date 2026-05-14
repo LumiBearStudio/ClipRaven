@@ -668,44 +668,4 @@ struct FilterButton: View {
     }
 }
 
-// MARK: - ContentTypeFilter Enum
-
-enum ContentTypeFilter: CaseIterable {
-    case all, text, code, url, image, color, file
-
-    var displayName: LocalizedStringKey {
-        switch self {
-        case .all:   return "전체"
-        case .text:  return "텍스트"
-        case .code:  return "코드"
-        case .url:   return "URL"
-        case .image: return "이미지"
-        case .color: return "컬러"
-        case .file:  return "파일"
-        }
-    }
-
-    var systemImage: String {
-        switch self {
-        case .all:   return "tray.full"
-        case .text:  return "doc.text"
-        case .code:  return "chevron.left.forwardslash.chevron.right"
-        case .url:   return "link"
-        case .image: return "photo"
-        case .color: return "paintpalette"
-        case .file:  return "doc"
-        }
-    }
-
-    var contentType: ContentType? {
-        switch self {
-        case .all:   return nil
-        case .text:  return .text
-        case .code:  return .code
-        case .url:   return .url
-        case .image: return .image
-        case .color: return .color
-        case .file:  return .file
-        }
-    }
-}
+// ContentTypeFilter enum 은 Models/ContentTypeFilter.swift 로 이동.
