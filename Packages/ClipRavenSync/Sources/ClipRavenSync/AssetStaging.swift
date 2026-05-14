@@ -79,6 +79,7 @@ public final class AssetStaging {
             let url = thumbnailStagingURL(for: uuid)
             try ensureDir(url.deletingLastPathComponent())
             try data.write(to: url, options: .atomic)
+            Self.lockdownPermissions(at: url)
             return CKAsset(fileURL: url)
         } catch {
             Self.log.error("stageThumbnail failed uuid=\(uuid, privacy: .public) err=\(error.localizedDescription, privacy: .public)")
@@ -115,12 +116,29 @@ public final class AssetStaging {
             // 기존 staging 파일이 있으면 제거
             try? FileManager.default.removeItem(at: stagingURL)
             try FileManager.default.copyItem(at: sourcePath, to: stagingURL)
+            Self.lockdownPermissions(at: stagingURL)
             return CKAsset(fileURL: stagingURL)
         } catch {
             Self.log.error("stageOriginal failed uuid=\(uuid, privacy: .public) err=\(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
+
+    /// 사용자 본인만 읽기/쓰기 가능하게 권한을 0600 으로 강제.
+    /// 보안 감사 A-I2: macOS 의 multi-user 환경에서 다른 OS 사용자 계정이 같은
+    /// `~/Library/Caches/ClipRaven/CKStaging/` 를 읽지 못하도록.
+    /// 실패는 fatal 아니라 log 만 — staging 은 transient 경로라 다음 cycle 재시도.
+    private static func lockdownPermissions(at url: URL) {
+        do {
+            try FileManager.default.setAttributes(
+                [.posixPermissions: 0o600],
+                ofItemAtPath: url.path
+            )
+        } catch {
+            Self.log.error("lockdown permissions failed at \(url.path, privacy: .public): \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
 
     // MARK: - Cleanup
 
