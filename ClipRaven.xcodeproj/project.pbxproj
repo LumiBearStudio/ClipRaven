@@ -94,6 +94,7 @@
 		A4F9B10501DF91A7B333212E /* SmartRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B270506F04FFFE9F3DAFC37E /* SmartRule.swift */; };
 		A58D252D375F3878E50687B0 /* ClipboardMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82531390E0DD7D7353A19D7 /* ClipboardMarker.swift */; };
 		A9BA1E8AFD90FD731AED14B8 /* ClipRavenLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B6466B62E21FA07D32DD4F /* ClipRavenLog.swift */; };
+		DFKEY00000000000111A /* DefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFKEY00000000000001A /* DefaultsKey.swift */; };
 		2D3F814ADFB743B68E81A362 /* CRSentry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959F9CAC0214603AE0D2B51 /* CRSentry.swift */; };
 		PWMAC000200000000000001BB /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PWMAC000100000000000001AA /* PaywallView.swift */; };
 		AF00A87915661867A9A1597A /* ChosungConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2409875641531339471722 /* ChosungConverter.swift */; };
@@ -250,6 +251,7 @@
 		7F4A3BF46CEA2E6253A7F82E /* ClipRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipRepository.swift; sourceTree = "<group>"; };
 		80398EC2378828A813A7E678 /* SensitiveDataFilterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SensitiveDataFilterTests.swift; sourceTree = "<group>"; };
 		81B6466B62E21FA07D32DD4F /* ClipRavenLog.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipRavenLog.swift; sourceTree = "<group>"; };
+		DFKEY00000000000001A /* DefaultsKey.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultsKey.swift; sourceTree = "<group>"; };
 		0959F9CAC0214603AE0D2B51 /* CRSentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRSentry.swift; sourceTree = "<group>"; };
 		PWMAC000100000000000001AA /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		828A1F21D476080DED80ED49 /* PreviewPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPanelView.swift; sourceTree = "<group>"; };
@@ -552,6 +554,7 @@
 				96A897B33A1453D6214CD98B /* SyntaxHighlighter.swift */,
 				FD4C69BB3AE93BFAA36B8F69 /* URLNormalizer.swift */,
 				81B6466B62E21FA07D32DD4F /* ClipRavenLog.swift */,
+				DFKEY00000000000001A /* DefaultsKey.swift */,
 				0959F9CAC0214603AE0D2B51 /* CRSentry.swift */,
 				KLR0000500000000000001AA /* KeyboardLayoutRecovery */,
 			);
@@ -1141,6 +1144,7 @@
 				APPI001100000000000001AA /* ClipRavenShortcuts.swift in Sources */,
 				B41987102CECD55A58A30717 /* WritableTextView.swift in Sources */,
 				A9BA1E8AFD90FD731AED14B8 /* ClipRavenLog.swift in Sources */,
+				DFKEY00000000000111A /* DefaultsKey.swift in Sources */,
 				2D3F814ADFB743B68E81A362 /* CRSentry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
