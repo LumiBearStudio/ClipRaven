@@ -510,6 +510,8 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - Data
 
     private func loadClips(query: String = "") async {
+        // B-R3: view unload 시점에 호출되면 IUO 접근 crash.
+        guard await MainActor.run(body: { isViewLoaded }) else { return }
         guard let dbPool else {
             await MainActor.run { showFullAccessHint() }
             return
@@ -990,6 +992,10 @@ class KeyboardViewController: UIInputViewController {
     /// 즉시 표시 보장: capture 직후 self.clips 에 prepend + reload — pending
     /// JSON 의 NSFileCoordinator 가 fail 해도 사용자에게 카드 즉시 노출.
     private func captureFromPasteboard() {
+        // 품질 감사 B-R3: 키보드 익스텐션은 메모리 압박 시 view 가 unload 되었다가
+        // 재호출되는 경로가 있어, viewDidLoad 가 다시 run 되기 전 IUO 접근 시 crash.
+        // 모든 non-lifecycle entry point 에 `isViewLoaded` 가드 추가.
+        guard isViewLoaded else { return }
         let pasteboard = UIPasteboard.general
 
         // changeCount 비교 — 마지막 본 이후 변경 없으면 skip (다이얼로그 안 뜸)
