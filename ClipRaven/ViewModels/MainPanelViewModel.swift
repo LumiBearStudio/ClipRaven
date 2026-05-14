@@ -929,14 +929,13 @@ final class MainPanelViewModel: ObservableObject {
 
     // MARK: - Drag & Drop Reorder
 
-    // TODO: DRAG_REORDER — 카드 드래그 재정렬 임시 비활성화 (2026-04-17)
-    // 재활성화 시: return false 줄 삭제하고 아래 로직 주석 해제
-    var canReorder: Bool {
-        return false
-        // let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        // return trimmed.isEmpty && selectedFilter == .all && selectedTagIds.isEmpty
-        //     && selectedSourceApp == nil && dateRangeFilter == nil
-    }
+    /// 드래그 카드 재정렬 활성 여부.
+    ///
+    /// 2026-04-17 부터 임시 비활성화. 재활성화 시 검색/필터 조합 별 정렬
+    /// 부조화 (manualOrder 컬럼 vs 검색 결과 정렬) 를 어떻게 처리할지 결정
+    /// 필요. 활성화 조건은 git history `dc6ab12c` 참고 (검색 + 필터 빈 상태에서만 허용).
+    /// 품질 감사 B-CS4 권고로 주석 처리 코드 삭제.
+    var canReorder: Bool { false }
 
     func moveClip(_ clip: Clip, toIndex: Int, targetIsPinned: Bool) {
         guard let clipId = clip.id else { return }
