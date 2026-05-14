@@ -146,18 +146,21 @@ final class ClipListViewModel: ObservableObject {
 
     // MARK: - Tags
 
+    // 품질 감사 B-B3: `Task { }` 가 @MainActor 격리를 inherit 해 DB 호출이
+    // main thread 위에서 직렬 실행됐다. Task.detached + repository 캡처로 격리.
+
     func loadSourceApps() {
-        Task {
+        Task.detached(priority: .userInitiated) { [repository] in
             let apps = (try? repository.fetchSourceApps()) ?? []
-            await MainActor.run { self.availableSourceApps = apps }
+            await MainActor.run { [weak self] in self?.availableSourceApps = apps }
         }
     }
 
     func loadTags() {
-        Task {
+        Task.detached(priority: .userInitiated) { [tagRepository, log] in
             do {
                 let all = try tagRepository.fetchAll()
-                await MainActor.run { self.tags = all }
+                await MainActor.run { [weak self] in self?.tags = all }
             } catch {
                 log.error("loadTags failed: \(error.localizedDescription, privacy: .public)")
             }
@@ -194,13 +197,13 @@ final class ClipListViewModel: ObservableObject {
     // MARK: - Filter counts
 
     func updateCounts() {
-        Task {
+        Task.detached(priority: .userInitiated) { [repository] in
             var counts: [ContentType?: Int] = [:]
             counts[nil] = (try? repository.count()) ?? 0
             for type in ContentType.allCases {
                 counts[type] = (try? repository.count(contentType: type)) ?? 0
             }
-            await MainActor.run { self.filterCounts = counts }
+            await MainActor.run { [weak self] in self?.filterCounts = counts }
         }
     }
 
@@ -272,7 +275,8 @@ final class ClipListViewModel: ObservableObject {
 
     func bumpCopyCount(_ clip: Clip) {
         guard let id = clip.id else { return }
-        Task {
+        // B-B3: Task { } inherit @MainActor → DB write on main. Detached.
+        Task.detached(priority: .utility) { [repository] in
             try? repository.incrementCopyCount(id: id)
         }
     }

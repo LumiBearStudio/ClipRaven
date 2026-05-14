@@ -285,7 +285,13 @@ final class MainPanelViewModel: ObservableObject {
     }
 
     func loadBoards() {
-        boards = (try? tagRepository.fetchAll()) ?? []
+        // background offload — main thread 차단 방지 (품질 감사 B-B2)
+        Task.detached(priority: .userInitiated) { [tagRepository] in
+            let result = (try? tagRepository.fetchAll()) ?? []
+            await MainActor.run { [weak self] in
+                self?.boards = result
+            }
+        }
     }
 
     func toggleTagFilter(_ tagId: Int64) {
@@ -772,14 +778,20 @@ final class MainPanelViewModel: ObservableObject {
     }
 
     func loadClipTags() {
-        var map: [Int64: [Tag]] = [:]
-        for clip in clips {
-            guard let clipId = clip.id else { continue }
-            if let tags = try? tagRepository.fetchTags(forClipId: clipId), !tags.isEmpty {
-                map[clipId] = tags
+        // 품질 감사 B-B3 + 성능 감사 D-C2: N+1 쿼리를 main thread 에서 N회 실행
+        // 했었다. 일단 background 로 offload (loop 자체는 R3.5 에서 JOIN 으로 통합 예정).
+        let clipIds = clips.compactMap(\.id)
+        Task.detached(priority: .userInitiated) { [tagRepository] in
+            var map: [Int64: [Tag]] = [:]
+            for clipId in clipIds {
+                if let tags = try? tagRepository.fetchTags(forClipId: clipId), !tags.isEmpty {
+                    map[clipId] = tags
+                }
+            }
+            await MainActor.run { [weak self] in
+                self?.clipTags = map
             }
         }
-        clipTags = map
     }
 
     // MARK: - Keyboard Navigation
@@ -1126,7 +1138,10 @@ final class MainPanelViewModel: ObservableObject {
     }
 
     private func updateCounts() {
-        Task {
+        // 품질 감사 B-B2: `Task { }` 는 호출자 (@MainActor ViewModel) 의 격리를
+        // inherit 하므로 SQLite count() 7회가 main thread 위에서 직렬 실행됐다.
+        // Task.detached 로 background 격리 보장 + struct repository 캡처.
+        Task.detached(priority: .userInitiated) { [clipRepository] in
             let total = (try? clipRepository.count()) ?? 0
             let textCount = (try? clipRepository.count(contentType: .text)) ?? 0
             let codeCount = (try? clipRepository.count(contentType: .code)) ?? 0
@@ -1135,7 +1150,8 @@ final class MainPanelViewModel: ObservableObject {
             let colorCount = (try? clipRepository.count(contentType: .color)) ?? 0
             let fileCount = (try? clipRepository.count(contentType: .file)) ?? 0
 
-            await MainActor.run {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
                 self.totalCount = total
                 self.filterCounts = [
                     .all: total,
