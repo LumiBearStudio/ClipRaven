@@ -34,23 +34,37 @@ public enum SyncFilters {
         }
 
         if let raw = text?.trimmingCharacters(in: .whitespacesAndNewlines), !raw.isEmpty {
-            // DoS guard: regex scans and digit-filters are O(n). A multi-MB
-            // hex dump or CSV paste should not freeze the clipboard monitor.
-            // 16 KiB is larger than any legitimate credential payload yet
-            // small enough that `NSRegularExpression` costs are bounded.
-            guard raw.count <= scanLengthCap else {
-                return false
+            // 보안 감사 A-H2 (fail-safe): 큰 텍스트도 청크 단위로 스캔.
+            // 이전엔 `raw.count > scanLengthCap` 이면 `return false` (sync 허용) —
+            // .env 파일 통째로 (1MB) 복사 시 AWS 키 포함이라도 무차별 sync 되던 문제.
+            // 이제 16KiB 슬라이딩 윈도우로 잘라 각 청크에 regex 적용. 한 청크라도
+            // 매치되면 차단. 청크 경계 우회 방지 위해 1KiB overlap.
+            if raw.count <= scanLengthCap {
+                if matchesSyncExclusionPattern(raw) { return true }
+                if looksLikeCreditCard(raw) { return true }
+            } else {
+                // 슬라이딩 윈도우 — 큰 텍스트도 끝까지 검사
+                let chunkSize = scanLengthCap
+                let overlap = 1024
+                var start = raw.startIndex
+                while start < raw.endIndex {
+                    let end = raw.index(start, offsetBy: chunkSize, limitedBy: raw.endIndex) ?? raw.endIndex
+                    let chunk = String(raw[start..<end])
+                    if matchesSyncExclusionPattern(chunk) { return true }
+                    if looksLikeCreditCard(chunk) { return true }
+                    if end == raw.endIndex { break }
+                    // 다음 청크는 overlap 만큼 뒤로 — 경계에 걸친 패턴 잡기 위해
+                    let advance = chunkSize - overlap
+                    start = raw.index(start, offsetBy: advance, limitedBy: raw.endIndex) ?? raw.endIndex
+                }
             }
-            if matchesSyncExclusionPattern(raw) { return true }
-            if looksLikeCreditCard(raw) { return true }
         }
 
         return false
     }
 
-    /// Max clip text size (chars) that we bother scanning for secrets. Beyond
-    /// this we skip and let the sync go through — if the user pastes a 50MB
-    /// log file they almost certainly don't want it blocked anyway.
+    /// Max clip text chunk size (chars). 큰 텍스트는 이 크기의 슬라이딩 윈도우로 잘라
+    /// 각 청크에 regex 적용. 16 KiB 는 NSRegularExpression cost 가 bounded 한 한계.
     private static let scanLengthCap = 16 * 1024
 
     // MARK: - Regex patterns (sync-exclusion only)
