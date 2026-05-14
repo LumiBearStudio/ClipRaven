@@ -32,3 +32,6 @@ doc/
 docs/
 
 .sentryclirc
+
+# Sentry CLI installer binary (~111MB) — not source code
+sentry-wizard
