@@ -1,5 +1,13 @@
 import Foundation
 
+/// 텍스트 콘텐츠 정규화 — 일관된 해시(중복 검출) 와 sync 호환성을 위한 단일 진입점.
+///
+/// 두 가지 핵심 작업:
+/// 1. **`normalize(_:)`** — trim + 공백 정리 + NFC 정규화. macOS / iOS 양쪽이
+///    같은 해시를 계산할 수 있게 한다. cross-device dedup 의 기반.
+/// 2. **`stripInvisibleCharacters(_:)`** — BOM, zero-width joiner, NBSP 등 invisible
+///    제어 문자를 정리. UserDefaults `stripInvisibleChars` (기본 ON) 가 활성화되면
+///    캡처 시 자동 적용.
 public enum TextNormalizer {
     /// Normalize text for consistent hashing: trim, collapse whitespace, NFC normalization
     public static func normalize(_ text: String) -> String {

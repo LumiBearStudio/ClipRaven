@@ -1,6 +1,10 @@
 import Foundation
 import GRDB
 
+/// 사용자 정의 태그 — 클립을 분류하는 단위. `tags` 테이블에 1행씩 저장된다.
+///
+/// 클립 ↔ 태그 다대다 관계는 `ClipTag` 조인 테이블이 담당. 동기화 단위로
+/// `uuid` / `deviceId` / `updatedAt` 메타가 v12 부터 추가됨.
 public struct Tag: Identifiable, Codable, Equatable {
     public var id: Int64?
     public var name: String

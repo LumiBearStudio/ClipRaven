@@ -1,6 +1,8 @@
 import Foundation
 import GRDB
 
+/// 클립 ↔ 태그 다대다 조인. `clipTags` 테이블의 단일 row.
+/// `clipId` / `tagId` 외래 키 쌍이 유일성을 보장.
 public struct ClipTag: Codable, Equatable {
     public var clipId: Int64
     public var tagId: Int64

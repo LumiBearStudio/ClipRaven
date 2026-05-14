@@ -1,6 +1,19 @@
 import Foundation
 import GRDB
 
+/// 클립보드에 캡처된 단일 항목 — 텍스트/URL/코드/이미지/컬러/파일.
+///
+/// macOS 앱과 iOS 앱이 동일한 `clips` SQLite 테이블에 GRDB Codable 로 매핑되며,
+/// CKSyncEngine 을 통한 iCloud 동기화의 단위이기도 하다.
+///
+/// ### 필드 그룹
+/// - **콘텐츠**: `contentType`, `contentText`, `contentHash`, `imageHash`, `imagePath`, `thumbnail`
+/// - **OCR (Vision)**: `ocrText`, `ocrConfidence` — 이미지에서 추출한 텍스트 + 신뢰도
+/// - **소스 앱**: `sourceAppBundleId`, `sourceAppName` — 어느 앱에서 복사되었는지
+/// - **메타**: `nickname`, `isPinned`, `pinOrder`, `manualOrder`, `copyCount`, `lastCopiedAt`
+/// - **만료 / 검색**: `expiresAt`, `contentChosung` (한글 초성), `aiCategory`
+/// - **동기화 (v12+)**: `uuid` (CloudKit recordName), `deviceId`, `schemaVersion`,
+///   `ckLastSyncedAt`, `ckSystemFields`, `excludeFromSync`
 public struct Clip: Identifiable, Codable, Equatable, Hashable {
     public var id: Int64?
     public var contentType: ContentType
