@@ -1,10 +1,23 @@
 import Foundation
 
 actor CleanupService {
-    private let clipRepository = ClipRepository()
+    private let clipRepository: ClipRepository
+    private let defaults: UserDefaults
+    private let defaultMaxClipCount: Int
     private var timer: Timer?
 
     static let cleanupInterval: TimeInterval = 6 * 3600 // 6 hours
+
+    /// 프로덕션은 기본값 사용. 테스트는 격리된 ClipRepository + UserDefaults suite 주입.
+    init(
+        clipRepository: ClipRepository = ClipRepository(),
+        defaults: UserDefaults = .standard,
+        defaultMaxClipCount: Int = AppConstants.maxClipCount
+    ) {
+        self.clipRepository = clipRepository
+        self.defaults = defaults
+        self.defaultMaxClipCount = defaultMaxClipCount
+    }
 
     /// Run cleanup on app startup and schedule periodic cleanup
     func startSchedule() {
@@ -36,12 +49,12 @@ actor CleanupService {
             //    SmartRule 의 per-clip expiresAt 과 별개. 핀 고정은 제외.
             //    매 cleanup 사이클마다 평가 — 사용자가 보관 기간 줄이면 다음
             //    사이클(최대 6시간) 안에 반영.
-            let maxDays = UserDefaults.standard.integer(forKey: "maxDaysToKeep")
+            let maxDays = defaults.integer(forKey: "maxDaysToKeep")
             let aged = try clipRepository.deleteOlderThanDays(maxDays)
 
             // 4. Enforce max item count
-            let maxCount = UserDefaults.standard.integer(forKey: "maxClipCount")
-            let limit = maxCount > 0 ? maxCount : AppConstants.maxClipCount
+            let maxCount = defaults.integer(forKey: "maxClipCount")
+            let limit = maxCount > 0 ? maxCount : defaultMaxClipCount
             let trimmed = try clipRepository.deleteOldest(keepCount: limit)
 
             if softDeleted + expired + aged + trimmed > 0 {

@@ -32,13 +32,19 @@ final class SearchViewModel: ObservableObject {
     /// keyboard-layout-decoded alternate query returned >0.
     @Published var recoverySuggestion: SearchRecoverySuggestion?
 
-    private let searchRepository = SearchRepository()
+    private let searchRepository: SearchRepository
+    private let defaults: UserDefaults
     private var searchTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
 
     private static let recentSearchesKey = "recentSearches"
 
-    init() {
+    init(
+        searchRepository: SearchRepository = SearchRepository(),
+        defaults: UserDefaults = .standard
+    ) {
+        self.searchRepository = searchRepository
+        self.defaults = defaults
         loadRecentSearches()
 
         // Debounced search
@@ -49,6 +55,16 @@ final class SearchViewModel: ObservableObject {
                 self?.performSearch(query)
             }
             .store(in: &cancellables)
+    }
+
+    /// Test 가독성: 디바운스 우회한 동기 검색 진입점.
+    func performSearchForTesting(_ query: String) {
+        performSearch(query)
+    }
+
+    /// Test 가독성: 키보드 레이아웃 추천 로직만 단독 확인.
+    func findRecoverySuggestionForTesting(_ query: String) throws -> SearchRecoverySuggestion? {
+        try findRecoverySuggestion(for: query)
     }
 
     private func performSearch(_ query: String) {
@@ -145,16 +161,17 @@ final class SearchViewModel: ObservableObject {
         query = s.suggestedQuery
     }
 
-    private func saveRecentSearch(_ term: String) {
+    /// internal — 테스트에서 직접 호출 가능.
+    func saveRecentSearch(_ term: String) {
         var recent = recentSearches
         recent.removeAll { $0 == term }
         recent.insert(term, at: 0)
         if recent.count > 10 { recent = Array(recent.prefix(10)) }
         recentSearches = recent
-        UserDefaults.standard.set(recent, forKey: Self.recentSearchesKey)
+        defaults.set(recent, forKey: Self.recentSearchesKey)
     }
 
     private func loadRecentSearches() {
-        recentSearches = UserDefaults.standard.stringArray(forKey: Self.recentSearchesKey) ?? []
+        recentSearches = defaults.stringArray(forKey: Self.recentSearchesKey) ?? []
     }
 }

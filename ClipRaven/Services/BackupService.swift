@@ -24,11 +24,35 @@ import ClipRavenSync
 final class BackupService {
     static let shared = BackupService()
 
-    private let clipRepository = ClipRepository()
-    private let tagRepository = TagRepository()
-    private let smartRuleRepository = SmartRuleRepository()
+    private let clipRepository: ClipRepository
+    private let tagRepository: TagRepository
+    private let smartRuleRepository: SmartRuleRepository
+    private let dbPool: DatabasePool
+    private let imagesDirectory: URL
 
-    private init() {}
+    private init() {
+        self.clipRepository = ClipRepository()
+        self.tagRepository = TagRepository()
+        self.smartRuleRepository = SmartRuleRepository()
+        self.dbPool = AppDatabase.shared.dbPool
+        self.imagesDirectory = ImageStorageService.imagesDirectory
+    }
+
+    /// 테스트용. 격리된 dbPool + 임시 이미지 디렉토리 주입.
+    /// 프로덕션은 `.shared` 만 사용.
+    internal init(
+        clipRepository: ClipRepository,
+        tagRepository: TagRepository,
+        smartRuleRepository: SmartRuleRepository,
+        dbPool: DatabasePool,
+        imagesDirectory: URL
+    ) {
+        self.clipRepository = clipRepository
+        self.tagRepository = tagRepository
+        self.smartRuleRepository = smartRuleRepository
+        self.dbPool = dbPool
+        self.imagesDirectory = imagesDirectory
+    }
 
     /// Current backup payload version. Bump on schema changes.
     static let currentVersion = 1
@@ -87,7 +111,7 @@ final class BackupService {
         // 4) Copy referenced image files (originals) into images/
         let stagedImagesDir = stagingDir.appendingPathComponent("images", isDirectory: true)
         try fm.createDirectory(at: stagedImagesDir, withIntermediateDirectories: true)
-        let sourceImagesDir = ImageStorageService.imagesDirectory
+        let sourceImagesDir = imagesDirectory
 
         for clip in clips where clip.contentType == .image {
             guard let rel = clip.imagePath else { continue }
@@ -210,7 +234,7 @@ final class BackupService {
         var tagsSkipped = 0
         var rulesImported = 0
 
-        try AppDatabase.shared.dbPool.write { db in
+        try dbPool.write { db in
             if strategy == .overwrite {
                 try db.execute(sql: "DELETE FROM clipTags")
                 try db.execute(sql: "DELETE FROM clips")
@@ -286,7 +310,7 @@ final class BackupService {
         // 4) Restore original image files (if backup contained images/)
         var imagesRestored = 0
         if let importedImagesDir {
-            let destDir = ImageStorageService.imagesDirectory
+            let destDir = imagesDirectory
             let entries = (try? fm.contentsOfDirectory(at: importedImagesDir, includingPropertiesForKeys: nil)) ?? []
             for entry in entries {
                 let dstURL = destDir.appendingPathComponent(entry.lastPathComponent)
