@@ -132,6 +132,10 @@ final class BackupService {
                 // Move into place — ensure destination is clear
                 if fm.fileExists(atPath: url.path) { try fm.removeItem(at: url) }
                 try fm.copyItem(at: zippedURL, to: url)
+                // 보안 감사 A-M-2: 백업 ZIP 에 사용자 데이터 평문 포함. Desktop / iCloud
+                // Drive / Time Machine 등 자동 동기화 통로로 평문 노출 위험. 권한을
+                // 사용자 본인만 읽기/쓰기 (0600) 로 제한.
+                try? fm.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
             } catch {
                 innerError = error
             }
