@@ -3,6 +3,30 @@ import CloudKit
 import GRDB
 import ClipRavenSync
 
+/// 클립의 GRDB 영속 계층. 768줄짜리 단일 struct.
+///
+/// 단일 파일로 유지하는 이유: GRDB Codable + `dbPool` 인스턴스가 하나의 응집된
+/// 상태이고, 메서드들은 같은 sort/filter/observation 컨벤션을 공유한다.
+/// extension 분할은 internal helper (예: `displayOrder`) 가시성 문제를 유발한다.
+///
+/// ### 섹션 가이드 (MARK 로 jump)
+/// - **Sort order**: `displayOrder` 컬럼 정의
+/// - **Create**: `save(_:)` (inout, returns inserted Clip)
+/// - **Read**: `fetchAll`, `fetchOne`, `fetchById`, `fetchByHash`, `fetchByImageHash`, `fetchByUUID`,
+///   `observeAll`, `fetchAllForExport`, `fetchAllClipTagsForExport`, `fetchUniqueSourceApps`
+/// - **Update**: `update`, `incrementCopyCount`, `togglePin`, `setNickname`, `setExpiresAt`
+/// - **Custom shortcuts (v10)**: `setHotkey`, `clearHotkey`, clip-level hotkey CRUD
+/// - **Delete (soft)**: `softDelete`, `softDeleteAll`
+/// - **Cleanup**: `deleteSoftDeleted`, `deleteExpired`, `deleteOlderThanDays`, `deleteOldest`
+/// - **Source App**: `fetchSourceApps`
+/// - **Observation**: `observeAll(contentType:tagIds:...)` ValueObservation
+/// - **Drag & Drop**: `setManualOrder`, `reorder`
+/// - **AI Category (v11)**: `setAICategory`
+/// - **OG Metadata**: `setOGMetadata`
+/// - **Private Helpers**: 쿼리 빌더 / 정렬 보조
+/// - **Cross-device dedup**: `fetchRecentSyncedClip`, `fetchRecentSyncedImageClip`,
+///   `wasJustSyncedFromOtherDevice`, `wasJustCapturedImageFromOtherDevice`
+/// - **Sync**: ClipRavenSync.ClipSyncRepository 로 delegate
 struct ClipRepository {
     private let dbPool: DatabasePool
 

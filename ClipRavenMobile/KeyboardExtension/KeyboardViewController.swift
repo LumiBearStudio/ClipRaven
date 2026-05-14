@@ -25,6 +25,26 @@ import ClipRavenSync
 /// - `RequestsOpenAccess = true` so `UIPasteboard` and the App Group
 ///   SQLite are accessible. User must enable "Allow Full Access" in
 ///   Settings → General → Keyboards → ClipRaven → Allow Full Access.
+///
+/// ## 1769줄 단일 클래스 — 분할하지 않은 이유
+///
+/// 키보드 익스텐션은 자원이 매우 제한적 (메모리 30MB, 빠른 활성화 요구) 이라
+/// 동적 dispatch / protocol indirection 을 최소화해야 한다. UIKit 컨트롤러는
+/// `UIInputViewController` 의 lifecycle 메서드 (`viewDidLoad`, `textDidChange` 등)
+/// 와 UI 상태를 같은 클래스에 두는 게 표준 패턴이다.
+///
+/// ### 섹션 가이드 (MARK 로 jump)
+/// - **Layout constants** / **State** — 상수와 상태 변수
+/// - **UI** / **Lifecycle** / **Colors** / **UI Setup** — UIView 계층 구성
+/// - **Bottom Key Row** — 키보드 행 (지구본 / 검색 / 새로고침 / 큐 / 키보드 전환)
+/// - **Key actions** — 각 키 버튼 핸들러
+/// - **Data** — SQLite 로드 + Clip 변환
+/// - **Search** — FTS / 초성 검색
+/// - **Queue** — 다중 paste 큐 모드
+/// - **Filter & Tag Menu** — 콘텐츠 타입 + 태그 필터 메뉴
+/// - **Pasteboard auto-capture** — 키보드 활성화 중 클립보드 자동 캡처
+/// - **Insert** — 카드 탭 → `insertText` 호출
+/// - **Toast** — 상단 알림 토스트
 class KeyboardViewController: UIInputViewController {
 
     private let log = Logger(subsystem: "com.lumibear.ClipRavenMobile.kb", category: "KbExt")

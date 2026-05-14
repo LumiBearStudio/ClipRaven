@@ -252,6 +252,27 @@ final class DraggableClickView: NSView, NSDraggingSource {
 
 // MARK: - ClipCardView
 
+/// 메인 패널 그리드의 카드 한 칸 — macOS 앱의 핵심 시각 단위.
+///
+/// 869줄 단일 파일로 유지하는 이유: SwiftUI View 의 body 가 깊은 중첩 구조이고,
+/// hover / drag / selection / multi-select / hint badge 가 모두 같은 GeometryReader
+/// 컨텍스트를 공유한다. 분할하려면 다수의 binding/closure 전달이 필요해 가독성이
+/// 오히려 떨어진다.
+///
+/// 다만 콘텐츠 타입별 body (text/code/url/image/color/file) 는 이미 별도 파일
+/// (`*CardBody.swift`) 로 분리되어 있으므로, 본 파일은 컨테이너 + 공통 chrome
+/// (header / footer / drag handle / hover overlay) 만 다룬다.
+///
+/// ### 섹션 가이드
+/// - `FastClickableView` (NSViewRepresentable) — 클릭/드래그 지연 회피
+/// - **Content Layout** — body 의 메인 VStack
+/// - **Header** — 소스 앱 아이콘 + hover 버튼 (delete/pin/tag)
+/// - **Body** — 콘텐츠 타입별 body 분기 (위임)
+/// - **Bottom Overlay** — image/URL 카드의 특수 푸터
+/// - **Standard Footer** — text/code/color/file 의 일반 푸터
+/// - **Bottom-Right Badge** — copy count + 태그 dot
+/// - **Drag Items Factory** — NSItemProvider 생성 (FilePromise 포함)
+/// - **Content Type Theme Colors** — 콘텐츠 타입별 accent
 struct ClipCardView: View {
     let clip: Clip
     let isSelected: Bool
