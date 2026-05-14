@@ -28,6 +28,24 @@ import ClipRavenSync
 //     ClipRavenMobileApp 의 fullScreenCover 가 자동 dismiss
 //   - 비-크리티컬 페이지(Features / Try It)에선 "건너뛰기" 가능
 //
+/// iOS 앱의 7페이지 온보딩 플로우 (TabView paging).
+///
+/// 754줄 단일 View 로 유지하는 이유: 7개 페이지가 모두 공통 @AppStorage 상태
+/// (sync/haptic/notification toggle) 와 같은 `currentPage` 상태를 변경한다.
+/// 페이지를 별도 struct 로 추출하려면 다수의 Binding 을 전달해야 해서 가독성이
+/// 오히려 떨어진다.
+///
+/// ### 페이지 가이드 (MARK 로 jump)
+/// - **Page 1: Welcome** — 환영 + 기본 가치
+/// - **Page 2: Features showcase** — 핵심 기능 시각화
+/// - **Page 3: Sync** — iCloud 동기화 토글
+/// - **Page 4: Keyboard Extension Setup** — 키보드 추가 + Full Access 가이드
+/// - **Page 5: Try It Now** — 라이브 mock 데모
+/// - **Page 6: Privacy & Pricing** — 데이터 처리 + 구독제 반대 정체성
+/// - **Page 7: Personalize** — 햅틱/알림 등 사용자 설정
+///
+/// 완료 시 `onboarding.completed = true` AppStorage 설정 → 앱 메인 fullScreenCover 가
+/// 자동 dismiss.
 struct OnboardingView: View {
 
     // MARK: - Persisted state

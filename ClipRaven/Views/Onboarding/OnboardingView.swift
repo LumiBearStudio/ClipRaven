@@ -5,6 +5,13 @@ import ClipRavenSync
 
 // MARK: - OnboardingWindowController
 
+/// macOS 첫 실행 온보딩 윈도우 — WebKit HTML 기반.
+///
+/// 1493줄 단일 파일로 유지하는 이유: 본문 대부분이 인라인 HTML/CSS/JS 문자열
+/// 상수 (라인 ~192 이하). Swift 코드는 윈도우 컨트롤러 + WKScriptMessageHandler +
+/// 접근성 권한 폴링뿐. HTML 분리는 별도 .html 리소스로 가능하지만 다국어 처리와
+/// hotkey 동적 삽입 때문에 인라인이 단순함.
+///
 /// First-launch guided setup.
 ///
 /// Critical invariants:
