@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		006BDEE6B720B4A97D652D66 /* SettingsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 794288D38AACA31289F4E937 /* SettingsWindow.swift */; };
+		STCMMN0000000000111A /* SettingsCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = STCMMN0000000000001A /* SettingsCommon.swift */; };
+		STGEN00000000000111A /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STGEN00000000000001A /* GeneralSettingsView.swift */; };
+		STCAP00000000000111A /* CaptureSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STCAP00000000000001A /* CaptureSettingsView.swift */; };
+		STSHC00000000000111A /* ShortcutsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STSHC00000000000001A /* ShortcutsSettingsView.swift */; };
+		STAPP00000000000111A /* AppearanceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STAPP00000000000001A /* AppearanceSettingsView.swift */; };
+		STPRV00000000000111A /* PrivacySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STPRV00000000000001A /* PrivacySettingsView.swift */; };
+		STAIA00000000000111A /* AIAutomationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STAIA00000000000001A /* AIAutomationSettingsView.swift */; };
+		STABO00000000000111A /* AboutSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = STABO00000000000001A /* AboutSettingsView.swift */; };
 		04626C9F6E60AF2FA4106D3A /* PreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE8CF830D91F6271B38E7AF0 /* PreviewViewModel.swift */; };
 		06885BF6A17FC0EAA245F6D2 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE25145F0143DA8DD665E2B7 /* ThemeManager.swift */; };
 		0A682A5C72C24A8C9B01F20A /* DropIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96BF9C2D0561430DC28DAD0 /* DropIndicatorView.swift */; };
@@ -227,6 +235,14 @@
 		73A52C0B8C7A769285627A56 /* HorizontalScrollInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalScrollInterceptor.swift; sourceTree = "<group>"; };
 		7623C7B4111FDDE1F578FD4F /* RuleActionTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RuleActionTests.swift; sourceTree = "<group>"; };
 		794288D38AACA31289F4E937 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
+		STCMMN0000000000001A /* SettingsCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCommon.swift; sourceTree = "<group>"; };
+		STGEN00000000000001A /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
+		STCAP00000000000001A /* CaptureSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSettingsView.swift; sourceTree = "<group>"; };
+		STSHC00000000000001A /* ShortcutsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutsSettingsView.swift; sourceTree = "<group>"; };
+		STAPP00000000000001A /* AppearanceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsView.swift; sourceTree = "<group>"; };
+		STPRV00000000000001A /* PrivacySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsView.swift; sourceTree = "<group>"; };
+		STAIA00000000000001A /* AIAutomationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAutomationSettingsView.swift; sourceTree = "<group>"; };
+		STABO00000000000001A /* AboutSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSettingsView.swift; sourceTree = "<group>"; };
 		79BB4603CA4B00575D865E9A /* SmartRuleEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartRuleEngine.swift; sourceTree = "<group>"; };
 		7BD6F93853A2F7E115178816 /* ClipProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipProcessor.swift; sourceTree = "<group>"; };
 		7C17CEE80C266ABC8B3A2760 /* SmartRuleEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SmartRuleEngineTests.swift; sourceTree = "<group>"; };
@@ -819,8 +835,32 @@
 				794288D38AACA31289F4E937 /* SettingsWindow.swift */,
 				BKUP000200000000000001BB /* BackupSettingsView.swift */,
 				37CCC77FDA7F2BADEDEF3C9C /* IcloudSyncSettingsView.swift */,
+				STHELPRS00000000000001A /* Helpers */,
+				STTABS0000000000000001A /* Tabs */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		STHELPRS00000000000001A /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				STCMMN0000000000001A /* SettingsCommon.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		STTABS0000000000000001A /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				STGEN00000000000001A /* GeneralSettingsView.swift */,
+				STCAP00000000000001A /* CaptureSettingsView.swift */,
+				STSHC00000000000001A /* ShortcutsSettingsView.swift */,
+				STAPP00000000000001A /* AppearanceSettingsView.swift */,
+				STPRV00000000000001A /* PrivacySettingsView.swift */,
+				STAIA00000000000001A /* AIAutomationSettingsView.swift */,
+				STABO00000000000001A /* AboutSettingsView.swift */,
+			);
+			path = Tabs;
 			sourceTree = "<group>";
 		};
 		KLR0000500000000000001AA /* KeyboardLayoutRecovery */ = {
@@ -1053,6 +1093,14 @@
 				A1B2C3D4E5F60001AAAABBBB /* PendingImageConfirmation.swift in Sources */,
 				A1B2C3D4E5F60003AAAABBBB /* ImageConfirmPanel.swift in Sources */,
 				006BDEE6B720B4A97D652D66 /* SettingsWindow.swift in Sources */,
+				STCMMN0000000000111A /* SettingsCommon.swift in Sources */,
+				STGEN00000000000111A /* GeneralSettingsView.swift in Sources */,
+				STCAP00000000000111A /* CaptureSettingsView.swift in Sources */,
+				STSHC00000000000111A /* ShortcutsSettingsView.swift in Sources */,
+				STAPP00000000000111A /* AppearanceSettingsView.swift in Sources */,
+				STPRV00000000000111A /* PrivacySettingsView.swift in Sources */,
+				STAIA00000000000111A /* AIAutomationSettingsView.swift in Sources */,
+				STABO00000000000111A /* AboutSettingsView.swift in Sources */,
 				BKUP000100000000000001AA /* BackupService.swift in Sources */,
 				BKUP000200000000000001AA /* BackupSettingsView.swift in Sources */,
 				FB105E5B339FEC0CF88CB3B2 /* IcloudSyncSettingsView.swift in Sources */,
