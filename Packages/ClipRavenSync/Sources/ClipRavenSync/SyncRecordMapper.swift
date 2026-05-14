@@ -198,21 +198,48 @@ public enum SyncRecordMapper {
                 // 파일 자체 없음(thumbnail-only 클립)이면 두 플래그 모두 미설정.
             }
         }
-        record[Key.ocrText] = clip.ocrText
+        // 보안 감사 A-M-5: ocrText / nickname / tagsText 는 SyncFilters 가 검사하지
+        // 않는 free-form 사용자 입력. 영수증 사진 OCR 결과에 카드번호/주민번호가
+        // 들어가거나, 사용자가 nickname 에 비밀번호를 적어두는 경우 sync 로 누출 가능.
+        // 각 필드에 패턴 매치되면 redact (clip 자체는 로컬 유지, sync 시 해당 필드만 nil).
+        record[Key.ocrText] = Self.redactedIfSensitive(clip.ocrText, label: "ocrText", uuid: uuid)
         record[Key.ocrConfidence] = clip.ocrConfidence
         record[Key.sourceAppBundleId] = clip.sourceAppBundleId
         record[Key.sourceAppName] = clip.sourceAppName
         record[Key.sourceUrl] = clip.sourceUrl
         record[Key.ogTitle] = clip.ogTitle
         record[Key.ogFetchedAt] = clip.ogFetchedAt
-        record[Key.nickname] = clip.nickname
+        record[Key.nickname] = Self.redactedIfSensitive(clip.nickname, label: "nickname", uuid: uuid)
         record[Key.pinOrder] = clip.pinOrder.map { Int64($0) }
         record[Key.manualOrder] = clip.manualOrder.map { Int64($0) }
         record[Key.expiresAt] = clip.expiresAt
         record[Key.aiCategory] = clip.aiCategory
         record[Key.aiCategoryGeneratedAt] = clip.aiCategoryGeneratedAt
+        // tagsText 도 동일하게 검사 (위 record[Key.tagsText] 라인 187 에서 set 한 값을 덮어쓰기).
+        // tagsText 는 non-optional String 이므로 empty 는 nil 로 처리.
+        let tagsOptional: String? = clip.tagsText.isEmpty ? nil : clip.tagsText
+        record[Key.tagsText] = Self.redactedIfSensitive(tagsOptional, label: "tagsText", uuid: uuid)
 
         return record
+    }
+
+    /// 텍스트가 `SyncFilters.shouldExclude` 가 잡는 sensitive 패턴이면 nil 반환.
+    /// 그 외엔 입력 그대로 반환. CloudKit 으로 업로드되는 free-form 필드 (ocrText,
+    /// nickname, tagsText) 가 누수 통로가 되지 않도록 마지막 방어선.
+    private static func redactedIfSensitive(_ text: String?, label: String, uuid: String) -> String? {
+        guard let text, !text.isEmpty else { return text }
+        // SyncFilters 가 잡으면 (true) → redact (nil)
+        // 단 SyncFilters.shouldExclude 는 sourceAppBundleId / userAppBlacklist 도 받지만
+        // 여기선 텍스트 자체 패턴 매치만 보면 됨.
+        if SyncFilters.shouldExclude(
+            text: text,
+            sourceAppBundleId: nil,
+            userAppBlacklist: []
+        ) {
+            log.info("redacted \(label, privacy: .public) on sync (uuid=\(uuid, privacy: .public))")
+            return nil
+        }
+        return text
     }
 
     // MARK: - Decode (CKRecord → Clip)
