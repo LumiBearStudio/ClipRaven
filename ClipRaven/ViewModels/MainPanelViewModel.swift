@@ -181,9 +181,11 @@ final class MainPanelViewModel: ObservableObject {
     @Published var dropTargetIndex: Int? = nil
     @Published var isDragging: Bool = false
 
-    private let clipRepository = ClipRepository()
-    private let tagRepository = TagRepository()
-    private let searchRepository = SearchRepository()
+    // 품질 감사 B-R1: prod 단일 인스턴스 강결합 회피 — 테스트가 격리된
+    // dbPool 을 주입할 수 있도록 init 매개변수로 노출. 기본값은 종전과 같음.
+    private let clipRepository: ClipRepository
+    private let tagRepository: TagRepository
+    private let searchRepository: SearchRepository
     private var cancellable: DatabaseCancellable?
     private var searchTask: Task<Void, Never>?
     private var searchCancellable: AnyCancellable?
@@ -191,6 +193,16 @@ final class MainPanelViewModel: ObservableObject {
     private var quickPasteObserver: Any?
     private var plainTextPasteObserver: Any?
     private var optionKeyObserver: Any?
+
+    init(
+        clipRepository: ClipRepository = ClipRepository(),
+        tagRepository: TagRepository = TagRepository(),
+        searchRepository: SearchRepository = SearchRepository()
+    ) {
+        self.clipRepository = clipRepository
+        self.tagRepository = tagRepository
+        self.searchRepository = searchRepository
+    }
 
     func startObserving() {
         restartObservation()
