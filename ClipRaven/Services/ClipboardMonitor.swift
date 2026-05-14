@@ -137,37 +137,68 @@ final class ClipboardMonitor: ObservableObject {
         excludedApps = apps
     }
 
+    /// 클립보드 변경 검사 entry point. 품질 감사 B-CS5 권고에 따라 4단계로 분해:
+    /// 1. changeCount + pause 확인
+    /// 2. `shouldSkip(types:sourceApp:)` — early-skip 분기 (self / UC / concealed /
+    ///    excluded app / sensitive)
+    /// 3. `dedupOrAdvance(data:hash:sourceApp:)` — content hash dedup + selective
+    ///    모드 더블카피 확인
+    /// 4. `route(data:sourceApp:hash:)` — selective 모드 큐잉 또는 normal 처리
     private func checkClipboard() {
         let currentCount = pasteboard.changeCount
         guard currentCount != lastChangeCount else { return }
-
         let prevCount = lastChangeCount
         lastChangeCount = currentCount
-
         guard !isPaused else { return }
 
-        // Log all pasteboard types for debugging
         let types = pasteboard.types?.map { $0.rawValue } ?? []
         ClipRavenLog.write(.clipboard, "[ClipMon] CHANGE \(prevCount)→\(currentCount) types=[\(types.joined(separator: ", "))]")
 
-        // Skip ClipRaven's own pastes (self-detection)
-        if pasteboard.types?.contains(ClipboardMarker.selfType) == true {
-            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: self-detection marker")
+        let sourceApp = SourceAppTracker.currentApp()
+        if shouldSkip(pasteboardTypes: pasteboard.types ?? [], sourceApp: sourceApp) {
             return
         }
 
-        // Skip Universal Clipboard items from another device — the originating
-        // device already captured this clip and will upload it to CloudKit.
-        // We'll receive it via SyncEngine, avoiding the duplicate.
-        // Also notify ClipProcessor so Stage-2 (actual image data arriving after
-        // paste, without the UC marker) can be suppressed as well.
-        if pasteboard.types?.contains(.init(rawValue: "com.apple.is-remote-clipboard")) == true {
+        let clipboardData = readPasteboardData()
+        let textPreview = String(clipboardData.text?.prefix(80) ?? "nil")
+        let hasImage = clipboardData.imageData != nil
+        ClipRavenLog.write(.clipboard, "[ClipMon] READ text=\"\(textPreview)\" hasImage=\(hasImage) source=\(sourceApp.name ?? "?")")
+
+        let contentHash = computeContentHash(clipboardData)
+        guard handleContentDedup(data: clipboardData, hash: contentHash) else {
+            return
+        }
+
+        guard clipboardData.text != nil || clipboardData.imageData != nil || clipboardData.fileURLs != nil else {
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: empty clipboard")
+            return
+        }
+
+        route(data: clipboardData, sourceApp: sourceApp, hash: contentHash)
+    }
+
+    // MARK: - checkClipboard helpers (B-CS5 분해)
+
+    /// Pasteboard type / source app / sensitive content 검사로 early-skip 결정.
+    /// 한 분기라도 skip 매치되면 true 반환 (caller 는 return).
+    private func shouldSkip(
+        pasteboardTypes: [NSPasteboard.PasteboardType],
+        sourceApp: SourceAppInfo
+    ) -> Bool {
+        // 1. Self-detection marker (우리 paste 의 echo)
+        if pasteboardTypes.contains(ClipboardMarker.selfType) {
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: self-detection marker")
+            return true
+        }
+
+        // 2. Universal Clipboard — 다른 device 에서 캡처해 sync 로 어차피 받음
+        if pasteboardTypes.contains(.init(rawValue: "com.apple.is-remote-clipboard")) {
             ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: Universal Clipboard remote item")
             Task { await clipProcessor.notifyUniversalClipboardSkipped() }
-            return
+            return true
         }
 
-        // Skip concealed/transient/auto-generated types
+        // 3. Concealed / transient / auto-generated 타입
         let skipTypes: [NSPasteboard.PasteboardType] = [
             .init(rawValue: "org.nspasteboard.ConcealedType"),
             .init(rawValue: "org.nspasteboard.TransientType"),
@@ -176,27 +207,24 @@ final class ClipboardMonitor: ObservableObject {
             .init(rawValue: "com.agilebits.onepassword"),
             .init(rawValue: "com.typeit4me.clipping"),
         ]
-        if let pbTypes = pasteboard.types, pbTypes.contains(where: { skipTypes.contains($0) }) {
+        if pasteboardTypes.contains(where: { skipTypes.contains($0) }) {
             ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: transient/concealed type")
-            return
+            return true
         }
 
-        // Check excluded apps
-        let sourceApp = SourceAppTracker.currentApp()
+        // 4. 사용자 제외 앱
         if let bundleId = sourceApp.bundleId, excludedApps.contains(bundleId) {
             ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: excluded app \(bundleId)")
-            return
+            return true
         }
 
-        // Check sensitive data (ConcealedType already handled above via skipTypes)
-        // 보안 감사 A-C2: default 를 명시적 true 로 — `bool(forKey:)` 의 default
-        // false 는 신규 사용자가 토글을 본 적 없으므로 보호 OFF 상태가 되는 위험.
+        // 5. 민감 데이터 (보안 감사 A-C2 default true)
         let blockSensitiveOn = UserDefaults.standard.object(forKey: "blockSensitive") as? Bool ?? true
         ClipRavenLog.write(.clipboard, "[ClipMon] sensitive check: blockSensitive=\(blockSensitiveOn) source=\(sourceApp.bundleId ?? "?") name=\(sourceApp.name ?? "?")")
         if blockSensitiveOn {
             if SensitiveDataFilter.isSensitive(pasteboard: pasteboard) {
                 ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: sensitive data detected (pasteboard ConcealedType)")
-                return
+                return true
             }
             if let text = pasteboard.string(forType: .string) {
                 let is2FA = SensitiveDataFilter.isLikelyTwoFactorCode(text)
@@ -205,102 +233,91 @@ final class ClipboardMonitor: ObservableObject {
                 ClipRavenLog.write(.clipboard, "[ClipMon] text=\"\(text.prefix(50))\" is2FACandidate=\(is2FA) hasPhrase=\(hasPhrase) filter2FAOn=\(filter2FAOn)")
                 if SensitiveDataFilter.isSensitiveWithContext(text, sourceApp: sourceApp) {
                     ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: sensitive/2FA pattern detected (source=\(sourceApp.bundleId ?? "?"))")
-                    return
+                    return true
                 }
             }
         }
 
-        // Read pasteboard data on main thread
-        let clipboardData = readPasteboardData()
+        return false
+    }
 
-        let textPreview = String(clipboardData.text?.prefix(80) ?? "nil")
-        let hasImage = clipboardData.imageData != nil
-        ClipRavenLog.write(.clipboard, "[ClipMon] READ text=\"\(textPreview)\" hasImage=\(hasImage) source=\(sourceApp.name ?? "?")")
-
-        // Content-based dedup
-        let contentHash = computeContentHash(clipboardData)
-        if contentHash == lastContentHash {
-            // Selective mode: same content within window = double-copy confirmation
-            if selectiveModeEnabled, let pending = pendingSelectiveText, pending.hash == contentHash {
+    /// Content hash 기반 dedup. 같은 hash 면 false 반환 (caller skip).
+    /// 단 selective mode 의 double-copy 확정 케이스는 confirmPendingText 후 false.
+    /// 새 hash 면 lastContentHash 갱신 후 true.
+    private func handleContentDedup(data: ClipboardData, hash: String) -> Bool {
+        if hash == lastContentHash {
+            if selectiveModeEnabled, let pending = pendingSelectiveText, pending.hash == hash {
                 let elapsed = Date().timeIntervalSince(pending.capturedAt) * 1000
                 if elapsed >= 80 && elapsed <= doubleCopyWindowMs && !doubleCopyConfirmLock {
                     ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: double-copy confirmed elapsed=\(Int(elapsed))ms")
                     confirmPendingText(pending)
-                    return
+                    return false
                 }
             }
-            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: same content hash \(contentHash.prefix(16))")
-            return
+            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: same content hash \(hash.prefix(16))")
+            return false
         }
-        ClipRavenLog.write(.clipboard, "[ClipMon] NEW hash=\(contentHash.prefix(16)) prev=\(lastContentHash.prefix(16))")
-        lastContentHash = contentHash
+        ClipRavenLog.write(.clipboard, "[ClipMon] NEW hash=\(hash.prefix(16)) prev=\(lastContentHash.prefix(16))")
+        lastContentHash = hash
+        return true
+    }
 
-        // Guard against empty clipboard
-        guard clipboardData.text != nil || clipboardData.imageData != nil || clipboardData.fileURLs != nil else {
-            ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: empty clipboard")
-            return
-        }
-
-        // Selective mode routing
+    /// 통과한 데이터를 selective mode 큐 또는 normal processing 으로 분기.
+    private func route(data: ClipboardData, sourceApp: SourceAppInfo, hash: String) {
         if selectiveModeEnabled {
-            if clipboardData.text != nil || clipboardData.fileURLs != nil {
-                // Queue for double-copy confirmation (in memory only)
+            if data.text != nil || data.fileURLs != nil {
                 pendingSelectiveText = PendingTextCapture(
-                    data: clipboardData,
+                    data: data,
                     sourceApp: sourceApp,
-                    hash: contentHash,
+                    hash: hash,
                     capturedAt: Date()
                 )
                 ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: text queued, waiting for double-copy")
                 return
-            } else if let imageData = clipboardData.imageData {
-                // Queue image for popup confirmation
-                let captureId = UUID().uuidString
-                pendingImageCaptures[captureId] = PendingImageCapture(
-                    imageData: imageData,
-                    sourceApp: sourceApp
-                )
-                ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: image queued id=\(captureId)")
-                Task.detached(priority: .userInitiated) { [weak self] in
-                    guard let self else { return }
-                    let thumbnail = ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
-                    let pending = PendingImageConfirmation(
-                        id: captureId,
-                        thumbnail: thumbnail,
-                        sourceAppName: sourceApp.name,
-                        onConfirm: { [weak self] in
-                            DispatchQueue.main.async { self?.confirmPendingImage(id: captureId) }
-                        },
-                        onDiscard: { [weak self] in
-                            DispatchQueue.main.async { self?.discardPendingImage(id: captureId) }
-                        }
-                    )
-                    await MainActor.run {
-                        NotificationCenter.default.post(
-                            name: .clipRavenImageNeedsConfirmation,
-                            object: pending
-                        )
-                    }
-                }
+            } else if let imageData = data.imageData {
+                queueSelectiveImage(imageData: imageData, sourceApp: sourceApp)
                 return
             }
         }
 
-        // Normal mode: process asynchronously
+        // Normal mode
         ClipRavenLog.write(.clipboard, "[ClipMon] → PROCESSING")
-        // 품질 감사 B-R5: self?.clipProcessor 가 nil 일 때 (monitor deallocated)
-        // process 가 호출 안 되는데도 NotificationCenter.post 는 발사 → 사용자에게
-        // "캡처됨" 아이콘 flash 만 보이고 실제 DB 저장은 안 되는 가짜 피드백.
         Task.detached(priority: .userInitiated) { [weak self] in
             guard let processor = self?.clipProcessor else { return }
-            await processor.process(
-                clipboardData: clipboardData,
-                sourceApp: sourceApp
-            )
-
-            // Notify for icon flash
+            await processor.process(clipboardData: data, sourceApp: sourceApp)
             await MainActor.run {
                 NotificationCenter.default.post(name: .clipRavenNewClipCaptured, object: nil)
+            }
+        }
+    }
+
+    /// Selective mode 의 이미지 캡처 큐잉 + popup 표시 요청.
+    private func queueSelectiveImage(imageData: Data, sourceApp: SourceAppInfo) {
+        let captureId = UUID().uuidString
+        pendingImageCaptures[captureId] = PendingImageCapture(
+            imageData: imageData,
+            sourceApp: sourceApp
+        )
+        ClipRavenLog.write(.clipboard, "[ClipMon] SELECTIVE: image queued id=\(captureId)")
+        Task.detached(priority: .userInitiated) { [weak self] in
+            guard let self else { return }
+            let thumbnail = ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
+            let pending = PendingImageConfirmation(
+                id: captureId,
+                thumbnail: thumbnail,
+                sourceAppName: sourceApp.name,
+                onConfirm: { [weak self] in
+                    DispatchQueue.main.async { self?.confirmPendingImage(id: captureId) }
+                },
+                onDiscard: { [weak self] in
+                    DispatchQueue.main.async { self?.discardPendingImage(id: captureId) }
+                }
+            )
+            await MainActor.run {
+                NotificationCenter.default.post(
+                    name: .clipRavenImageNeedsConfirmation,
+                    object: pending
+                )
             }
         }
     }
