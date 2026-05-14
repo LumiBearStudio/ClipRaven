@@ -2,6 +2,8 @@ import Foundation
 import GRDB
 import ClipRavenSync
 
+/// FTS5 기반 클립 검색 + 한글 초성(chosung) 검색.
+/// 일반 검색은 `search(...)`, 초성만 입력 시(`ㅋㄹㅂㄷ`) 는 `searchChosung(...)`.
 struct SearchRepository {
     private let dbPool: DatabasePool
 

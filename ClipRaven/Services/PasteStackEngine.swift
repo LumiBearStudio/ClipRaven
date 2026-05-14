@@ -1,6 +1,8 @@
 import AppKit
 import Combine
 
+/// "Paste Stack" 기능 — 여러 클립을 큐에 쌓고 단축키로 순차 paste.
+/// 큐는 `PasteStackRepository` 로 SQLite 영속화되어 앱 재시작 후에도 복원.
 @MainActor
 final class PasteStackEngine: ObservableObject {
     @Published var items: [PasteStackItem] = []

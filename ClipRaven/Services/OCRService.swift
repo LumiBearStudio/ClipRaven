@@ -2,6 +2,8 @@ import Foundation
 import Vision
 import AppKit
 
+/// Vision Framework 기반 이미지 OCR. 이미지 클립의 텍스트 + 신뢰도를 `clips.ocrText`
+/// / `ocrConfidence` 컬럼에 저장. 백그라운드 Task 에서 호출되어 메인 캡처를 막지 않음.
 actor OCRService {
     private let clipRepository = ClipRepository()
 

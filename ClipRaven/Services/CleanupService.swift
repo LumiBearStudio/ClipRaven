@@ -1,5 +1,16 @@
 import Foundation
 
+/// 정기 cleanup 액터 — 6시간마다 실행되어 4가지 정리 전략을 적용한다.
+///
+/// ### 4가지 전략
+/// 1. **소프트 삭제** 확정된 클립 (`isDeleted = 1` 이고 sync 확인됨) hard-delete.
+/// 2. **만료** 클립 (`expiresAt < now`) hard-delete — SmartRule TTL.
+/// 3. **보관 기간** 초과 (`lastCopiedAt < now - maxDaysToKeep`) hard-delete.
+///    핀 고정 (`isPinned`) 은 제외 (영구 보관).
+/// 4. **개수 제한** 초과 — `maxClipCount` 를 넘는 오래된 클립부터 삭제.
+///
+/// 의존성: `ClipRepository` (기본 주입) + `UserDefaults` (테스트 시 격리 가능).
+/// `CleanupServiceTests` 가 격리된 환경에서 각 전략을 검증한다.
 actor CleanupService {
     private let clipRepository: ClipRepository
     private let defaults: UserDefaults
