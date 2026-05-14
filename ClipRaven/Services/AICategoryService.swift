@@ -47,6 +47,12 @@ actor AICategoryService {
     private var session: LanguageModelSession?
     private let clipRepository = ClipRepository()
 
+    /// 현재 LLM 분류 진행 중인 clip ID 집합. 같은 clip 에 대한 중복 요청
+    /// 시 두 번째는 skip — 빠른 연속 캡처 시 LLM 요청 폭증 방지 (품질 감사 B-R6).
+    /// `actor` 격리상 단일 entry 만 진행되지만 reentrancy 로 인한 동시 LLM
+    /// 호출 가능성 감소.
+    private var inFlight: Set<Int64> = []
+
     @Generable
     struct CategoryOutput {
         @Guide(description: "Classify the text into exactly one of: receipt, meeting, code, phone, email, address, link, other")
@@ -77,6 +83,14 @@ actor AICategoryService {
 
     func categorize(clipId: Int64, text: String) async {
         ClipRavenLog.write(.ai, "categorize called clipId=\(clipId) textLen=\(text.count)")
+
+        // B-R6: 동일 clip 에 대한 중복 요청 dedup
+        guard !inFlight.contains(clipId) else {
+            ClipRavenLog.write(.ai, "skip: already in flight clipId=\(clipId)")
+            return
+        }
+        inFlight.insert(clipId)
+        defer { inFlight.remove(clipId) }
 
         // 기본값 ON — @AppStorage 기본값이 UserDefaults에 쓰여지지 않는 문제 회피
         let enabled = UserDefaults.standard.object(forKey: "aiCategorizationEnabled") as? Bool ?? true
