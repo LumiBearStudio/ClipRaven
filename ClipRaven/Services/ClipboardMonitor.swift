@@ -288,8 +288,12 @@ final class ClipboardMonitor: ObservableObject {
 
         // Normal mode: process asynchronously
         ClipRavenLog.write(.clipboard, "[ClipMon] → PROCESSING")
+        // 품질 감사 B-R5: self?.clipProcessor 가 nil 일 때 (monitor deallocated)
+        // process 가 호출 안 되는데도 NotificationCenter.post 는 발사 → 사용자에게
+        // "캡처됨" 아이콘 flash 만 보이고 실제 DB 저장은 안 되는 가짜 피드백.
         Task.detached(priority: .userInitiated) { [weak self] in
-            await self?.clipProcessor.process(
+            guard let processor = self?.clipProcessor else { return }
+            await processor.process(
                 clipboardData: clipboardData,
                 sourceApp: sourceApp
             )
@@ -368,8 +372,10 @@ final class ClipboardMonitor: ObservableObject {
         doubleCopyConfirmLock = true
         startConfirmLockTimer()
 
+        // B-R5: processor 가 nil 이면 notification 도 발사 안 함 (가짜 피드백 방지).
         Task.detached(priority: .userInitiated) { [weak self] in
-            await self?.clipProcessor.process(
+            guard let processor = self?.clipProcessor else { return }
+            await processor.process(
                 clipboardData: pending.data,
                 sourceApp: pending.sourceApp
             )
@@ -384,7 +390,8 @@ final class ClipboardMonitor: ObservableObject {
         let data = ClipboardData(text: nil, imageData: pending.imageData, fileURLs: nil)
 
         Task.detached(priority: .userInitiated) { [weak self] in
-            await self?.clipProcessor.process(
+            guard let processor = self?.clipProcessor else { return }
+            await processor.process(
                 clipboardData: data,
                 sourceApp: pending.sourceApp
             )
