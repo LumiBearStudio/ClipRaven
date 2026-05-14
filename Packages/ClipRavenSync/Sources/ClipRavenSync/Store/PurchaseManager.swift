@@ -123,9 +123,28 @@ public final class PurchaseManager: ObservableObject {
                 return
             }
         }
-        let days = TrialManager.daysRemaining()
-        lockState = days > 0 ? .trial(daysLeft: days) : .expired
+        lockState = Self.computeLockState(
+            daysLeft: TrialManager.daysRemaining(),
+            hasPaidEntitlement: false
+        )
         log.info("lockState updated: \(String(describing: self.lockState), privacy: .public)")
+    }
+
+    // MARK: - Pure State Function (테스트 가능)
+
+    /// 트라이얼 잔여 일수와 paid 권한 보유 여부로 `LockState` 를 계산하는 순수 함수.
+    /// StoreKit / Keychain 같은 외부 의존성 없이 단위 테스트 가능.
+    ///
+    /// 규칙:
+    /// - `hasPaidEntitlement == true` 면 무조건 `.paid` (구매가 트라이얼보다 우선)
+    /// - `daysLeft >= 1` 이면 `.trial(daysLeft:)`
+    /// - 그 외 `.expired`
+    public nonisolated static func computeLockState(
+        daysLeft: Int,
+        hasPaidEntitlement: Bool
+    ) -> LockState {
+        if hasPaidEntitlement { return .paid }
+        return daysLeft > 0 ? .trial(daysLeft: daysLeft) : .expired
     }
 
     private func listenForTransactions() -> Task<Void, Never> {
