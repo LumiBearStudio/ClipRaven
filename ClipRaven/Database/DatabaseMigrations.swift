@@ -2,6 +2,21 @@ import GRDB
 import Foundation
 import ClipRavenSync
 
+/// macOS 앱의 GRDB 스키마 마이그레이션 (v1 ~ v13).
+///
+/// ### 버전 진화 (legacy 데이터가 있는 기존 사용자가 따라가는 경로)
+/// - **v1**: 초기 스키마 — clips / tags / clipTags / smartRules / pasteStack 테이블
+///   + FTS5 virtual table + chosung backfill
+/// - **v2~v5**: 컬럼 추가 (sourceAppName/contentChosung 백필, nickname, expiresAt 등)
+/// - **v6**: 이미지 dHash backfill — `ImageStorageService.loadImage` 의존하는 backfill
+///   (외부 자원 의존이라 idempotent 보장은 idempotent 가 아닌 best-effort. 실패한 행은 skip)
+/// - **v7~v10**: hotkey 컬럼, manualOrder, OG metadata 등
+/// - **v11_aiCategory**: AI 카테고리 컬럼 (macOS 26+ Foundation Models 의존)
+/// - **v12_syncMeta**: CloudKit 동기화 메타 컬럼 (uuid / deviceId / ckLastSyncedAt 등)
+///   `ClipRavenSync.SyncSchema.addClipSyncColumns` 로 정의 일관성 보장
+/// - **v13_syncEngineState**: CKSyncEngine state token 보관 테이블
+///
+/// iOS 는 `IosMigrations.swift` 가 단일 통합 마이그레이션으로 최종 스키마를 한 번에 적용.
 enum DatabaseMigrations {
     static func registerAll(_ migrator: inout DatabaseMigrator) {
         migrator.registerMigration("v1") { db in
