@@ -14,6 +14,20 @@ import os.log
 ///
 /// Out of scope (deferred):
 /// - `encryptedValues["contentSecret"]` (user "비밀" tag).
+/// - `encryptedValues[Key.contentText]` (보안 감사 A-M-6 / W2.4 plan):
+///   CloudKit private DB 는 Apple 이 TLS + at-rest 암호화 제공. 추가 클라이언트
+///   측 암호화 (encryptedValues — 사용자 iCloud Keychain 키 사용) 는 Apple
+///   운영자도 복호화 불가하게 만들지만, 다음 제약이 있어 **별도 schema migration
+///   사이클** 에서 진행 필요:
+///   1. CKRecord 동일 field 를 regular ↔ encryptedValues 로 동시 사용 불가.
+///      `contentText` 를 encrypted 로 옮기려면 **새 field 이름** (예: `contentText_e`)
+///      추가 + 양쪽 decode 지원 + Production schema deploy 후 legacy field deprecate.
+///   2. CloudKit Production schema 는 한 번 deploy 후 field 삭제 불가
+///      (rename 도 deploy 시점에 freeze). 사전 schema 검토 + rollback 시나리오
+///      검증이 필수.
+///   3. 사용자 iCloud Keychain 미사용 (signed-in but keychain disabled) 케이스의
+///      degradation policy 결정 필요.
+///   현재 위협 모델 (사용자 본인 iCloud private DB) 대비 가치 < 비용이라 deferred.
 /// - `tagUuids` relation resolution → field is omitted from encode today,
 ///   wired up once a tag observer lands.
 /// - `CKAsset` thumbnail / original image attachments.
