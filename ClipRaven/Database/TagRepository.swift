@@ -34,6 +34,34 @@ struct TagRepository {
         }
     }
 
+    /// 여러 클립의 태그를 한 번의 JOIN 으로 모두 fetch.
+    /// 성능 감사 D-C2: 이전엔 클립 200개 표시 시 `fetchTags(forClipId:)` 가 200번 호출
+    /// (N+1 쿼리). 단일 SQL 로 통합.
+    ///
+    /// - Returns: clipId → [Tag] 매핑. 태그가 없는 clipId 는 key 없음.
+    func fetchTagsMap(forClipIds clipIds: [Int64]) throws -> [Int64: [Tag]] {
+        guard !clipIds.isEmpty else { return [:] }
+        return try dbPool.read { db in
+            // GRDB raw SQL — clipId 와 함께 Tag 컬럼 모두 가져옴.
+            let placeholders = Array(repeating: "?", count: clipIds.count).joined(separator: ",")
+            let sql = """
+                SELECT clipTags.clipId AS _clipId, tags.*
+                FROM clipTags
+                JOIN tags ON tags.id = clipTags.tagId
+                WHERE clipTags.clipId IN (\(placeholders))
+                ORDER BY tags.name
+            """
+            var result: [Int64: [Tag]] = [:]
+            let rows = try Row.fetchAll(db, sql: sql, arguments: StatementArguments(clipIds))
+            for row in rows {
+                guard let clipId: Int64 = row["_clipId"] else { continue }
+                let tag = try Tag(row: row)
+                result[clipId, default: []].append(tag)
+            }
+            return result
+        }
+    }
+
     func assignTag(clipId: Int64, tagId: Int64) throws {
         try dbPool.write { db in
             let clipTag = ClipTag(clipId: clipId, tagId: tagId)

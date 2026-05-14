@@ -829,16 +829,11 @@ final class MainPanelViewModel: ObservableObject {
     }
 
     func loadClipTags() {
-        // 품질 감사 B-B3 + 성능 감사 D-C2: N+1 쿼리를 main thread 에서 N회 실행
-        // 했었다. 일단 background 로 offload (loop 자체는 R3.5 에서 JOIN 으로 통합 예정).
+        // 성능 감사 D-C2: N+1 쿼리를 단일 JOIN 으로 통합.
+        // 클립 200개 × `fetchTags(forClipId:)` 200회 → 1회 SQL 로.
         let clipIds = clips.compactMap(\.id)
         Task.detached(priority: .userInitiated) { [tagRepository] in
-            var map: [Int64: [Tag]] = [:]
-            for clipId in clipIds {
-                if let tags = try? tagRepository.fetchTags(forClipId: clipId), !tags.isEmpty {
-                    map[clipId] = tags
-                }
-            }
+            let map = (try? tagRepository.fetchTagsMap(forClipIds: clipIds)) ?? [:]
             await MainActor.run { [weak self] in
                 self?.clipTags = map
             }
