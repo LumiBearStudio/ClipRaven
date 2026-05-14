@@ -186,7 +186,9 @@ final class ClipboardMonitor: ObservableObject {
         }
 
         // Check sensitive data (ConcealedType already handled above via skipTypes)
-        let blockSensitiveOn = UserDefaults.standard.bool(forKey: "blockSensitive")
+        // 보안 감사 A-C2: default 를 명시적 true 로 — `bool(forKey:)` 의 default
+        // false 는 신규 사용자가 토글을 본 적 없으므로 보호 OFF 상태가 되는 위험.
+        let blockSensitiveOn = UserDefaults.standard.object(forKey: "blockSensitive") as? Bool ?? true
         ClipRavenLog.write(.clipboard, "[ClipMon] sensitive check: blockSensitive=\(blockSensitiveOn) source=\(sourceApp.bundleId ?? "?") name=\(sourceApp.name ?? "?")")
         if blockSensitiveOn {
             if SensitiveDataFilter.isSensitive(pasteboard: pasteboard) {

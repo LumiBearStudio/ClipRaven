@@ -57,8 +57,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Register default UserDefaults values
+        // 보안 감사 A-C2: 보호 관련 토글은 명시적으로 ON 으로 등록해 신규
+        // 사용자가 토글을 본 적 없어도 디폴트 보호가 적용되도록 한다.
         UserDefaults.standard.register(defaults: [
-            "blockSensitive": true,
+            "blockSensitive": true,           // 1Password / 2FA / API key 자동 차단
+            "filter2FA": true,                // 4~8자리 OTP 코드 패턴 차단
+            "stripInvisibleChars": true,      // BOM/ZWSP 등 invisible 자동 제거
+            "stripURLTracking": true,         // utm_* 등 추적 파라미터 제거
             "maxClipCount": AppConstants.maxClipCount,
             "maxDaysToKeep": 90,
             "selectiveMode": false,
