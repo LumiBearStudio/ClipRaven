@@ -227,6 +227,19 @@ public struct ClipSyncRepository {
                     }
                 }
 
+                // 보안 감사 A-M-4: server 측 record 도 SyncFilters 로 재평가.
+                // 다른 device 가 SyncFilters 가 잡지 못한 비밀번호/AWS키 등을
+                // 무심코 업로드했다면, 받는 디바이스에서 마지막 방어선으로
+                // `excludeFromSync = true` 부여 → 다음 sync cycle 에서 자동 격리.
+                if SyncFilters.shouldExclude(
+                    text: merged.contentText,
+                    sourceAppBundleId: merged.sourceAppBundleId,
+                    userAppBlacklist: []
+                ) {
+                    merged.excludeFromSync = true
+                    Self.log.info("inbound record uuid=\(uuid, privacy: .public) flagged excludeFromSync — sensitive pattern in contentText")
+                }
+
                 // Fresh row from another device. `id` is nil so GRDB
                 // assigns autoincrement on insert.
                 try merged.save(db)
@@ -252,7 +265,18 @@ public struct ClipSyncRepository {
                 merged.contentChosung = existing?.contentChosung
                 merged.customShortcutKeyCode = existing?.customShortcutKeyCode
                 merged.customShortcutModifiers = existing?.customShortcutModifiers
-                merged.excludeFromSync = existing?.excludeFromSync ?? false
+                // 기존 행의 excludeFromSync 보존 + 새 contentText 에 대해 재평가.
+                // 두 조건 중 하나라도 true 면 격리 (보안 감사 A-M-4).
+                let inheritedFlag = existing?.excludeFromSync ?? false
+                let newPatternFlag = SyncFilters.shouldExclude(
+                    text: merged.contentText,
+                    sourceAppBundleId: merged.sourceAppBundleId,
+                    userAppBlacklist: []
+                )
+                merged.excludeFromSync = inheritedFlag || newPatternFlag
+                if newPatternFlag && !inheritedFlag {
+                    Self.log.info("inbound update uuid=\(uuid, privacy: .public) flagged excludeFromSync — pattern detected in new contentText")
+                }
                 try merged.update(db)
                 updatedCount += 1
             }
