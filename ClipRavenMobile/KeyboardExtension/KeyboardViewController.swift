@@ -1204,7 +1204,25 @@ class KeyboardViewController: UIInputViewController {
 
         // 텍스트/URL/.file 등 — contentText 직접 insert
         guard let text = clip.contentText, !text.isEmpty else { return }
+
+        // 보안 감사 A-H4: URL 타입 클립이 위험 scheme (`javascript:`, `data:`,
+        // `file:`) 일 때 paste 차단. 호스트 앱이 Safari 주소창 / WebView 같은
+        // URL 입력칸이면 paste 직후 Enter 로 클립보드 XSS 가능.
+        if clip.contentType == .url, Self.isDangerousURLScheme(text) {
+            log.info("INSERT skip — dangerous URL scheme: \(text.prefix(40), privacy: .public)")
+            showToast(String(localized: "위험할 수 있는 URL — 붙여넣기 차단"))
+            return
+        }
+
         textDocumentProxy.insertText(text)
+    }
+
+    /// URL 문자열이 위험 scheme 인지. `javascript:`, `data:`, `file:`, `vbscript:` 차단.
+    /// `http(s)://`, `mailto:`, `tel:`, `clipraven:` 같은 정상 scheme 은 허용.
+    private static func isDangerousURLScheme(_ urlString: String) -> Bool {
+        let trimmed = urlString.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let dangerous = ["javascript:", "data:", "vbscript:", "file:"]
+        return dangerous.contains { trimmed.hasPrefix($0) }
     }
 
     /// App Group `ClipRaven/images/` 디렉터리에서 PNG/JPEG 로드.
