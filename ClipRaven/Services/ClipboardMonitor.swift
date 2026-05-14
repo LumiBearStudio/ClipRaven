@@ -90,10 +90,13 @@ final class ClipboardMonitor: ObservableObject {
             reason: "Clipboard monitoring"
         )
 
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+        // 품질 감사 B-R4: force unwrap 정책 위반. Timer.scheduledTimer 반환은
+        // 실패 안 하지만 Optional 시그니처 존중.
+        let newTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             self?.checkClipboard()
         }
-        RunLoop.current.add(timer!, forMode: .common)
+        timer = newTimer
+        RunLoop.current.add(newTimer, forMode: .common)
     }
 
     func stop() {
