@@ -29,8 +29,8 @@ xcuserdata/
 
 # Internal planning documents
 doc/
-docs/
-# docs/README.md 만 추적 — 빌드 산출물 (clipraven-*) 만 ignore
+# docs/ 내용은 빌드 산출물 (DocC 아카이브) — README.md 만 추적
+docs/*
 !docs/README.md
 
 .sentryclirc
