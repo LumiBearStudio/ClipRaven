@@ -74,17 +74,42 @@ enum ClipRavenLog {
     /// - Parameters:
     ///   - category: 로그 카테고리 (subsystem 안의 부분).
     ///   - message: 한 줄 메시지. 멀티라인은 호출자가 줄바꿈 처리.
-    static func write(_ category: Category, _ message: String) {
+    ///   - sensitive: true 면 DEBUG 파일 mirror 에서 메시지가 **redact** 된다
+    ///     (`os.Logger` 에는 그대로 기록 — `privacy: .public` 마킹은 `os.Logger` 의 책임).
+    ///     기본 false. 클립 내용 prefix 같은 사용자 데이터를 파일에 평문 보존하지 않기 위함
+    ///     (보안 감사 A-L3).
+    static func write(
+        _ category: Category,
+        _ message: String,
+        sensitive: Bool = false
+    ) {
         category.logger.debug("\(message, privacy: .public)")
         #if DEBUG
-        appendToFile(category: category.rawValue, message: message)
+        // 파일 mirror 는 SHA-256 prefix 또는 length-only 로 redact.
+        let safeMessage = sensitive ? Self.redactedSummary(of: message) : message
+        Self.fileWriteQueue.async {
+            Self.appendToFile(category: category.rawValue, message: safeMessage)
+        }
         #endif
     }
 
     #if DEBUG
-    /// DEBUG 빌드에서만 사용되는 파일 mirror 구현. 동시 호출이 잦지 않다는 가정으로
-    /// 단순 FileHandle/append 방식 사용 — 별도 lock 없이도 한 줄 단위 write 는
-    /// 거의 atomic 하다 (한국어 multibyte 가 잘릴 가능성은 극도로 낮음).
+    /// DEBUG 파일 mirror 의 동시성 안전 보장 — serial queue.
+    /// 이전엔 lock 없이 `FileHandle.write` 직접 호출이라 동시 호출 시
+    /// 라인이 인터리브 될 수 있었다 (품질 감사 B-CS7). 한 명령씩 직렬 실행.
+    private static let fileWriteQueue = DispatchQueue(
+        label: "com.lumibear.ClipRaven.fileLog",
+        qos: .utility
+    )
+
+    /// 민감 메시지의 파일 mirror 용 summary — 평문 노출 방지.
+    /// 길이 + SHA-256 prefix 8 char.
+    private static func redactedSummary(of message: String) -> String {
+        let bytes = Data(message.utf8)
+        let hashHex = bytes.sha256Hex().prefix(8)
+        return "[redacted, len=\(message.count), sha=\(hashHex)]"
+    }
+
     private static func appendToFile(category: String, message: String) {
         let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
             .appendingPathComponent("clipraven_debug.log").path
@@ -100,3 +125,14 @@ enum ClipRavenLog {
     }
     #endif
 }
+
+#if DEBUG
+import CryptoKit
+
+private extension Data {
+    /// SHA-256 hex string (redact 용 — cryptographic 보안 보장 필요 없음).
+    func sha256Hex() -> String {
+        SHA256.hash(data: self).map { String(format: "%02x", $0) }.joined()
+    }
+}
+#endif
