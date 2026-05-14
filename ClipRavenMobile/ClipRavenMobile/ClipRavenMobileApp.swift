@@ -30,6 +30,9 @@ struct ClipRavenMobileApp: App {
     /// 온보딩 완료 여부. false면 앱 최초 실행으로 간주해 OnboardingView를 fullScreenCover로 표시.
     @AppStorage("onboarding.completed") private var onboardingCompleted = false
 
+    /// XCUITest 런처가 주입하는 인수. fullScreenCover를 억제해 UI 요소를 탭 가능하게 유지.
+    private let isUITesting = ProcessInfo.processInfo.arguments.contains("UI_TESTING")
+
     /// SettingsView 의 테마 선택값. "system" | "light" | "dark".
     /// `.preferredColorScheme()` 로 즉시 반영 (재시작 불필요).
     @AppStorage("clipraven.preferredColorScheme") private var preferredColorScheme = "system"
@@ -70,8 +73,10 @@ struct ClipRavenMobileApp: App {
                 }
                 // 첫 실행 시 온보딩 표시. OnboardingView 내부에서
                 // @AppStorage("onboarding.completed") = true 설정 시 자동 해제.
+                // UI 테스트 중("UI_TESTING" 인수)에는 표시하지 않는다 — fullScreenCover가
+                // ClipListView 위를 덮으면 XCUITest가 UI 요소를 탭할 수 없다.
                 .fullScreenCover(isPresented: Binding(
-                    get: { !onboardingCompleted },
+                    get: { !isUITesting && !onboardingCompleted },
                     set: { _ in }   // OnboardingView가 직접 AppStorage를 변경해 dismiss
                 )) {
                     OnboardingView()

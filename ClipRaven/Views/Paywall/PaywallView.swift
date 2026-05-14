@@ -68,6 +68,7 @@ struct PaywallView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(pm.isPurchasing || pm.product == nil)
+                    .accessibilityIdentifier("paywall.purchaseButton")
 
                     Button("구매 복원") {
                         Task { await pm.restore() }
@@ -76,6 +77,7 @@ struct PaywallView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .disabled(pm.isPurchasing)
+                    .accessibilityIdentifier("paywall.restoreButton")
                 }
                 .padding(.horizontal, 24)
             }

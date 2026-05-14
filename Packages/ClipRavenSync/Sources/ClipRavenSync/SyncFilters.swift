@@ -79,7 +79,7 @@ public enum SyncFilters {
     private static let syncExclusionPatterns: [String] = [
         "(?i)\\bAKIA[0-9A-Z]{16}\\b",
         "\\bgh[pousr]_[A-Za-z0-9]{36}\\b",
-        "\\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{20,}\\b",
+        "\\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9_]{20,}\\b",
         "\\bxox[abprs]-[A-Za-z0-9-]{10,}\\b",
         "\\bAIza[0-9A-Za-z_\\-]{35}\\b",
         "\\bsk-[A-Za-z0-9_\\-]{20,}\\b",

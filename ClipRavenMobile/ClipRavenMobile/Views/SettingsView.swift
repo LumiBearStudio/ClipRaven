@@ -85,12 +85,14 @@ struct SettingsView: View {
                 feedbackSection
                 aboutSection
             }
+            .accessibilityIdentifier("settings.form")   // XCUITest 시트 감지용
             .navigationTitle("설정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("완료") { dismiss() }
                         .fontWeight(.medium)
+                        .accessibilityIdentifier("settings.doneButton")
                 }
             }
             .onAppear { refreshStatus() }

@@ -308,6 +308,7 @@
 		SYNC000900000000000001CC /* SyncEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncEngineTests.swift; sourceTree = "<group>"; };
 		SYNC001000000000000001CC /* SyncFiltersTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncFiltersTests.swift; sourceTree = "<group>"; };
 		SYNC001200000000000001CC /* SyncChangeCaptureTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncChangeCaptureTests.swift; sourceTree = "<group>"; };
+		SKCONF000100000000000001AA /* ClipRaven.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = "ClipRaven.storekit"; path = "../ClipRaven.storekit"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */

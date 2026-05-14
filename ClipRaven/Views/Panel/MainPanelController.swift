@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import ClipRavenSync
 
 final class MainPanelController {
     private var panel: NSPanel?
@@ -163,13 +164,15 @@ final class MainPanelController {
         // Notify SwiftUI views that panel just appeared (for stagger animation)
         NotificationCenter.default.post(name: .clipRavenPanelShown, object: nil)
 
-        // Watch for other app activation → auto hide (suppressed during external drag)
+        // Watch for other app activation → auto hide (suppressed during external drag or active purchase)
         appActivationObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification,
             object: nil,
             queue: .main
         ) { [weak self] notification in
             guard let self, self.isVisible, !self.isExternalDrag else { return }
+            // StoreKit presents its sheet from an external process — don't hide during purchase
+            guard !PurchaseManager.shared.isPurchasing else { return }
             // If activated app is not ClipRaven, hide panel
             if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
                app.bundleIdentifier != Bundle.main.bundleIdentifier {

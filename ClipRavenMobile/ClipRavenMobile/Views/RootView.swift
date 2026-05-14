@@ -11,9 +11,16 @@ import ClipRavenSync
 struct RootView: View {
     @ObservedObject private var pm = PurchaseManager.shared
 
+    /// XCUITest 런처가 주입하는 인수. 테스트 중에는 페이월 fullScreenCover를
+    /// 표시하지 않아 설정/추가 시트 등 UI 흐름 테스트가 정상 동작하도록 한다.
+    private static let isUITesting =
+        ProcessInfo.processInfo.arguments.contains("UI_TESTING")
+
     var body: some View {
         ClipListView()
-            .fullScreenCover(isPresented: .constant(pm.lockState == .expired)) {
+            .fullScreenCover(
+                isPresented: .constant(!Self.isUITesting && pm.lockState == .expired)
+            ) {
                 PaywallView()
             }
             .task { await pm.refresh() }

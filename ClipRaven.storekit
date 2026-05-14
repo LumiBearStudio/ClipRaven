@@ -1,0 +1,62 @@
+{
+  "identifier" : "177578BD-C543-43BF-860B-A5BDC20D3EC0",
+  "nonConsumableProducts" : [
+    {
+      "displayPrice" : "9.99",
+      "familySharable" : false,
+      "internalID" : "9F62BAFA-CDD8-4FEC-BA6D-361407BE347A",
+      "introductoryOffer" : null,
+      "localizations" : [
+        {
+          "description" : "Mac + iPhone/iPad unlimited access. No subscription.",
+          "displayName" : "ClipRaven Full Access",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Mac + iPhone/iPad 영구 무제한 사용. 구독 없음.",
+          "displayName" : "ClipRaven 정식 버전",
+          "locale" : "ko_KR"
+        }
+      ],
+      "productID" : "com.lumibear.clipraven.fullaccess",
+      "referenceName" : "ClipRaven Full Access",
+      "type" : "NonConsumable"
+    }
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_enableAppAccountToken" : false,
+    "_storefront" : "KOR",
+    "_storeKitErrors" : [
+      {
+        "enabled" : false,
+        "error" : "et"
+      },
+      {
+        "enabled" : false,
+        "error" : "pcc"
+      },
+      {
+        "enabled" : false,
+        "error" : "epcc"
+      },
+      {
+        "enabled" : false,
+        "error" : "iap"
+      },
+      {
+        "enabled" : false,
+        "error" : "sur"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

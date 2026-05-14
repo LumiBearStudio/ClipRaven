@@ -223,9 +223,14 @@ final class StatusItemController {
         statusItem?.menu = nil  // Reset to allow left-click again
     }
 
-    @objc private func openPaywall(_ sender: NSMenuItem) {
-        // 패널을 열면 PaywallView overlay 가 자동으로 표시됨
+    @objc @MainActor private func openPaywall(_ sender: NSMenuItem) {
         panelController?.show()
+        // StoreKit 시트가 뜨려면 앱이 활성화 상태여야 함 (LSUIElement 앱은 기본 비활성)
+        if #available(macOS 14.0, *) { NSApp.activate() }
+        else { NSApp.activate(ignoringOtherApps: true) }
+        // 체험 중이어도 바로 구매 시트를 띄움.
+        // 만료 상태면 PaywallView overlay 가 이미 표시되므로 중복 호출은 무해함.
+        Task { await PurchaseManager.shared.purchase() }
     }
 
     @objc private func togglePause(_ sender: NSMenuItem) {

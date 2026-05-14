@@ -1,5 +1,8 @@
 import StoreKit
 import OSLog
+#if os(macOS)
+import AppKit
+#endif
 
 private let log = Logger(subsystem: "com.lumibear.clipraven", category: "purchase")
 
@@ -24,8 +27,6 @@ public final class PurchaseManager: ObservableObject {
         transactionTask = listenForTransactions()
     }
 
-    deinit { transactionTask?.cancel() }
-
     // MARK: - Public
 
     /// 앱 시작 시 호출 — 상품 정보 로드 + 구매 상태 확인.
@@ -41,6 +42,11 @@ public final class PurchaseManager: ObservableObject {
             errorMessage = "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요."
             return
         }
+        // macOS LSUIElement(메뉴바) 앱은 StoreKit 시트 표시 전에 앱을 activate해야 함
+        #if os(macOS)
+        NSApp.activate(ignoringOtherApps: true)
+        #endif
+
         isPurchasing = true
         errorMessage = nil
         defer { isPurchasing = false }
@@ -90,13 +96,22 @@ public final class PurchaseManager: ObservableObject {
     // MARK: - Private
 
     private func loadProduct() async {
+        // 이미 로드된 경우 재시도 불필요
         guard product == nil else { return }
         do {
             let products = try await Product.products(for: [Self.productID])
-            self.product = products.first
-            log.info("product loaded: \(self.product?.displayPrice ?? "nil", privacy: .public)")
+            guard let first = products.first else {
+                // 빈 배열 — product를 nil로 두어 다음 refresh에서 재시도 가능하게 유지
+                log.error("Product.products returned empty — check App Store Connect / Sandbox account / scheme StoreKit config")
+                errorMessage = "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요."
+                return
+            }
+            self.product = first
+            errorMessage = nil
+            log.info("product loaded: \(first.displayPrice, privacy: .public)")
         } catch {
             log.error("product load failed: \(String(describing: error), privacy: .public)")
+            errorMessage = "상품 정보 로드에 실패했습니다: \(error.localizedDescription)"
         }
     }
 

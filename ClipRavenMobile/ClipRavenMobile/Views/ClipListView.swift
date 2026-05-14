@@ -357,6 +357,7 @@ struct ClipListView: View {
             // ⌘, — iPadOS / Mac 표준 settings 단축키. 하드웨어 키보드
             // 사용자에게 자연스러움. iPhone 에선 키보드 없으면 no-op.
             .keyboardShortcut(",", modifiers: .command)
+            .accessibilityIdentifier("clipList.settingsButton")
         }
         // 필터 메뉴 — 키보드 익스텐션과 동일 옵션 (콘텐츠/날짜/AI/소스앱/태그)
         ToolbarItem(placement: .topBarLeading) {
@@ -377,6 +378,7 @@ struct ClipListView: View {
             }
             // ⌘N — 신규 클립 추가
             .keyboardShortcut("n", modifiers: .command)
+            .accessibilityIdentifier("clipList.addButton")
         }
     }
 

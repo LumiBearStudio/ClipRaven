@@ -63,11 +63,13 @@ struct AddClipView: View {
                         .foregroundStyle(.tertiary)
                 }
             }
+            .accessibilityIdentifier("addClip.form")   // XCUITest 시트 감지용
             .navigationTitle("새 클립")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("취소") { dismiss() }
+                        .accessibilityIdentifier("addClip.cancelButton")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
