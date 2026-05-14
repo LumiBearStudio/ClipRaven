@@ -3,24 +3,33 @@ import Foundation
 
 /// Persists the global hotkey configuration (Carbon keyCode + modifiers).
 /// Provides a formatted display string and atomic save + notification.
+///
+/// 기본 동작은 `UserDefaults.standard` + `NotificationCenter.default` 를 쓰지만,
+/// 테스트에서는 `init(defaults:notificationCenter:)` 로 격리된 인스턴스를 주입한다.
 final class HotKeyStore {
     static let shared = HotKeyStore()
-    private init() {}
+
+    private let defaults: UserDefaults
+    private let notificationCenter: NotificationCenter
+
+    init(
+        defaults: UserDefaults = .standard,
+        notificationCenter: NotificationCenter = .default
+    ) {
+        self.defaults = defaults
+        self.notificationCenter = notificationCenter
+    }
 
     // MARK: - Persisted Values
 
     var keyCode: UInt32 {
-        get {
-            let v = UserDefaults.standard.integer(forKey: "hotkey.keyCode")
-            return v != 0 ? UInt32(v) : UInt32(kVK_ANSI_V)
-        }
+        let v = defaults.integer(forKey: "hotkey.keyCode")
+        return v != 0 ? UInt32(v) : UInt32(kVK_ANSI_V)
     }
 
     var modifiers: UInt32 {
-        get {
-            let v = UserDefaults.standard.integer(forKey: "hotkey.modifiers")
-            return v != 0 ? UInt32(v) : UInt32(shiftKey)
-        }
+        let v = defaults.integer(forKey: "hotkey.modifiers")
+        return v != 0 ? UInt32(v) : UInt32(shiftKey)
     }
 
     var displayString: String {
@@ -29,14 +38,14 @@ final class HotKeyStore {
 
     /// Atomically saves new keyCode + modifiers and notifies AppDelegate to re-register.
     func update(keyCode: UInt32, modifiers: UInt32) {
-        UserDefaults.standard.set(Int(keyCode), forKey: "hotkey.keyCode")
-        UserDefaults.standard.set(Int(modifiers), forKey: "hotkey.modifiers")
+        defaults.set(Int(keyCode), forKey: "hotkey.keyCode")
+        defaults.set(Int(modifiers), forKey: "hotkey.modifiers")
         // Keep legacy display string key in sync
-        UserDefaults.standard.set(
+        defaults.set(
             HotKeyFormatter.format(keyCode: keyCode, modifiers: modifiers),
             forKey: "hotkey"
         )
-        NotificationCenter.default.post(name: .clipRavenHotKeyChanged, object: nil)
+        notificationCenter.post(name: .clipRavenHotKeyChanged, object: nil)
     }
 }
 

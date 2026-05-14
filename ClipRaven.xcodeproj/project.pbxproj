@@ -109,6 +109,9 @@
 		B80627B1BF659039B6810F3A /* ClipRavenSync in Frameworks */ = {isa = PBXBuildFile; productRef = 24127D691B8F246D03F708A7 /* ClipRavenSync */; };
 		BD6D54634272D60911CEA4D9 /* DuplicateDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */; };
 		HKEYFMT00000000000001CC /* HotKeyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */; };
+		HKEYSTR00000000000001CC /* HotKeyStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HKEYSTR00000000000000CC /* HotKeyStoreTests.swift */; };
+		TAGVM00000000000001CC /* TagViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAGVM00000000000000CC /* TagViewModelTests.swift */; };
+		PRVVM00000000000001CC /* PreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRVVM00000000000000CC /* PreviewViewModelTests.swift */; };
 		BKUP000100000000000001AA /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKUP000100000000000001BB /* BackupService.swift */; };
 		BKUP000200000000000001AA /* BackupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKUP000200000000000001BB /* BackupSettingsView.swift */; };
 		C14C2D0FA906FCDDE03C8A78 /* SmartRuleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1176CCFD6408A2D52B556C7 /* SmartRuleRepository.swift */; };
@@ -201,6 +204,9 @@
 		6136714A72F07BD1ACF0D524 /* URLNormalizerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = URLNormalizerTests.swift; sourceTree = "<group>"; };
 		623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DuplicateDetectorTests.swift; sourceTree = "<group>"; };
 		HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HotKeyFormatterTests.swift; sourceTree = "<group>"; };
+		HKEYSTR00000000000000CC /* HotKeyStoreTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HotKeyStoreTests.swift; sourceTree = "<group>"; };
+		TAGVM00000000000000CC /* TagViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TagViewModelTests.swift; sourceTree = "<group>"; };
+		PRVVM00000000000000CC /* PreviewViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PreviewViewModelTests.swift; sourceTree = "<group>"; };
 		6398C7E12C5AAFFE22063EC0 /* PasteStackRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteStackRepository.swift; sourceTree = "<group>"; };
 		63C2E8D14273575CCD7FB083 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		6C5E6118076AC7CE9890FC97 /* MainPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPanelView.swift; sourceTree = "<group>"; };
@@ -588,6 +594,7 @@
 				7C17CEE80C266ABC8B3A2760 /* SmartRuleEngineTests.swift */,
 				623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */,
 				HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */,
+				HKEYSTR00000000000000CC /* HotKeyStoreTests.swift */,
 				SYNC000500000000000001CC /* SyncRecordMapperTests.swift */,
 				SYNC000700000000000001CC /* SyncStateStoreTests.swift */,
 				SYNC000900000000000001CC /* SyncEngineTests.swift */,
@@ -727,8 +734,18 @@
 				AC00BD47A04FEA305FF099B9 /* Services */,
 				BABFD75015DAB9E219C19491 /* Models */,
 				22731D26938B7C398A69DD40 /* UI */,
+				VMGRP0000000000000001CC /* ViewModels */,
 			);
 			path = ClipRavenTests;
+			sourceTree = "<group>";
+		};
+		VMGRP0000000000000001CC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				TAGVM00000000000000CC /* TagViewModelTests.swift */,
+				PRVVM00000000000000CC /* PreviewViewModelTests.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		F0566C5C08A23D81A472770F /* Views */ = {
@@ -1078,6 +1095,9 @@
 				87E91C43CDE485C331B0179C /* SmartRuleEngineTests.swift in Sources */,
 				BD6D54634272D60911CEA4D9 /* DuplicateDetectorTests.swift in Sources */,
 				HKEYFMT00000000000001CC /* HotKeyFormatterTests.swift in Sources */,
+				HKEYSTR00000000000001CC /* HotKeyStoreTests.swift in Sources */,
+				TAGVM00000000000001CC /* TagViewModelTests.swift in Sources */,
+				PRVVM00000000000001CC /* PreviewViewModelTests.swift in Sources */,
 				SYNC000500000000000002CC /* SyncRecordMapperTests.swift in Sources */,
 				SYNC000700000000000002CC /* SyncStateStoreTests.swift in Sources */,
 				SYNC000900000000000002CC /* SyncEngineTests.swift in Sources */,

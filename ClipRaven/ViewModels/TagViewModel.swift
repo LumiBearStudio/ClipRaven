@@ -7,7 +7,11 @@ final class TagViewModel: ObservableObject {
     @Published var allTags: [Tag] = []
     @Published var assignedTagIds: Set<Int64> = []
 
-    private let tagRepository = TagRepository()
+    private let tagRepository: TagRepository
+
+    init(tagRepository: TagRepository = TagRepository()) {
+        self.tagRepository = tagRepository
+    }
 
     func loadTags(forClipId clipId: Int64) {
         allTags = (try? tagRepository.fetchAll()) ?? []

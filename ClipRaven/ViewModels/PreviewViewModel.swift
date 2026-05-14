@@ -7,7 +7,11 @@ final class PreviewViewModel: ObservableObject {
     @Published var selectedClip: Clip?
     @Published var isShowingPreview = false
 
-    private let clipRepository = ClipRepository()
+    private let clipRepository: ClipRepository
+
+    init(clipRepository: ClipRepository = ClipRepository()) {
+        self.clipRepository = clipRepository
+    }
 
     func showPreview(for clip: Clip) {
         selectedClip = clip

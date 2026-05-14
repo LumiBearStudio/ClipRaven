@@ -1,5 +1,5 @@
 {
-  "originHash" : "c57e590da48df949fcec370e00c1f296bbbe4bf69dbd00bf74b3546b2f845b2d",
+  "originHash" : "377f710116556e51d5b4537fa010a948b37798258bdb7b15d88969a5641e8f41",
   "pins" : [
     {
       "identity" : "grdb.swift",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "54d5fbcdea46c37a5de01bab5fef48dc78baec84",
         "version" : "9.12.1"
+      }
+    },
+    {
+      "identity" : "viewinspector",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nalexn/ViewInspector",
+      "state" : {
+        "revision" : "e9a06346499a3a889165647e3f23f8a7b2609a1c",
+        "version" : "0.10.3"
       }
     },
     {
