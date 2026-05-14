@@ -59,57 +59,41 @@ enum AccessibilityPrompter {
 // 로컬 `debugLog` 함수는 `ClipRavenLog.write(.paste, …)` 으로 통합됨.
 
 // MARK: - 날짜 범위 필터
-enum DateRangeFilter: Equatable {
-    case today
-    case yesterday
-    case lastWeek
-    case lastMonth
-    case custom(from: Date, to: Date)
+//
+// 핵심 enum 정의는 `ClipRavenSync.ClipDateRange` 로 이동 (양 플랫폼 단일 정의).
+// macOS UI 컨벤션 (LocalizedStringKey displayName + SF Symbol systemImage) 은
+// extension 으로 본 파일에서 부여.
+typealias DateRangeFilter = ClipDateRange
 
+extension ClipDateRange {
+    /// macOS 칩 라벨용 LocalizedStringKey.
     var displayName: LocalizedStringKey {
         switch self {
         case .today: return "오늘"
         case .yesterday: return "어제"
         case .lastWeek: return "최근 7일"
         case .lastMonth: return "최근 30일"
+        case .thisWeek: return "이번 주"
+        case .thisMonth: return "이번 달"
         case .custom: return "사용자 지정"
         }
     }
 
+    /// macOS 칩 아이콘 (SF Symbols).
     var systemImage: String {
         switch self {
         case .today: return "sun.max"
         case .yesterday: return "sun.haze"
         case .lastWeek: return "calendar"
         case .lastMonth: return "calendar.badge.clock"
+        case .thisWeek: return "calendar.badge.clock"
+        case .thisMonth: return "calendar"
         case .custom: return "calendar.badge.exclamationmark"
         }
     }
 
-    /// 필터의 시작/종료 날짜를 계산
-    var dateRange: (from: Date, to: Date) {
-        let calendar = Calendar.current
-        let now = Date()
-        switch self {
-        case .today:
-            let start = calendar.startOfDay(for: now)
-            return (start, now)
-        case .yesterday:
-            let todayStart = calendar.startOfDay(for: now)
-            // `byAdding:.day,value:-1` 는 정상적인 그레고리력에서 실패할 수 없으나
-            // protocol 상 Optional 이므로 `now` fallback 으로 안전 처리.
-            let yesterdayStart = calendar.date(byAdding: .day, value: -1, to: todayStart) ?? todayStart
-            return (yesterdayStart, todayStart)
-        case .lastWeek:
-            let start = calendar.date(byAdding: .day, value: -7, to: now) ?? now
-            return (start, now)
-        case .lastMonth:
-            let start = calendar.date(byAdding: .day, value: -30, to: now) ?? now
-            return (start, now)
-        case .custom(let from, let to):
-            return (from, to)
-        }
-    }
+    /// 호환성: 기존 코드가 `.dateRange` 를 사용 — 패키지의 `range` 로 forward.
+    var dateRange: (from: Date, to: Date) { self.range }
 }
 
 // 로컬 `vmDebugLog` 함수도 `ClipRavenLog.write(.ui, …)` 으로 통합됨.

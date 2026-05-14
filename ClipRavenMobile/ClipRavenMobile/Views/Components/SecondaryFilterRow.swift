@@ -21,7 +21,7 @@ struct SecondaryFilterRow: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     // 날짜 범위 칩
-                    ForEach(DateRangeFilter.allCases) { range in
+                    ForEach([DateRangeFilter.today, .thisWeek, .thisMonth]) { range in
                         SecondaryChip(
                             icon: range.icon,
                             label: range.displayName,

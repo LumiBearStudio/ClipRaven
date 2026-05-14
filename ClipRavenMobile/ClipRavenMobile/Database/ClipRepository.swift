@@ -2,37 +2,40 @@ import Foundation
 import GRDB
 import ClipRavenSync
 
-enum DateRangeFilter: String, CaseIterable, Identifiable {
-    // rawValue 는 ID 용 (영문 stable key) — UI 표시는 displayName 사용.
-    case today
-    case thisWeek
-    case thisMonth
+// 핵심 enum 정의는 `ClipRavenSync.ClipDateRange` 로 이동 (양 플랫폼 단일 정의).
+// iOS UI 컨벤션 (String displayName + SF Symbol icon + Identifiable) 은
+// extension 으로 본 파일에서 부여.
+typealias DateRangeFilter = ClipDateRange
 
-    var id: String { rawValue }
+extension ClipDateRange: Identifiable {
+    public var id: String { stableKey }
 
-    /// 사용자 노출용 — String(localized:) 를 거쳐 ko/en 자동 선택.
+    /// iOS 칩 라벨 — String(localized:) 로 한/영 자동 선택.
     var displayName: String {
         switch self {
         case .today:     return String(localized: "오늘")
+        case .yesterday: return String(localized: "어제")
+        case .lastWeek:  return String(localized: "최근 7일")
+        case .lastMonth: return String(localized: "최근 30일")
         case .thisWeek:  return String(localized: "이번 주")
         case .thisMonth: return String(localized: "이번 달")
+        case .custom:    return String(localized: "사용자 지정")
         }
     }
 
-    var startDate: Date {
-        let cal = Calendar.current
-        switch self {
-        case .today:     return cal.startOfDay(for: Date())
-        case .thisWeek:  return cal.date(from: cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())) ?? cal.startOfDay(for: Date())
-        case .thisMonth: return cal.date(from: cal.dateComponents([.year, .month], from: Date())) ?? cal.startOfDay(for: Date())
-        }
-    }
+    /// 호환성: 기존 iOS 코드가 `.startDate` 사용 — `range.from` 으로 forward.
+    var startDate: Date { range.from }
 
+    /// iOS 칩 아이콘.
     var icon: String {
         switch self {
         case .today:     return "sun.max"
+        case .yesterday: return "sun.haze"
+        case .lastWeek:  return "calendar"
+        case .lastMonth: return "calendar.badge.clock"
         case .thisWeek:  return "calendar.badge.clock"
         case .thisMonth: return "calendar"
+        case .custom:    return "calendar.badge.exclamationmark"
         }
     }
 }

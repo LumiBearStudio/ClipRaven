@@ -21,7 +21,7 @@ struct IPadSidebarView: View {
 
             // MARK: 날짜
             Section("날짜") {
-                ForEach(DateRangeFilter.allCases) { range in
+                ForEach([DateRangeFilter.today, .thisWeek, .thisMonth]) { range in
                     dateRow(range: range)
                 }
             }

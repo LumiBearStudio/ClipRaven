@@ -539,7 +539,7 @@ struct ClipFilterMenu: View {
                 } label: {
                     Label("전체 기간", systemImage: viewModel.selectedDateRange == nil ? "checkmark" : "calendar")
                 }
-                ForEach(DateRangeFilter.allCases) { range in
+                ForEach([DateRangeFilter.today, .thisWeek, .thisMonth]) { range in
                     Button {
                         viewModel.selectedDateRange = range
                     } label: {
