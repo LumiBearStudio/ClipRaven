@@ -113,6 +113,33 @@ enum DateRangeFilter: Equatable {
 // 로컬 `vmDebugLog` 함수도 `ClipRavenLog.write(.ui, …)` 으로 통합됨.
 // (이전엔 /tmp/clipraven_debug.log 에 별도 기록했지만 이제 동일 경로로 합쳐짐.)
 
+/// 메인 패널의 ViewModel — macOS 앱의 핵심 상태 컨테이너.
+///
+/// 큰 단일 클래스(약 1100 줄)인 이유: SwiftUI 의 `@MainActor + ObservableObject + @Published`
+/// 컨벤션상 모든 상태와 그 상태를 변경하는 모든 메서드가 한 곳에 있어야 SwiftUI 가
+/// 변경 추적을 안정적으로 한다. 분할하려면 protocol + 다중 ObservableObject 가 필요한데
+/// 그 비용이 가시화된 이득보다 크다 (Xcode Quick Open + MARK 컨벤션으로 충분히 탐색 가능).
+///
+/// ### 구역 가이드 (MARK 컨벤션으로 navigator 에서 jump)
+/// - `@Published` 상태 변수 (이 파일 상단)
+/// - **Observation**: `startObserving` / `stopObserving` / `restartObservation` — DB 옵저버 + Notification 구독 라이프사이클
+/// - **Boards**: `loadBoards` / `toggleTagFilter` / `loadClipTags`
+/// - **Paste**: `pasteClip(_:)` 및 변형 (`AsPlainText`, `AsMarkdown`, `AsRichText`, `WithTransform`)
+/// - **CRUD**: `deleteClip` / `togglePin` / `updateClip` / `updateExpiration` / `updateNickname`
+/// - **Tags**: `createTag` / `deleteTag` / `updateTag` / `assignClipToBoard` / `removeClipFromBoard`
+/// - **Hotkeys**: `assignClipShortcut` / `removeClipShortcut`
+/// - **Multi-select**: `toggleMultiSelect` / `selectSingle` / `clearMultiSelect` / `deleteSelectedClips` /
+///   `addSelectedToStack` / `assignTagToSelected` / `mergeSelectedClips` / `mergeClips`
+/// - **Keyboard nav**: `moveSelection` / `activateSelected` / `quickPaste`
+/// - **Preview**: `togglePreview` / `updatePreviewSelection`
+/// - **Paste Stack**: `addToStack` / `removeFromStack`
+/// - **Drag&Drop**: `moveClip`
+/// - **Similar Images**: `findSimilarImages` / `exitSimilarImagesMode`
+/// - **Search**: `performSearch` (private, debounced 200ms 호출)
+/// - **Counts**: `updateCounts` (filterCounts 계산)
+///
+/// 의존성: `ClipRepository`, `TagRepository`, `SearchRepository` 모두 기본값 주입.
+/// `restartObservation()` 가 `repository.observeAll(...)` 를 통해 DB 변경을 구독한다.
 @MainActor
 final class MainPanelViewModel: ObservableObject {
     @Published var clips: [Clip] = []
