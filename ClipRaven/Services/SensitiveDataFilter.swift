@@ -1,135 +1,46 @@
 import AppKit
+import ClipRavenSync
 
+/// macOS 전용 wrapper — 패키지의 `ClipRavenSync.SensitiveDataFilter` 위에
+/// `NSPasteboard` / `SourceAppInfo` 형식의 macOS 호출 컨벤션을 얹어준다.
+///
+/// 핵심 로직 (regex 패턴, 2FA 키워드, masking) 은 모두 패키지 측. macOS 와 iOS 가
+/// 동일 보호 규칙을 공유.
+///
+/// 기존 호출처 (`ClipboardMonitor.swift:188-206` 등) 의 시그니처를 깨지 않기 위해
+/// 동일 이름의 enum 을 유지하고 패키지 메서드로 forward.
 enum SensitiveDataFilter {
-    /// Check if pasteboard contains concealed/sensitive content
+
+    /// NSPasteboard 의 concealed type 검사 — macOS 전용 진입점.
     static func isSensitive(pasteboard: NSPasteboard) -> Bool {
-        // System-marked sensitive (password managers)
-        let concealedType = NSPasteboard.PasteboardType(rawValue: "org.nspasteboard.ConcealedType")
-        if pasteboard.types?.contains(concealedType) == true {
-            return true
-        }
-        return false
+        let types = (pasteboard.types ?? []).map(\.rawValue)
+        return ClipRavenSync.SensitiveDataFilter.isSensitivePasteboardType(types)
     }
 
-    /// Check if text matches sensitive patterns
+    /// 패턴 매칭 — 패키지 메서드 forward.
     static func containsSensitivePattern(_ text: String) -> Bool {
-        let patterns = [
-            // API keys (long alphanumeric strings)
-            "^[a-zA-Z0-9_\\-]{32,}$",
-            // Credit card numbers (13-19 digits)
-            "^\\d{13,19}$",
-            // SSN pattern
-            "^\\d{3}-\\d{2}-\\d{4}$",
-            // Korean resident registration number
-            "^\\d{6}-[1-4]\\d{6}$",
-            // JWT tokens (header.payload.signature)
-            "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$",
-            // GitHub personal access tokens (ghp_, gho_, etc.)
-            "^gh[pousr]_[A-Za-z0-9]{36,}$",
-            // OpenAI API keys
-            "^sk-[A-Za-z0-9]{32,}$",
-            // Private key blocks
-            "-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----",
-            // Slack tokens
-            "^xox[baprs]-[A-Za-z0-9\\-]{10,}$",
-        ]
-
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        for pattern in patterns {
-            if trimmed.range(of: pattern, options: .regularExpression) != nil {
-                return true
-            }
-        }
-        return false
+        ClipRavenSync.SensitiveDataFilter.containsSensitivePattern(text)
     }
 
-    /// Check if text looks like a 2FA/OTP code (4-8 digits only)
     static func isLikelyTwoFactorCode(_ text: String) -> Bool {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.range(of: "^\\d{4,8}$", options: .regularExpression) != nil
+        ClipRavenSync.SensitiveDataFilter.isLikelyTwoFactorCode(text)
     }
 
-    /// Keywords that indicate the text is a 2FA/OTP message (case-insensitive).
-    /// If any keyword is present AND the text contains a 4-8 digit number,
-    /// the whole message is treated as a 2FA code.
-    private static let twoFactorKeywords: [String] = [
-        // Korean
-        "인증번호", "인증 번호", "인증코드", "인증 코드",
-        "본인확인", "본인 확인", "본인인증",
-        "보안코드", "보안 코드",
-        "검증코드", "검증 코드", "확인코드", "확인 코드",
-        "일회용", "패스코드",
-        // English
-        "verification code", "verify code", "security code",
-        "otp", "one-time", "one time",
-        "passcode", "access code", "auth code", "authentication code",
-        "2fa", "two-factor", "two factor",
-        "confirmation code"
-    ]
-
-    /// Check if a message contains a 2FA keyword alongside a 4-8 digit number.
-    /// Catches phrases like "인증번호는 [14145] 입니다" or "Your code is 123456".
     static func containsTwoFactorPhrase(_ text: String) -> Bool {
-        let lower = text.lowercased()
-        let hasKeyword = twoFactorKeywords.contains { lower.contains($0.lowercased()) }
-        guard hasKeyword else { return false }
-        // Any 4-8 digit run inside the text (not anchored)
-        return text.range(of: "\\b\\d{4,8}\\b", options: .regularExpression) != nil
+        ClipRavenSync.SensitiveDataFilter.containsTwoFactorPhrase(text)
     }
 
-    /// Bundle-ID fragments that indicate a messaging/mail app where 2FA codes typically arrive.
-    /// Matched via case-insensitive `contains` against the source app bundle identifier.
-    private static let twoFactorSourceHints: [String] = [
-        "mail",         // com.apple.mail, com.microsoft.Outlook, com.readdle.smartemail-Mac
-        "message",      // com.apple.iChat, naver.messenger
-        "mobilesms",    // com.apple.MobileSMS (iMessage on macOS) — 소문자 기준
-        "sms",          // generic SMS apps
-        "imessage",     // any iMessage variant
-        "kakao",        // com.kakao.KakaoTalkMac
-        "telegram",     // ru.keepcoder.Telegram, org.telegram.desktop
-        "slack",        // com.tinyspeck.slackmacgap
-        "whatsapp",     // net.whatsapp.WhatsApp
-        "line"          // com.linecorp.LINE
-    ]
-
-    /// Context-aware sensitivity check — combines pattern matching with source-app heuristics.
-    /// Use this in place of `containsSensitivePattern` when a source app is known.
+    /// 소스 앱 컨텍스트 기반 판정. macOS `SourceAppInfo` 를 패키지의 String 으로 변환.
     static func isSensitiveWithContext(_ text: String, sourceApp: SourceAppInfo?) -> Bool {
-        // All existing static patterns (API keys, SSN, JWT, etc.)
-        if containsSensitivePattern(text) {
-            return true
-        }
-
-        // 2FA filter — only enabled if user opted in (default ON)
         let filter2FAEnabled = UserDefaults.standard.object(forKey: "filter2FA") as? Bool ?? true
-        guard filter2FAEnabled else { return false }
-
-        let bundleIdLower = sourceApp?.bundleId?.lowercased() ?? ""
-        let fromMessagingApp = !bundleIdLower.isEmpty &&
-            twoFactorSourceHints.contains(where: { bundleIdLower.contains($0) })
-
-        // Case A: bare code (e.g., "14145") copied from messaging/mail app
-        if fromMessagingApp && isLikelyTwoFactorCode(text) {
-            return true
-        }
-
-        // Case B: full SMS/mail text with "인증번호", "verification code" + number
-        // (source app agnostic — catches forwarded messages, emails, chat apps we missed)
-        if containsTwoFactorPhrase(text) {
-            return true
-        }
-
-        return false
+        return ClipRavenSync.SensitiveDataFilter.isSensitiveWithContext(
+            text,
+            sourceAppBundleId: sourceApp?.bundleId,
+            filter2FAEnabled: filter2FAEnabled
+        )
     }
 
-    /// Mask sensitive text for display
     static func mask(_ text: String) -> String {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.count > 8 {
-            let prefix = String(trimmed.prefix(4))
-            let suffix = String(trimmed.suffix(4))
-            return prefix + String(repeating: "•", count: trimmed.count - 8) + suffix
-        }
-        return String(repeating: "•", count: trimmed.count)
+        ClipRavenSync.SensitiveDataFilter.mask(text)
     }
 }
