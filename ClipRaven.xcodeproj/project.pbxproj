@@ -58,6 +58,7 @@
 		72C069F1BC05C30DCEFD9D95 /* CodeCardBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9627AE3E90588A8DB964E3C /* CodeCardBody.swift */; };
 		7381A45E2DFCD3308CCA3F62 /* ClipRavenApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BBD984F2E23354C4D42F7 /* ClipRavenApp.swift */; };
 		73B6CBD785869BA258875A9F /* MainPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB09EA73F76FC99FA222E17F /* MainPanelViewModel.swift */; };
+		CLPFLT000000000000111A /* ClipFilterEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLPFLT000000000000001A /* ClipFilterEngine.swift */; };
 		77013C175F4A431CDBDEC61A /* TagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E129FEE3D47B1F99FB3547B1 /* TagViewModel.swift */; };
 		7CD70D22A40F8BA817A065F1 /* ClipboardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8879E7AD3F34BA6AC9B25A3 /* ClipboardData.swift */; };
 		8151508E74F3E69FE2C64BF2 /* TextCardBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9919DC4FD6F411D709E5B616 /* TextCardBody.swift */; };
@@ -113,6 +114,7 @@
 		TAGVM00000000000001CC /* TagViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAGVM00000000000000CC /* TagViewModelTests.swift */; };
 		PRVVM00000000000001CC /* PreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PRVVM00000000000000CC /* PreviewViewModelTests.swift */; };
 		SRCHVM0000000000001CC /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRCHVM0000000000000CC /* SearchViewModelTests.swift */; };
+		CLPFLT000000000001CC /* ClipFilterEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLPFLT000000000000CC /* ClipFilterEngineTests.swift */; };
 		CLNSVC0000000000001CC /* CleanupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLNSVC0000000000000CC /* CleanupServiceTests.swift */; };
 		BKPSVC0000000000001CC /* BackupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKPSVC0000000000000CC /* BackupServiceTests.swift */; };
 		CLPPROC000000000001CC /* ClipProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLPPROC000000000000CC /* ClipProcessorTests.swift */; };
@@ -212,6 +214,7 @@
 		TAGVM00000000000000CC /* TagViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TagViewModelTests.swift; sourceTree = "<group>"; };
 		PRVVM00000000000000CC /* PreviewViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PreviewViewModelTests.swift; sourceTree = "<group>"; };
 		SRCHVM0000000000000CC /* SearchViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
+		CLPFLT000000000000CC /* ClipFilterEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipFilterEngineTests.swift; sourceTree = "<group>"; };
 		CLNSVC0000000000000CC /* CleanupServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CleanupServiceTests.swift; sourceTree = "<group>"; };
 		BKPSVC0000000000000CC /* BackupServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupServiceTests.swift; sourceTree = "<group>"; };
 		CLPPROC000000000000CC /* ClipProcessorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipProcessorTests.swift; sourceTree = "<group>"; };
@@ -250,6 +253,7 @@
 		A632959C0FC2F2C1AE81B941 /* TagRepositoryTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TagRepositoryTests.swift; sourceTree = "<group>"; };
 		A9A0A0EA99E54CB31D1B5610 /* TagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRepository.swift; sourceTree = "<group>"; };
 		AB09EA73F76FC99FA222E17F /* MainPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPanelViewModel.swift; sourceTree = "<group>"; };
+		CLPFLT000000000000001A /* ClipFilterEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClipFilterEngine.swift; path = Filtering/ClipFilterEngine.swift; sourceTree = "<group>"; };
 		AEA2D080CA516B02647F42C6 /* HotKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyManager.swift; sourceTree = "<group>"; };
 		AF4139CD0E5E88BECFF5D379 /* SearchRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRepository.swift; sourceTree = "<group>"; };
 		AF764DE93B99B47D4238898E /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
@@ -675,6 +679,7 @@
 				FE8CF830D91F6271B38E7AF0 /* PreviewViewModel.swift */,
 				63C2E8D14273575CCD7FB083 /* SearchViewModel.swift */,
 				E129FEE3D47B1F99FB3547B1 /* TagViewModel.swift */,
+				CLPFLT000000000000001A /* ClipFilterEngine.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -756,6 +761,7 @@
 				TAGVM00000000000000CC /* TagViewModelTests.swift */,
 				PRVVM00000000000000CC /* PreviewViewModelTests.swift */,
 				SRCHVM0000000000000CC /* SearchViewModelTests.swift */,
+				CLPFLT000000000000CC /* ClipFilterEngineTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1021,6 +1027,7 @@
 				58ED065CE6EA5381A1BE1C03 /* MainPanelController.swift in Sources */,
 				F99536A0D5197502E0ABD307 /* MainPanelView.swift in Sources */,
 				73B6CBD785869BA258875A9F /* MainPanelViewModel.swift in Sources */,
+				CLPFLT000000000000111A /* ClipFilterEngine.swift in Sources */,
 				32FE3ECAA131499B3FE81F73 /* Notifications.swift in Sources */,
 				6157280E935EE38F4351A5E3 /* OCRService.swift in Sources */,
 				AI00000100000000000001AA /* AICategoryService.swift in Sources */,
@@ -1111,6 +1118,7 @@
 				TAGVM00000000000001CC /* TagViewModelTests.swift in Sources */,
 				PRVVM00000000000001CC /* PreviewViewModelTests.swift in Sources */,
 				SRCHVM0000000000001CC /* SearchViewModelTests.swift in Sources */,
+				CLPFLT000000000001CC /* ClipFilterEngineTests.swift in Sources */,
 				CLNSVC0000000000001CC /* CleanupServiceTests.swift in Sources */,
 				BKPSVC0000000000001CC /* BackupServiceTests.swift in Sources */,
 				CLPPROC000000000001CC /* ClipProcessorTests.swift in Sources */,
