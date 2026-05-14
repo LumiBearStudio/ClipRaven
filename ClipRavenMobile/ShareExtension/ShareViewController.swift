@@ -81,6 +81,22 @@ class ShareViewController: UIViewController {
             return
         }
 
+        // 민감 데이터 차단 (보안 감사 A-C1) — Share Extension 도 매크OS 와 같은 가드.
+        let defaults = UserDefaults(suiteName: AppGroupDatabase.appGroupID) ?? .standard
+        let blockSensitiveOn = defaults.object(forKey: "blockSensitive") as? Bool ?? true
+        if blockSensitiveOn {
+            let filter2FA = defaults.object(forKey: "filter2FA") as? Bool ?? true
+            if SensitiveDataFilter.isSensitiveWithContext(
+                trimmed,
+                sourceAppBundleId: nil,
+                filter2FAEnabled: filter2FA
+            ) {
+                log.info("Share skip — sensitive pattern detected")
+                await complete(error: String(localized: "민감 데이터로 감지되어 저장하지 않았습니다"))
+                return
+            }
+        }
+
         // If text looks like a URL but provider didn't declare URL type, override.
         if contentType == .text, let url = URL(string: trimmed), url.scheme != nil {
             contentType = .url

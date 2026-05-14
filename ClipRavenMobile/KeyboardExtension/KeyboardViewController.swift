@@ -1006,6 +1006,31 @@ class KeyboardViewController: UIInputViewController {
             return
         }
 
+        // 민감 데이터 차단 (보안 감사 A-C1) — macOS ClipboardMonitor 와 같은 가드.
+        // UserDefaults `blockSensitive` 토글이 ON 이면:
+        // - pasteboard type 이 concealed (1Password 등) → 차단
+        // - 텍스트가 API key / 2FA / JWT / 신용카드 / SSN 등 패턴 매치 → 차단
+        let defaults = UserDefaults(suiteName: AppGroupDatabase.appGroupID) ?? .standard
+        let blockSensitiveOn = defaults.object(forKey: "blockSensitive") as? Bool ?? true
+        if blockSensitiveOn {
+            let typeIdentifiers = pasteboard.types
+            if SensitiveDataFilter.isSensitivePasteboardType(typeIdentifiers) {
+                log.info("CAP skip — sensitive pasteboard type (1Password/concealed)")
+                return
+            }
+            if pasteboard.hasStrings, let preview = pasteboard.string {
+                let filter2FA = defaults.object(forKey: "filter2FA") as? Bool ?? true
+                if SensitiveDataFilter.isSensitiveWithContext(
+                    preview,
+                    sourceAppBundleId: nil, // 키보드 익스텐션은 호스트 앱 bundle ID 추출 불가
+                    filter2FAEnabled: filter2FA
+                ) {
+                    log.info("CAP skip — sensitive pattern detected in text")
+                    return
+                }
+            }
+        }
+
         // 텍스트 우선 (Mac ClipProcessor 와 동일 정책)
         if pasteboard.hasStrings, let text = pasteboard.string {
             let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
