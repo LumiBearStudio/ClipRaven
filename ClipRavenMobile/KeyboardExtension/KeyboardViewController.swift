@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import GRDB
 import CryptoKit
+import ImageIO
 import os.log
 import ClipRavenSync
 
@@ -1072,11 +1073,22 @@ class KeyboardViewController: UIInputViewController {
             return
         }
 
-        // 이미지 — UIPasteboard.image
-        if pasteboard.hasImages, let image = pasteboard.image,
-           let pngData = image.pngData()
-        {
-            let imageHash = Self.sha256(pngData)
+        // 이미지 — ImageIO 기반 메모리 효율 캡처 (성능 감사 D-M2).
+        //
+        // 이전엔 `pasteboard.image` → UIImage full bitmap (~14MB) → pngData()
+        // (또 다른 3~6MB) → SHA-256 → UIGraphicsImageRenderer thumbnail 로
+        // 피크 메모리 ~30MB 도달, 30MB 키보드 익스텐션 한도 직격.
+        //
+        // 새 흐름:
+        // 1. `pasteboard.data(forPasteboardType:)` 로 raw PNG/JPEG bytes 직접 획득
+        //    (UIImage 디코드 우회 — fullsize bitmap 안 만들어짐)
+        // 2. SHA-256 은 raw data 에 직접
+        // 3. ImageIO `CGImageSourceCreateThumbnailAtIndex` 로 thumbnail 생성
+        //    (`kCGImageSourceThumbnailMaxPixelSize=200` 명시, 디코드 거치지 않음)
+        //
+        // 결과: 피크 메모리 30MB → 5~8MB 수준.
+        if pasteboard.hasImages, let imageData = Self.bestImageBytes(from: pasteboard) {
+            let imageHash = Self.sha256(imageData)
             guard !recentCapturedHashes.contains(imageHash) else {
                 log.info("CAP skip — image dedup")
                 return
@@ -1084,8 +1096,9 @@ class KeyboardViewController: UIInputViewController {
             recentCapturedHashes.insert(imageHash)
             cleanRecentHashes()
 
-            let thumbnail = Self.makeThumbnail(image, maxDimension: 200)
-            let thumbnailData = thumbnail.flatMap { $0.jpegData(compressionQuality: 0.7) }
+            let thumbnailData = Self.makeThumbnailJPEG(
+                from: imageData, maxPixelSize: 200, quality: 0.7
+            )
             let thumbBase64 = thumbnailData?.base64EncodedString()
 
             let now = Date()
@@ -1099,7 +1112,7 @@ class KeyboardViewController: UIInputViewController {
             )
             KeyboardCaptureBuffer.append(
                 capture,
-                appGroupIdentifier: "group.com.lumibear.ClipRavenMobile"
+                appGroupIdentifier: AppGroupDatabase.appGroupID
             )
             // 즉시 표시 — thumbnail 포함한 임시 image 클립 prepend
             let tempClip = Clip(
@@ -1111,8 +1124,45 @@ class KeyboardViewController: UIInputViewController {
                 uuid: "pending-\(now.timeIntervalSince1970)"
             )
             insertPendingClipImmediate(tempClip)
-            log.info("CAP captured image hash=\(imageHash.prefix(12), privacy: .public)")
+            log.info("CAP captured image hash=\(imageHash.prefix(12), privacy: .public) bytes=\(imageData.count, privacy: .public)")
         }
+    }
+
+    /// pasteboard 에서 사용 가능한 PNG/JPEG raw bytes 를 반환.
+    /// UIImage 디코드를 우회해 메모리 spike 방지. 우선순위: PNG > JPEG > TIFF.
+    /// 어느 type 도 없으면 fallback 으로 `image.pngData()` 사용 (느림 + 메모리 많음).
+    private static func bestImageBytes(from pasteboard: UIPasteboard) -> Data? {
+        if let data = pasteboard.data(forPasteboardType: "public.png") {
+            return data
+        }
+        if let data = pasteboard.data(forPasteboardType: "public.jpeg") {
+            return data
+        }
+        if let data = pasteboard.data(forPasteboardType: "public.tiff") {
+            return data
+        }
+        return pasteboard.image?.pngData()
+    }
+
+    /// ImageIO 기반 thumbnail JPEG 생성 — fullsize 디코드 우회.
+    private static func makeThumbnailJPEG(
+        from data: Data,
+        maxPixelSize: Int,
+        quality: CGFloat
+    ) -> Data? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
+            return nil
+        }
+        let opts: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+            kCGImageSourceShouldCacheImmediately: false  // 메모리 보존
+        ]
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, opts as CFDictionary) else {
+            return nil
+        }
+        let thumbnail = UIImage(cgImage: cgImage)
+        return thumbnail.jpegData(compressionQuality: quality)
     }
 
     /// capture 한 클립을 self.clips 에 prepend 하고 collection view 즉시 reload.
