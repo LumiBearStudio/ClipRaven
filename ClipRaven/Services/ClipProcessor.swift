@@ -22,9 +22,23 @@ private func debugLog(_ msg: String) {
 }
 
 actor ClipProcessor {
-    private let clipRepository = ClipRepository()
-    private let ocrService = OCRService()
-    private let smartRuleEngine = SmartRuleEngine.shared
+    private let clipRepository: ClipRepository
+    private let ocrService: OCRService
+    private let smartRuleEngine: SmartRuleEngine
+    private let defaults: UserDefaults
+
+    /// 프로덕션 기본값 사용. 테스트는 모든 의존성을 격리해 주입.
+    init(
+        clipRepository: ClipRepository = ClipRepository(),
+        ocrService: OCRService = OCRService(),
+        smartRuleEngine: SmartRuleEngine = .shared,
+        defaults: UserDefaults = .standard
+    ) {
+        self.clipRepository = clipRepository
+        self.ocrService = ocrService
+        self.smartRuleEngine = smartRuleEngine
+        self.defaults = defaults
+    }
 
     // In-memory cache to prevent rapid duplicate processing
     private var recentHashes: [String: Date] = [:]
@@ -67,7 +81,7 @@ actor ClipProcessor {
     private func processText(_ text: String, contentType: ContentType, sourceApp: SourceAppInfo) async {
         // Auto-cleanup: strip invisible/control characters (BOM, zero-width, nbsp) before saving.
         // Default ON — can be disabled via Privacy settings.
-        let stripInvisible = UserDefaults.standard.object(forKey: "stripInvisibleChars") as? Bool ?? true
+        let stripInvisible = defaults.object(forKey: "stripInvisibleChars") as? Bool ?? true
         let cleanedText = stripInvisible ? TextNormalizer.stripInvisibleCharacters(text) : text
 
         if stripInvisible && cleanedText != text {
@@ -477,7 +491,7 @@ actor ClipProcessor {
         clip.excludeFromSync = SyncFilters.shouldExclude(
             text: text,
             sourceAppBundleId: clip.sourceAppBundleId,
-            userAppBlacklist: Self.userExcludedAppBundleIds()
+            userAppBlacklist: userExcludedAppBundleIds()
         )
     }
 
@@ -485,8 +499,8 @@ actor ClipProcessor {
     /// 줄바꿈 구분 String) 을 Set 으로 파싱. 캡처마다 호출되므로 가볍게 유지.
     /// SyncFilters 가 substring match (`bundleId.contains($0.lowercased())`)
     /// 하므로 lowercase 캐시는 SyncFilters 측에서 처리.
-    private static func userExcludedAppBundleIds() -> Set<String> {
-        let raw = UserDefaults.standard.string(forKey: "excludedApps") ?? ""
+    private func userExcludedAppBundleIds() -> Set<String> {
+        let raw = defaults.string(forKey: "excludedApps") ?? ""
         guard !raw.isEmpty else { return [] }
         return Set(
             raw.split(separator: "\n", omittingEmptySubsequences: true)
