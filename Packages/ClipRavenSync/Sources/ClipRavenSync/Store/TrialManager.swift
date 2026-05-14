@@ -145,14 +145,25 @@ public final class TrialManager {
         return now
     }
 
-    // MARK: - Static Backward Compatibility
+    // MARK: - Static Backward Compatibility (deprecated)
+    //
+    // 품질 감사 B-R2: static 호환 레이어는 `TrialManager.shared` 의 글로벌
+    // 상태를 직접 사용하므로 테스트 격리가 불가능 (테스트 A 가 trial 5일로
+    // 설정 → 테스트 B 가 동일 값 봄). 신규 호출처는 instance API (`init(clock:storage:)`)
+    // 사용 권장. 기존 호출은 점진 마이그레이션.
 
     /// 정적 호환 레이어 — 기존 호출처가 `TrialManager.daysRemaining()` 으로
     /// 직접 호출하던 코드를 그대로 둘 수 있게 함.
+    ///
+    /// - Warning: 새 호출처는 `TrialManager(clock:storage:trialDays:)` 인스턴스
+    ///   API 사용. static 은 글로벌 `TrialManager.shared` 의 SystemClock + SystemKeychain
+    ///   상태를 직접 읽어 테스트 격리 불가.
+    @available(*, deprecated, message: "Use instance API: TrialManager(clock:storage:trialDays:) for testability. See header for migration plan.")
     public static func daysRemaining() -> Int {
         shared.daysRemaining()
     }
 
+    @available(*, deprecated, message: "Use instance API: TrialManager(clock:storage:trialDays:) for testability.")
     public static func firstLaunchDate() -> Date {
         shared.firstLaunchDate()
     }
