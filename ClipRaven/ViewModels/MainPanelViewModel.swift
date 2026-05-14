@@ -644,7 +644,12 @@ final class MainPanelViewModel: ObservableObject {
                 userInfo: ["clipId": clipId, "deleted": true]
             )
         }
-        try? clipRepository.softDelete(id: clipId)
+        // 품질 감사 B-CS1: 사용자 액션의 silent failure 방지 — 실패 시 로그.
+        do {
+            try clipRepository.softDelete(id: clipId)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.deleteClip] softDelete failed id=\(clipId): \(error)")
+        }
     }
 
     // MARK: - Custom shortcut management
@@ -652,7 +657,12 @@ final class MainPanelViewModel: ObservableObject {
     /// Assign a global hotkey to a clip. AppDelegate picks up the change via notification.
     func assignClipShortcut(clip: Clip, keyCode: UInt32, modifiers: UInt32) {
         guard let clipId = clip.id else { return }
-        try? clipRepository.updateCustomShortcut(id: clipId, keyCode: keyCode, modifiers: modifiers)
+        do {
+            try clipRepository.updateCustomShortcut(id: clipId, keyCode: keyCode, modifiers: modifiers)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.assignShortcut] failed id=\(clipId): \(error)")
+            return
+        }
         NotificationCenter.default.post(
             name: .clipRavenClipShortcutChanged,
             object: nil,
@@ -665,7 +675,12 @@ final class MainPanelViewModel: ObservableObject {
     /// Clear the hotkey on a clip.
     func removeClipShortcut(clip: Clip) {
         guard let clipId = clip.id else { return }
-        try? clipRepository.updateCustomShortcut(id: clipId, keyCode: nil, modifiers: nil)
+        do {
+            try clipRepository.updateCustomShortcut(id: clipId, keyCode: nil, modifiers: nil)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.removeShortcut] failed id=\(clipId): \(error)")
+            return
+        }
         NotificationCenter.default.post(
             name: .clipRavenClipShortcutChanged,
             object: nil,
@@ -676,19 +691,33 @@ final class MainPanelViewModel: ObservableObject {
 
     func togglePin(_ clip: Clip) {
         guard let clipId = clip.id else { return }
-        try? clipRepository.togglePin(id: clipId)
+        do {
+            try clipRepository.togglePin(id: clipId)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.togglePin] failed id=\(clipId): \(error)")
+        }
     }
 
     func assignClipToBoard(_ clip: Clip, boardId: Int64) {
         guard let clipId = clip.id else { return }
-        try? tagRepository.assignTag(clipId: clipId, tagId: boardId)
+        do {
+            try tagRepository.assignTag(clipId: clipId, tagId: boardId)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.assignBoard] failed clipId=\(clipId) board=\(boardId): \(error)")
+            return
+        }
         loadBoards()
         loadClipTags()
     }
 
     func removeClipFromBoard(_ clip: Clip, boardId: Int64) {
         guard let clipId = clip.id else { return }
-        try? tagRepository.removeTag(clipId: clipId, tagId: boardId)
+        do {
+            try tagRepository.removeTag(clipId: clipId, tagId: boardId)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.removeBoard] failed clipId=\(clipId) board=\(boardId): \(error)")
+            return
+        }
         loadClipTags()
     }
 
@@ -720,7 +749,11 @@ final class MainPanelViewModel: ObservableObject {
             .filter { $0 < clips.count }
             .compactMap { clips[$0].id }
         guard !ids.isEmpty else { return }
-        try? clipRepository.softDeleteBatch(ids: ids)
+        do {
+            try clipRepository.softDeleteBatch(ids: ids)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.deleteSelected] failed count=\(ids.count): \(error)")
+        }
         selectedIndices.removeAll()
         selectedIndex = nil
     }
@@ -741,7 +774,11 @@ final class MainPanelViewModel: ObservableObject {
             .map { clips[$0] }
         for clip in validClips {
             guard let clipId = clip.id else { continue }
-            try? tagRepository.assignTag(clipId: clipId, tagId: tagId)
+            do {
+                try tagRepository.assignTag(clipId: clipId, tagId: tagId)
+            } catch {
+                ClipRavenLog.write(.database, "[VM.assignTagToSelected] failed clipId=\(clipId): \(error)")
+            }
         }
         loadBoards()
         loadClipTags()
@@ -753,17 +790,31 @@ final class MainPanelViewModel: ObservableObject {
         guard let clipId = clip.id else { return }
         let trimmed = nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
         let finalNickname = (trimmed?.isEmpty ?? true) ? nil : trimmed
-        try? clipRepository.updateNickname(id: clipId, nickname: finalNickname)
+        do {
+            try clipRepository.updateNickname(id: clipId, nickname: finalNickname)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.updateNickname] failed clipId=\(clipId): \(error)")
+        }
     }
 
     func createTag(name: String, colorHex: String) {
         var tag = Tag(name: name, colorHex: colorHex)
-        _ = try? tagRepository.save(&tag)
+        do {
+            _ = try tagRepository.save(&tag)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.createTag] failed name=\(name): \(error)")
+            return
+        }
         loadBoards()
     }
 
     func deleteTag(id: Int64) {
-        try? tagRepository.delete(id: id)
+        do {
+            try tagRepository.delete(id: id)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.deleteTag] failed id=\(id): \(error)")
+            return
+        }
         selectedTagIds.remove(id)
         loadBoards()
     }
