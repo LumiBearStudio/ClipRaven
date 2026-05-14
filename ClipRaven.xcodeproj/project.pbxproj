@@ -108,6 +108,7 @@
 		B51EC0145E0B3DB17B6935DB /* TagPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03619218883964D0579EB3 /* TagPopoverView.swift */; };
 		B80627B1BF659039B6810F3A /* ClipRavenSync in Frameworks */ = {isa = PBXBuildFile; productRef = 24127D691B8F246D03F708A7 /* ClipRavenSync */; };
 		BD6D54634272D60911CEA4D9 /* DuplicateDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */; };
+		HKEYFMT00000000000001CC /* HotKeyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */; };
 		BKUP000100000000000001AA /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKUP000100000000000001BB /* BackupService.swift */; };
 		BKUP000200000000000001AA /* BackupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKUP000200000000000001BB /* BackupSettingsView.swift */; };
 		C14C2D0FA906FCDDE03C8A78 /* SmartRuleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1176CCFD6408A2D52B556C7 /* SmartRuleRepository.swift */; };
@@ -199,6 +200,7 @@
 		606909D6D9BB0B6274E472F4 /* DetailModalControllerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DetailModalControllerTests.swift; sourceTree = "<group>"; };
 		6136714A72F07BD1ACF0D524 /* URLNormalizerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = URLNormalizerTests.swift; sourceTree = "<group>"; };
 		623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DuplicateDetectorTests.swift; sourceTree = "<group>"; };
+		HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HotKeyFormatterTests.swift; sourceTree = "<group>"; };
 		6398C7E12C5AAFFE22063EC0 /* PasteStackRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteStackRepository.swift; sourceTree = "<group>"; };
 		63C2E8D14273575CCD7FB083 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		6C5E6118076AC7CE9890FC97 /* MainPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPanelView.swift; sourceTree = "<group>"; };
@@ -585,6 +587,7 @@
 			children = (
 				7C17CEE80C266ABC8B3A2760 /* SmartRuleEngineTests.swift */,
 				623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */,
+				HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */,
 				SYNC000500000000000001CC /* SyncRecordMapperTests.swift */,
 				SYNC000700000000000001CC /* SyncStateStoreTests.swift */,
 				SYNC000900000000000001CC /* SyncEngineTests.swift */,
@@ -1074,6 +1077,7 @@
 				F84465927197C1BB397DC259 /* SearchRepositoryTests.swift in Sources */,
 				87E91C43CDE485C331B0179C /* SmartRuleEngineTests.swift in Sources */,
 				BD6D54634272D60911CEA4D9 /* DuplicateDetectorTests.swift in Sources */,
+				HKEYFMT00000000000001CC /* HotKeyFormatterTests.swift in Sources */,
 				SYNC000500000000000002CC /* SyncRecordMapperTests.swift in Sources */,
 				SYNC000700000000000002CC /* SyncStateStoreTests.swift in Sources */,
 				SYNC000900000000000002CC /* SyncEngineTests.swift in Sources */,
