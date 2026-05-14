@@ -50,28 +50,11 @@ class KeyboardViewController: UIInputViewController {
     private let log = Logger(subsystem: "com.lumibear.ClipRavenMobile.kb", category: "KbExt")
 
     private lazy var dbPool: DatabasePool? = {
-        guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.lumibear.ClipRavenMobile"
-        ) else {
+        let pool = AppGroupDatabase.makeReadOnlyPool()
+        if pool == nil {
             log.error("App Group container missing — full access not granted?")
-            return nil
         }
-        let dbURL = containerURL
-            .appendingPathComponent("ClipRaven", isDirectory: true)
-            .appendingPathComponent("clipraven.sqlite")
-        do {
-            var config = Configuration()
-            config.foreignKeysEnabled = true
-            config.readonly = true
-            config.busyMode = .timeout(5.0)   // multi-process 안전망
-            config.prepareDatabase { db in
-                try db.execute(sql: "PRAGMA synchronous = NORMAL")
-            }
-            return try DatabasePool(path: dbURL.path, configuration: config)
-        } catch {
-            log.error("dbPool init failed: \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
+        return pool
     }()
 
     // MARK: - Layout constants

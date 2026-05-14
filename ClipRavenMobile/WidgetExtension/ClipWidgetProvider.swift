@@ -89,19 +89,7 @@ struct ClipWidgetProvider: TimelineProvider {
     }
 
     private func openDB() -> DatabasePool? {
-        guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.lumibear.ClipRavenMobile"
-        ) else { return nil }
-
-        let dbURL = groupURL
-            .appendingPathComponent("ClipRaven", isDirectory: true)
-            .appendingPathComponent("clipraven.sqlite")
-
-        var config = Configuration()
-        config.readonly = true
-        // 메인 앱과 lock 충돌 시 5초 대기 — 키보드와 동일한 안전망.
-        config.busyMode = .timeout(5.0)
-        return try? DatabasePool(path: dbURL.path, configuration: config)
+        AppGroupDatabase.makeReadOnlyPool()
     }
 }
 

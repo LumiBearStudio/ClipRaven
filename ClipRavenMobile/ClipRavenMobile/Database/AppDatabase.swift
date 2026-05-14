@@ -106,4 +106,11 @@ final class AppDatabase {
         IosMigrations.registerAll(&migrator)
         return migrator
     }
+
+    // MARK: - Extension helpers
+    //
+    // Extension (Keyboard / Share / Widget / Intent) 용 헬퍼는 ClipRavenSync 패키지의
+    // `AppGroupDatabase` 로 이전되었다. 양쪽이 같은 app group ID 와 같은 sqlite 파일
+    // 경로를 사용한다. 이전엔 각 extension 이 인라인으로 같은 코드를 4번 중복 작성했고
+    // busyMode / synchronous 설정이 일관되지 않았다 (아키텍처 감사 C 트랙).
 }

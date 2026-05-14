@@ -10,23 +10,11 @@ class ShareViewController: UIViewController {
     private let log = Logger(subsystem: "com.lumibear.ClipRavenMobile.share", category: "ShareExt")
 
     private lazy var dbPool: DatabasePool? = {
-        guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.lumibear.ClipRavenMobile"
-        ) else {
+        let pool = AppGroupDatabase.makeWritablePool()
+        if pool == nil {
             log.error("App Group container missing — check entitlements")
-            return nil
         }
-        let dbURL = containerURL
-            .appendingPathComponent("ClipRaven", isDirectory: true)
-            .appendingPathComponent("clipraven.sqlite")
-        do {
-            var config = Configuration()
-            config.foreignKeysEnabled = true
-            return try DatabasePool(path: dbURL.path, configuration: config)
-        } catch {
-            log.error("dbPool init failed: \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
+        return pool
     }()
 
     override func viewDidLoad() {
@@ -178,11 +166,7 @@ class ShareViewController: UIViewController {
     /// ImageStorageService.saveImage 와 동일 — 폴더 경로 일치 필수
     /// (메인앱의 cleanOrphanedImages 가 같은 폴더 enumerate).
     private func saveImageToAppGroup(data: Data, uuid: String, ext: String) -> String? {
-        guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.lumibear.ClipRavenMobile"
-        ) else { return nil }
-        let dir = groupURL.appendingPathComponent("ClipRaven/images", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        guard let dir = AppGroupDatabase.sharedImagesDirectory else { return nil }
         let filename = "\(uuid).\(ext)"
         let url = dir.appendingPathComponent(filename)
         do {

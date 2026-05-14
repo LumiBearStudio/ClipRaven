@@ -59,17 +59,7 @@ struct CopyClipIntent: AppIntent {
     }
 
     private func fetchPayload(for id: Int64) -> ClipPayload? {
-        guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.lumibear.ClipRavenMobile"
-        ) else { return nil }
-
-        let dbURL = groupURL
-            .appendingPathComponent("ClipRaven", isDirectory: true)
-            .appendingPathComponent("clipraven.sqlite")
-
-        var config = Configuration()
-        config.readonly = true
-        guard let db = try? DatabasePool(path: dbURL.path, configuration: config) else { return nil }
+        guard let db = AppGroupDatabase.makeReadOnlyPool() else { return nil }
 
         return try? db.read { db in
             try Row.fetchOne(
