@@ -96,13 +96,15 @@ enum DateRangeFilter: Equatable {
             return (start, now)
         case .yesterday:
             let todayStart = calendar.startOfDay(for: now)
-            let yesterdayStart = calendar.date(byAdding: .day, value: -1, to: todayStart)!
+            // `byAdding:.day,value:-1` 는 정상적인 그레고리력에서 실패할 수 없으나
+            // protocol 상 Optional 이므로 `now` fallback 으로 안전 처리.
+            let yesterdayStart = calendar.date(byAdding: .day, value: -1, to: todayStart) ?? todayStart
             return (yesterdayStart, todayStart)
         case .lastWeek:
-            let start = calendar.date(byAdding: .day, value: -7, to: now)!
+            let start = calendar.date(byAdding: .day, value: -7, to: now) ?? now
             return (start, now)
         case .lastMonth:
-            let start = calendar.date(byAdding: .day, value: -30, to: now)!
+            let start = calendar.date(byAdding: .day, value: -30, to: now) ?? now
             return (start, now)
         case .custom(let from, let to):
             return (from, to)

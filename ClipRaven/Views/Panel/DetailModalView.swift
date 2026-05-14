@@ -18,7 +18,7 @@ struct DetailModalView: View {
                     .background(RoundedRectangle(cornerRadius: 6).fill(typeColor(clip.contentType)))
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(clip.nickname?.isEmpty == false ? clip.nickname! : clip.contentType.displayName)
+                    Text((clip.nickname?.isEmpty == false ? clip.nickname : nil) ?? clip.contentType.displayName)
                         .font(.system(size: 13, weight: .semibold))
                         .lineLimit(1)
                     Text(clip.lastCopiedAt.relativeString)

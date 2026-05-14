@@ -76,7 +76,7 @@ struct PreviewPanelView: View {
                     isEditingNickname = false
                 }
             } else {
-                Text(clip.nickname?.isEmpty == false ? clip.nickname! : "제목 없음")
+                Text((clip.nickname?.isEmpty == false ? clip.nickname : nil) ?? "제목 없음")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(clip.nickname?.isEmpty == false ? .primary : .secondary.opacity(0.6))
                     .onTapGesture {

@@ -13,6 +13,7 @@ enum ChosungConverter {
     static func extractChosung(from text: String) -> String {
         var result = ""
         for char in text {
+            // Character 는 항상 ≥1 scalar — first! 안전. swiftlint:disable:next force_unwrapping
             let scalar = char.unicodeScalars.first!.value
             if scalar >= 0xAC00 && scalar <= 0xD7A3 {
                 let index = Int((scalar - 0xAC00) / 588)
@@ -39,6 +40,7 @@ enum ChosungConverter {
     static func shouldUseChosungSearch(_ text: String) -> Bool {
         let hasChosung = text.contains { isChosung($0) }
         let hasFullHangul = text.contains {
+            // Character 는 항상 ≥1 scalar. swiftlint:disable:next force_unwrapping
             let v = $0.unicodeScalars.first!.value
             return v >= 0xAC00 && v <= 0xD7A3
         }
