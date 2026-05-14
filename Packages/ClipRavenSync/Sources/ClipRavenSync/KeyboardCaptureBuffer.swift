@@ -89,6 +89,14 @@ public enum KeyboardCaptureBuffer {
                 }
                 let encoded = try JSONEncoder().encode(captures)
                 try encoded.write(to: writeURL, options: .atomic)
+
+                // 보안 감사 A-M-3: iCloud 백업 / iTunes 백업에 포함되지 않도록 마킹.
+                // App Group container 가 `Documents` 하위면 기본 백업 대상 — 캡처 직후
+                // 마킹하여 평문 클립이 백업 통로로 빠져나가는 것을 차단.
+                var mutableURL = writeURL
+                var values = URLResourceValues()
+                values.isExcludedFromBackup = true
+                try? mutableURL.setResourceValues(values)
             } catch {
                 Self.log.error("append failed: \(error.localizedDescription, privacy: .public)")
             }
