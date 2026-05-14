@@ -1,0 +1,125 @@
+# SwiftLint configuration for ClipRaven (macOS + iOS).
+#
+# 설치: `brew install swiftlint`
+# Xcode 빌드 페이즈에서 자동 실행. SwiftLint 미설치 시 빌드는 통과한다.
+#
+# 정책:
+# - 한국어 주석 / DocC 라인 길이 고려해 line_length 140
+# - public/internal API 식별자에 짧은 이름(id, uuid, db 등) 허용
+# - 테스트는 일부 규칙 완화 (인라인 disable 으로 처리)
+# - force-cast 는 error, force-unwrapping 은 warning (점진 제거)
+
+disabled_rules:
+  - todo                     # TODO / FIXME 는 의도된 주석으로 허용
+  - trailing_comma           # closure args 의 trailing comma 는 Swift 5+ 권장 스타일
+  - opening_brace            # SwiftUI ViewBuilder body 와 충돌
+
+opt_in_rules:
+  - force_unwrapping
+  - empty_count
+  - explicit_init
+  - first_where
+  - last_where
+  - sorted_first_last
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - prefer_self_in_static_references
+
+excluded:
+  - build
+  - DerivedData
+  - .build
+  - Packages/ClipRavenSync/.build
+  - Packages/ClipRavenSync/.swiftpm
+  - "**/*.generated.swift"
+  - "**/Resources"
+  - sentry-wizard
+  - docs
+
+# 줄 길이 — 한국어 주석은 글자 수 기준이 영문과 달라 후하게.
+line_length:
+  warning: 140
+  error: 200
+  ignores_urls: true
+  ignores_comments: true
+  ignores_function_declarations: true
+  ignores_interpolated_strings: true
+
+# 파일 길이 — 600줄을 넘으면 분해 신호. P3 에서 큰 파일들을 모두 분할 예정.
+file_length:
+  warning: 600
+  error: 1200
+  ignore_comment_only_lines: true
+
+# 함수 본문 길이.
+function_body_length:
+  warning: 60
+  error: 120
+
+# 함수 매개변수 수.
+function_parameter_count:
+  warning: 7
+  error: 10
+
+# 타입 본문 길이.
+type_body_length:
+  warning: 350
+  error: 600
+
+# 사이클로매틱 복잡도.
+cyclomatic_complexity:
+  warning: 15
+  error: 25
+  ignores_case_statements: true
+
+# 식별자 이름 — 짧은 이름 (id, db, fm, fs, vm) 명시적으로 허용.
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 60
+    error: 80
+  excluded:
+    - id
+    - db
+    - fm
+    - fs
+    - vm
+    - to
+    - or
+    - x
+    - y
+    - z
+    - i
+    - j
+    - n
+    - t
+    - dx
+    - dy
+    - lhs
+    - rhs
+
+# 타입 이름.
+type_name:
+  min_length:
+    warning: 3
+    error: 2
+  max_length:
+    warning: 50
+    error: 80
+
+# Force cast 는 error — 의도가 잘못된 캐스팅은 크래시 위험 크다.
+force_cast: error
+force_try: warning
+force_unwrapping: warning
+
+# Nesting — SwiftUI body 에서 깊은 중첩이 자연스러우므로 후하게.
+nesting:
+  type_level:
+    warning: 3
+  function_level:
+    warning: 5
+
+# Reporter — Xcode 빌드 페이즈에서 사용.
+reporter: "xcode"
