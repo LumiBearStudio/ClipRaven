@@ -14,13 +14,17 @@ actor OGMetadataService {
     // MARK: - Public
 
     /// 클립이 URL 타입이고 아직 미시도인 경우 fetch를 시작한다.
+    ///
+    /// 보안: SSRF 방어 — http(s) scheme 만 허용하고 private/loopback/link-local
+    /// 주소 (192.168.*, 10.*, 127.*, 169.254.*, ::1 등) 는 fetch 차단.
     func fetchIfNeeded(clip: Clip) async {
         guard clip.contentType == .url,
               let clipId = clip.id,
               clip.ogFetchedAt == nil,
               !inFlight.contains(clipId),
               let urlString = clip.contentText,
-              let url = URL(string: urlString) ?? URL(string: "https://\(urlString)")
+              let url = URL(string: urlString) ?? URL(string: "https://\(urlString)"),
+              Self.isPubliclyRoutable(url)
         else { return }
 
         inFlight.insert(clipId)
@@ -28,6 +32,59 @@ actor OGMetadataService {
         await fetchAndPersist(url: url, clipId: clipId)
 
         inFlight.remove(clipId)
+    }
+
+    /// SSRF 가드 — public 인터넷 hostname 만 허용.
+    /// 보안 감사 A-H3: 사용자가 무심코 복사한 내부 IP (`192.168.1.1`,
+    /// `169.254.169.254` AWS metadata 등) 가 자동으로 fetch 되어 OG 메타가
+    /// CloudKit 으로 전파되던 위험.
+    ///
+    /// 차단:
+    /// - 비-http(s) scheme (`file:`, `data:`, `javascript:`, etc.)
+    /// - hostname 이 `localhost` / `*.local` / `*.internal`
+    /// - IPv4 literal: 10.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.168.0.0/16
+    /// - IPv6 literal: `::1`, `fe80::/10` (link-local), `fc00::/7` (ULA)
+    nonisolated static func isPubliclyRoutable(_ url: URL) -> Bool {
+        guard let scheme = url.scheme?.lowercased(),
+              ["http", "https"].contains(scheme),
+              let host = url.host?.lowercased(),
+              !host.isEmpty
+        else { return false }
+
+        // hostname 식별자 차단
+        if host == "localhost" { return false }
+        if host.hasSuffix(".local") || host.hasSuffix(".internal") { return false }
+
+        // IPv4 literal 검사
+        let octets = host.split(separator: ".")
+        if octets.count == 4, octets.allSatisfy({ Int($0) != nil }) {
+            let parts = octets.compactMap { Int($0) }
+            guard parts.count == 4 else { return false }
+            switch parts[0] {
+            case 10, 127: return false                                  // 10/8, loopback
+            case 169 where parts[1] == 254: return false                // link-local
+            case 172 where (16...31).contains(parts[1]): return false   // 172.16/12
+            case 192 where parts[1] == 168: return false                // 192.168/16
+            case 0: return false                                         // 0.0.0.0/8
+            default: break
+            }
+        }
+
+        // IPv6 literal — bracketed: [::1], [fe80::...]
+        if host.hasPrefix("[") {
+            let inner = host.dropFirst().split(separator: "]").first.map(String.init) ?? ""
+            let lower = inner.lowercased()
+            if lower == "::1" { return false }
+            if lower.hasPrefix("fe80:") || lower.hasPrefix("fe9") ||
+               lower.hasPrefix("fea") || lower.hasPrefix("feb") {
+                return false  // fe80::/10 link-local
+            }
+            if lower.hasPrefix("fc") || lower.hasPrefix("fd") {
+                return false  // fc00::/7 ULA
+            }
+        }
+
+        return true
     }
 
     // MARK: - Private
