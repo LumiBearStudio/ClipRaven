@@ -150,7 +150,7 @@ actor ClipProcessor {
             ClipRavenLog.write(.processor, "[ClipProc] SAVED id=\(clip.id ?? -1) hash=\(hash.prefix(12))")
 
             // Apply smart rules for auto-tagging
-            smartRuleEngine.applyRulesAndAssignTags(to: clip)
+            await smartRuleEngine.applyRulesAndAssignTags(to: clip)
 
             // Trigger AI categorization in background (macOS 26+, text only)
             if let clipId = clip.id {
@@ -268,7 +268,7 @@ actor ClipProcessor {
         try? clipRepository.save(&clip)
 
         // Apply smart rules for auto-tagging
-        smartRuleEngine.applyRulesAndAssignTags(to: clip)
+        await smartRuleEngine.applyRulesAndAssignTags(to: clip)
 
         // Trigger OCR asynchronously for image clips
         if let clipId = clip.id {
@@ -373,7 +373,7 @@ actor ClipProcessor {
         } catch {
             ClipRavenLog.write(.processor, "[ClipProc] fileURLs SAVE ERROR: \(error)")
         }
-        smartRuleEngine.applyRulesAndAssignTags(to: clip)
+        await smartRuleEngine.applyRulesAndAssignTags(to: clip)
     }
 
     /// Finder 에서 단일 이미지 파일을 복사한 경우 — image 데이터를 직접
@@ -425,7 +425,7 @@ actor ClipProcessor {
             ClipRavenLog.write(.processor, "[ClipProc] file→image SAVE ERROR: \(error)")
         }
 
-        smartRuleEngine.applyRulesAndAssignTags(to: clip)
+        await smartRuleEngine.applyRulesAndAssignTags(to: clip)
 
         // 백그라운드 OCR
         if let clipId = clip.id {

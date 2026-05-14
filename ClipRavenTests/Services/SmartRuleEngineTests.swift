@@ -27,7 +27,7 @@ final class SmartRuleEngineTests: XCTestCase {
         condition: RuleCondition,
         actions: [RuleAction],
         enabled: Bool = true
-    ) throws {
+    ) async throws {
         var rule = SmartRule(
             name: name,
             isEnabled: enabled,
@@ -36,7 +36,7 @@ final class SmartRuleEngineTests: XCTestCase {
             createdAt: Date()
         )
         try ruleRepo.save(&rule)
-        engine.reloadRules()
+        await engine.reloadRules()
     }
 
     private func makeClip(
@@ -55,93 +55,93 @@ final class SmartRuleEngineTests: XCTestCase {
 
     // MARK: - applyRules (tag ID extraction)
 
-    func test_applyRules_returnsEmptyWhenNoRulesDefined() {
-        let ids = engine.applyRules(to: makeClip("hi"))
+    func test_applyRules_returnsEmptyWhenNoRulesDefined() async {
+        let ids = await engine.applyRules(to: makeClip("hi"))
         XCTAssertTrue(ids.isEmpty)
     }
 
-    func test_applyRules_matchesContentTypeCondition() throws {
-        try addRule(
+    func test_applyRules_matchesContentTypeCondition() async throws {
+        try await addRule(
             condition: .contentType("code"),
             actions: [.assignTag(tagId: 42)]
         )
-        let ids = engine.applyRules(to: makeClip("let x = 1", type: .code))
+        let ids = await engine.applyRules(to: makeClip("let x = 1", type: .code))
         XCTAssertEqual(ids, [42])
     }
 
-    func test_applyRules_doesNotMatchMismatchedContentType() throws {
-        try addRule(
+    func test_applyRules_doesNotMatchMismatchedContentType() async throws {
+        try await addRule(
             condition: .contentType("code"),
             actions: [.assignTag(tagId: 42)]
         )
-        let ids = engine.applyRules(to: makeClip("plain text", type: .text))
+        let ids = await engine.applyRules(to: makeClip("plain text", type: .text))
         XCTAssertTrue(ids.isEmpty)
     }
 
-    func test_applyRules_matchesTextContainsCondition() throws {
-        try addRule(
+    func test_applyRules_matchesTextContainsCondition() async throws {
+        try await addRule(
             condition: .textContains("TODO"),
             actions: [.assignTag(tagId: 7)]
         )
-        let ids = engine.applyRules(to: makeClip("TODO: fix this"))
+        let ids = await engine.applyRules(to: makeClip("TODO: fix this"))
         XCTAssertEqual(ids, [7])
     }
 
-    func test_applyRules_textContainsIsCaseInsensitive() throws {
-        try addRule(
+    func test_applyRules_textContainsIsCaseInsensitive() async throws {
+        try await addRule(
             condition: .textContains("todo"),
             actions: [.assignTag(tagId: 7)]
         )
-        let ids = engine.applyRules(to: makeClip("TODO upper case"))
+        let ids = await engine.applyRules(to: makeClip("TODO upper case"))
         XCTAssertEqual(ids, [7])
     }
 
-    func test_applyRules_matchesSourceAppCondition() throws {
-        try addRule(
+    func test_applyRules_matchesSourceAppCondition() async throws {
+        try await addRule(
             condition: .sourceApp(bundleId: "com.google.Chrome"),
             actions: [.assignTag(tagId: 99)]
         )
-        let ids = engine.applyRules(
-            to: makeClip("x", sourceApp: "com.google.Chrome")
+        let ids = await engine.applyRules(
+            to:makeClip("x", sourceApp: "com.google.Chrome")
         )
         XCTAssertEqual(ids, [99])
     }
 
-    func test_applyRules_urlDomainMatchesHost() throws {
-        try addRule(
+    func test_applyRules_urlDomainMatchesHost() async throws {
+        try await addRule(
             condition: .urlDomain("github.com"),
             actions: [.assignTag(tagId: 10)]
         )
-        let ids = engine.applyRules(
-            to: makeClip("https://github.com/anthropic/claude", type: .url)
+        let ids = await engine.applyRules(
+            to:makeClip("https://github.com/anthropic/claude", type: .url)
         )
         XCTAssertEqual(ids, [10])
     }
 
-    func test_applyRules_dedupesDuplicateTagsAcrossMultipleRules() throws {
-        try addRule(name: "a", condition: .contentType("text"), actions: [.assignTag(tagId: 5)])
-        try addRule(name: "b", condition: .textContains("hello"), actions: [.assignTag(tagId: 5)])
+    func test_applyRules_dedupesDuplicateTagsAcrossMultipleRules() async throws {
+        try await addRule(name: "a", condition: .contentType("text"), actions: [.assignTag(tagId: 5)])
+        try await addRule(name: "b", condition: .textContains("hello"), actions: [.assignTag(tagId: 5)])
 
-        let ids = engine.applyRules(to: makeClip("hello world"))
+        let ids = await engine.applyRules(to: makeClip("hello world"))
         XCTAssertEqual(ids, [5], "duplicate tag IDs across rules must be collapsed")
     }
 
-    func test_applyRules_ignoresDisabledRules() throws {
-        try addRule(
+    func test_applyRules_ignoresDisabledRules() async throws {
+        try await addRule(
             condition: .contentType("text"),
             actions: [.assignTag(tagId: 1)],
             enabled: false
         )
-        let ids = engine.applyRules(to: makeClip("x"))
+        let ids = await engine.applyRules(to: makeClip("x"))
         XCTAssertTrue(ids.isEmpty, "disabled rule must not contribute tags")
     }
 
-    func test_applyRules_ignoresSetTTLActionForTagList() throws {
-        try addRule(
+    func test_applyRules_ignoresSetTTLActionForTagList() async throws {
+        try await addRule(
             condition: .contentType("text"),
             actions: [.setTTL(days: 7)]  // no assignTag
         )
-        let ids = engine.applyRules(to: makeClip("x"))
+        let ids = await engine.applyRules(to: makeClip("x"))
         XCTAssertTrue(ids.isEmpty, "TTL-only rule must not produce tag IDs")
     }
 }

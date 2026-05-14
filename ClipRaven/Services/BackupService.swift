@@ -305,7 +305,7 @@ final class BackupService {
             }
         }
 
-        SmartRuleEngine.shared.reloadRules()
+        Task { await SmartRuleEngine.shared.reloadRules() }
 
         // 4) Restore original image files (if backup contained images/)
         var imagesRestored = 0

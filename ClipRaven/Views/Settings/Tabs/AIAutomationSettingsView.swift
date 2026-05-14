@@ -237,7 +237,7 @@ struct SmartRulesSettingsView: View {
             AddSmartRuleView(tags: tags) { newRule in
                 var rule = newRule
                 try? ruleRepo.save(&rule)
-                SmartRuleEngine.shared.reloadRules()
+                Task { await SmartRuleEngine.shared.reloadRules() }
                 loadData()
             }
         }
@@ -251,14 +251,14 @@ struct SmartRulesSettingsView: View {
     private func toggleRule(_ rule: SmartRule) {
         guard let id = rule.id else { return }
         try? ruleRepo.toggleEnabled(id: id)
-        SmartRuleEngine.shared.reloadRules()
+        Task { await SmartRuleEngine.shared.reloadRules() }
         loadData()
     }
 
     private func deleteRule(_ rule: SmartRule) {
         guard let id = rule.id else { return }
         try? ruleRepo.delete(id: id)
-        SmartRuleEngine.shared.reloadRules()
+        Task { await SmartRuleEngine.shared.reloadRules() }
         loadData()
     }
 }
