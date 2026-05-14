@@ -30,27 +30,45 @@ public protocol KeychainStorage: Sendable {
 }
 
 /// 실제 Keychain 을 쓰는 구현. iOS / macOS 둘 다 동일 API.
+///
+/// 보안 (감사 A-M-1):
+/// - `kSecAttrAccessible = AfterFirstUnlockThisDeviceOnly` — 디바이스 unlock
+///   이후에만 접근 + 디바이스 마이그레이션 시 keychain 복원 제외.
+/// - `kSecAttrAccessGroup` 은 **선택 사항** — provisioning profile 에 keychain
+///   access group entitlement 가 명시되어야만 동작. 기본값 nil 이면 앱의
+///   default access group (`$(AppIdentifierPrefix)$(CFBundleIdentifier)`) 사용 →
+///   같은 개발자 ID 의 다른 ClipRaven 빌드 (sandbox / dev / beta) 가 같은 슬롯
+///   공유 가능.
 public struct SystemKeychain: KeychainStorage {
     private let service: String
     private let account: String
+    /// keychain access group (entitlement 등록된 값과 일치해야 함). nil 이면
+    /// 앱 default access group 사용. macOS / iOS 앱이 같은 trial 슬롯을 공유하려면
+    /// 양쪽 entitlement 에 같은 group ID 를 등록해야 함.
+    private let accessGroup: String?
 
     public init(
         service: String = "com.lumibear.clipraven.trial",
-        account: String = "firstLaunchDate"
+        account: String = "firstLaunchDate",
+        accessGroup: String? = nil
     ) {
         self.service = service
         self.account = account
+        self.accessGroup = accessGroup
     }
 
     public func saveFirstLaunchDate(_ date: Date) throws {
         let data = withUnsafeBytes(of: date.timeIntervalSince1970) { Data($0) }
-        let query: [CFString: Any] = [
+        var query: [CFString: Any] = [
             kSecClass:       kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: account,
             kSecValueData:   data,
             kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
         ]
+        if let accessGroup {
+            query[kSecAttrAccessGroup] = accessGroup
+        }
         SecItemDelete(query as CFDictionary)
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status == errSecSuccess else {
@@ -59,13 +77,16 @@ public struct SystemKeychain: KeychainStorage {
     }
 
     public func loadFirstLaunchDate() -> Date? {
-        let query: [CFString: Any] = [
+        var query: [CFString: Any] = [
             kSecClass:        kSecClassGenericPassword,
             kSecAttrService:  service,
             kSecAttrAccount:  account,
             kSecReturnData:   true,
             kSecMatchLimit:   kSecMatchLimitOne,
         ]
+        if let accessGroup {
+            query[kSecAttrAccessGroup] = accessGroup
+        }
         var result: AnyObject?
         guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
               let data = result as? Data, data.count >= 8 else { return nil }
