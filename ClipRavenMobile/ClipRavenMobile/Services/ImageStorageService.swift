@@ -26,7 +26,7 @@ enum ImageStorageService {
     private static let log = Logger(subsystem: "com.lumibear.ClipRavenMobile", category: "ImageStorage")
 
     /// App Group 식별자. 메인 앱/Widget/Keyboard 모두 같은 그룹.
-    static let appGroupIdentifier = "group.com.lumibear.ClipRaven"
+    static let appGroupIdentifier = "63ZN5B3LHU.com.lumibear.ClipRaven"
 
     /// 원본 이미지 영구 저장 디렉터리.
     /// 앱 첫 실행/Phase C 활성 시 자동 생성.

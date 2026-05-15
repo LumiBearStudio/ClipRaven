@@ -16,7 +16,7 @@ import GRDB
 public enum AppGroupDatabase {
 
     /// 메인 앱 + Extension 이 공유하는 App Group ID.
-    public static let appGroupID = "group.com.lumibear.ClipRaven"
+    public static let appGroupID = "63ZN5B3LHU.com.lumibear.ClipRaven"
 
     /// App Group 컨테이너 안의 sqlite 파일 URL. nil 이면 entitlement 누락.
     public static var sharedSQLiteURL: URL? {

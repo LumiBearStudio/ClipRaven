@@ -610,7 +610,7 @@ class KeyboardViewController: UIInputViewController {
             let mergedClips: [Clip]
             if trimmed.isEmpty {
                 let pending = KeyboardCaptureBuffer.peekAll(
-                    appGroupIdentifier: "group.com.lumibear.ClipRaven"
+                    appGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
                 )
                 let pendingClips = pending.compactMap(Self.clipFromPending)
                 // pending 이 더 최신 (capturedAt 내림차순) — 카드 앞쪽에
@@ -1065,7 +1065,7 @@ class KeyboardViewController: UIInputViewController {
             )
             KeyboardCaptureBuffer.append(
                 capture,
-                appGroupIdentifier: "group.com.lumibear.ClipRaven"
+                appGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
             )
             // 즉시 표시 — in-memory clips 에 prepend
             let tempClip = Clip(
@@ -1296,7 +1296,7 @@ class KeyboardViewController: UIInputViewController {
     /// 별도 target 이라 직접 import 못 하므로 inline.
     private static func loadImageFromAppGroup(relativePath: String) -> UIImage? {
         guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.lumibear.ClipRaven"
+            forSecurityApplicationGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
         ) else { return nil }
         let fileURL = containerURL
             .appendingPathComponent("ClipRaven/images", isDirectory: true)
