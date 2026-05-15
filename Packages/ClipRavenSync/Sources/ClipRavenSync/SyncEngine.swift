@@ -593,17 +593,20 @@ extension SyncEngine: CKSyncEngineDelegate {
         }
 
         // Collect `serverRecordChanged` conflicts — server already has a
-        // newer version, so current policy is "server wins": merge the
-        // server record into the local row (same path as fetch) and let
-        // CKSyncEngine decide whether to retry. The engine drops the
-        // saveRecord from the pending queue on this error, so we do NOT
-        // re-enqueue; the user's next edit will bump `updatedAt` and
-        // trigger a fresh send with the rehydrated `ckSystemFields`.
+        // newer version. v14: merge the server record into the local row
+        // via `applyServerChanges` which applies per-field LWW (decode's
+        // serverWinsLWW). After the merge, re-enqueue the UUID so the next
+        // send carries any locally-winning user-intent fields back up to
+        // the server. CKSyncEngine deduplicates by recordID+changeTag so
+        // a "server wins everything" merge becomes a near-free no-op echo.
         //
-        // Server-wins sanctions losing the local mutable-field delta
-        // (immutables are protected by decode's merge). Log the pre-merge
-        // local `updatedAt` at `.info` so Console diagnostics can surface
-        // incidents until a per-field LWW path is added.
+        // Why re-enqueue (changed in v14): under the previous server-wins
+        // policy we dropped the local change on conflict. Now decode might
+        // decide local wins for some fields (e.g., a user toggle pinned)
+        // while server wins for others (background OG fetch). Without
+        // re-enqueue, the local toggle would be merged into local DB but
+        // would never reach the server — silently lost on the next peer
+        // fetch.
         var conflictServerRecords: [CKRecord] = []
         for failure in event.failedRecordSaves {
             let name = failure.record.recordID.recordName
@@ -614,7 +617,7 @@ extension SyncEngine: CKSyncEngineDelegate {
                 let localTag = failure.record[SyncRecordMapper.Key.updatedAt] as? Date
                 let serverTag = serverRecord[SyncRecordMapper.Key.updatedAt] as? Date
                 Self.log.info(
-                    "serverRecordChanged for \(name, privacy: .public); local updatedAt=\(String(describing: localTag), privacy: .public) server updatedAt=\(String(describing: serverTag), privacy: .public); applying server copy"
+                    "serverRecordChanged for \(name, privacy: .public); local updatedAt=\(String(describing: localTag), privacy: .public) server updatedAt=\(String(describing: serverTag), privacy: .public); merging via per-field LWW (v14)"
                 )
                 conflictServerRecords.append(serverRecord)
             } else {
@@ -627,6 +630,10 @@ extension SyncEngine: CKSyncEngineDelegate {
                     modifications: conflictServerRecords,
                     deletions: []
                 )
+                // v14 — re-enqueue so any locally-winning field reaches server.
+                let uuids = conflictServerRecords.map(\.recordID.recordName)
+                Self.log.info("re-enqueueing \(uuids.count, privacy: .public) conflict UUID(s) after LWW merge")
+                enqueueSaves(uuids: uuids)
             } catch {
                 Self.log.error("applyServerChanges (conflict) failed: \(error.localizedDescription, privacy: .public)")
             }

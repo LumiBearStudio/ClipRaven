@@ -98,6 +98,17 @@ public enum SyncRecordMapper {
         public static let deviceId = "deviceId"
         public static let platformCreatedOn = "platformCreatedOn"
         public static let updatedAt = "updatedAt"
+        // Per-field LWW timestamps (v14). `decode` 가 server 의 timestamp 가
+        // local 보다 newer 일 때만 해당 field 의 server value 를 적용 — stale
+        // background-update (OG/AI/OCR) 가 사용자 user-intent 를 역행 못 하게.
+        public static let isPinnedUpdatedAt         = "isPinnedUpdatedAt"
+        public static let pinOrderUpdatedAt         = "pinOrderUpdatedAt"
+        public static let manualOrderUpdatedAt      = "manualOrderUpdatedAt"
+        public static let isDeletedUpdatedAt        = "isDeletedUpdatedAt"
+        public static let nicknameUpdatedAt         = "nicknameUpdatedAt"
+        public static let excludeFromSyncUpdatedAt  = "excludeFromSyncUpdatedAt"
+        public static let expiresAtUpdatedAt        = "expiresAtUpdatedAt"
+        public static let customShortcutUpdatedAt   = "customShortcutUpdatedAt"
     }
 
     /// Fields that must never be overwritten once written. Server-side reject
@@ -234,7 +245,40 @@ public enum SyncRecordMapper {
         let tagsOptional: String? = clip.tagsText.isEmpty ? nil : clip.tagsText
         record[Key.tagsText] = Self.redactedIfSensitive(tagsOptional, label: "tagsText", uuid: uuid)
 
+        // Per-field LWW timestamps (v14). nil 은 nil 그대로 전송 — "이 device 가
+        // 이 field 를 명시적으로 set 한 적 없음" 의미. 받는 측 decode 가 NULL <
+        // 모든 concrete Date 로 취급해 다른 device 가 처음 set 한 시점부터 LWW
+        // 정상 작동.
+        record[Key.isPinnedUpdatedAt]        = clip.isPinnedUpdatedAt
+        record[Key.pinOrderUpdatedAt]        = clip.pinOrderUpdatedAt
+        record[Key.manualOrderUpdatedAt]     = clip.manualOrderUpdatedAt
+        record[Key.isDeletedUpdatedAt]       = clip.isDeletedUpdatedAt
+        record[Key.nicknameUpdatedAt]        = clip.nicknameUpdatedAt
+        record[Key.excludeFromSyncUpdatedAt] = clip.excludeFromSyncUpdatedAt
+        record[Key.expiresAtUpdatedAt]       = clip.expiresAtUpdatedAt
+        record[Key.customShortcutUpdatedAt]  = clip.customShortcutUpdatedAt
+
         return record
+    }
+
+    /// Per-field LWW compare. Returns `true` when the **server** value should
+    /// be applied (server wins). Returns `false` when the **local** value
+    /// should be retained.
+    ///
+    /// NULL semantics: NULL is treated as strictly older than any concrete
+    /// Date — a device that never explicitly wrote this field is "stale"
+    /// relative to one that did. If both sides are NULL we fall back to
+    /// server-wins (legacy behavior, no information available to discriminate).
+    ///
+    /// Tie (equal Dates) also resolves to server-wins so the order in which
+    /// two devices' identical-instant writes land on the server is stable.
+    fileprivate static func serverWinsLWW(serverTS: Date?, localTS: Date?) -> Bool {
+        switch (serverTS, localTS) {
+        case (nil, nil):      return true   // both unset → fallback server-wins
+        case (nil, _):        return false  // only local explicit → local wins
+        case (_, nil):        return true   // only server explicit → server wins
+        case let (s?, l?):    return s >= l // strict LWW (tie → server)
+        }
     }
 
     /// 텍스트가 `SyncFilters.shouldExclude` 가 잡는 sensitive 패턴이면 nil 반환.
@@ -306,14 +350,62 @@ public enum SyncRecordMapper {
             c.deviceId = record[Key.deviceId] as? String
         }
 
-        // Mutable — server wins today. LWW deferred.
+        // Mutable — server-wins for background metadata (OG/AI/OCR/etc).
+        // User-intent fields (isPinned, pinOrder, manualOrder, isDeleted,
+        // nickname, expiresAt, customShortcut*) use per-field LWW below
+        // so a stale background update from one device can't reverse a
+        // user toggle on another. v14.
         c.schemaVersion = Int(record[Key.schemaVersion] as? Int64 ?? 1)
         c.tagsText = (record[Key.tagsText] as? String) ?? ""
         c.copyCount = Int(record[Key.copyCount] as? Int64 ?? 1)
-        c.isPinned = ((record[Key.isPinned] as? Int64) ?? 0) != 0
-        c.isDeleted = ((record[Key.isDeleted] as? Int64) ?? 0) != 0
         c.lastCopiedAt = (record[Key.lastCopiedAt] as? Date) ?? c.lastCopiedAt
         c.updatedAt = record[Key.updatedAt] as? Date
+
+        // Per-field LWW (v14) — user-intent fields. `c` starts as `local` so
+        // when LWW returns false ("local wins") the local value is preserved
+        // automatically; only the server-wins branch overwrites.
+        let serverIsPinnedTS = record[Key.isPinnedUpdatedAt] as? Date
+        if Self.serverWinsLWW(serverTS: serverIsPinnedTS, localTS: local?.isPinnedUpdatedAt) {
+            c.isPinned = ((record[Key.isPinned] as? Int64) ?? 0) != 0
+            c.isPinnedUpdatedAt = serverIsPinnedTS
+        }
+
+        let serverPinOrderTS = record[Key.pinOrderUpdatedAt] as? Date
+        if Self.serverWinsLWW(serverTS: serverPinOrderTS, localTS: local?.pinOrderUpdatedAt) {
+            c.pinOrder = (record[Key.pinOrder] as? Int64).map { Int($0) }
+            c.pinOrderUpdatedAt = serverPinOrderTS
+        }
+
+        let serverManualOrderTS = record[Key.manualOrderUpdatedAt] as? Date
+        if Self.serverWinsLWW(serverTS: serverManualOrderTS, localTS: local?.manualOrderUpdatedAt) {
+            c.manualOrder = (record[Key.manualOrder] as? Int64).map { Int($0) }
+            c.manualOrderUpdatedAt = serverManualOrderTS
+        }
+
+        let serverIsDeletedTS = record[Key.isDeletedUpdatedAt] as? Date
+        if Self.serverWinsLWW(serverTS: serverIsDeletedTS, localTS: local?.isDeletedUpdatedAt) {
+            c.isDeleted = ((record[Key.isDeleted] as? Int64) ?? 0) != 0
+            c.isDeletedUpdatedAt = serverIsDeletedTS
+        }
+
+        let serverNicknameTS = record[Key.nicknameUpdatedAt] as? Date
+        if Self.serverWinsLWW(serverTS: serverNicknameTS, localTS: local?.nicknameUpdatedAt) {
+            c.nickname = record[Key.nickname] as? String
+            c.nicknameUpdatedAt = serverNicknameTS
+        }
+
+        let serverExpiresTS = record[Key.expiresAtUpdatedAt] as? Date
+        if Self.serverWinsLWW(serverTS: serverExpiresTS, localTS: local?.expiresAtUpdatedAt) {
+            c.expiresAt = record[Key.expiresAt] as? Date
+            c.expiresAtUpdatedAt = serverExpiresTS
+        }
+
+        // customShortcut LWW 는 timestamp 인프라만 갖춰두고 활성 안 함 (v14).
+        // 이유: customShortcutKeyCode / customShortcutModifiers 자체가 CKRecord
+        // schema 에 정의 안 됨 (Mac-only Carbon hotkey, iOS 미지원). value 가
+        // record 에 없으니 LWW server-wins 가 의미 없음. timestamp 컬럼만
+        // 미래 sync 활성 시 즉시 사용 가능하게 schema 추가.
+        // applyServerChangesBody 가 기존대로 local 값 보존.
 
         c.imageHash = record[Key.imageHash] as? String
         c.imageDhash = (record[Key.imageDhash] as? Int64)
@@ -346,10 +438,8 @@ public enum SyncRecordMapper {
         c.sourceUrl = record[Key.sourceUrl] as? String
         c.ogTitle = record[Key.ogTitle] as? String
         c.ogFetchedAt = record[Key.ogFetchedAt] as? Date
-        c.nickname = record[Key.nickname] as? String
-        c.pinOrder = (record[Key.pinOrder] as? Int64).map { Int($0) }
-        c.manualOrder = (record[Key.manualOrder] as? Int64).map { Int($0) }
-        c.expiresAt = record[Key.expiresAt] as? Date
+        // nickname / pinOrder / manualOrder / expiresAt 는 LWW 분기에서 결정.
+        // 여기서 다시 record 값으로 덮어쓰면 LWW 무효화되므로 제거 (v14).
         c.aiCategory = record[Key.aiCategory] as? String
         c.aiCategoryGeneratedAt = record[Key.aiCategoryGeneratedAt] as? Date
 

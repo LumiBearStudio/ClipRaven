@@ -83,6 +83,41 @@ public enum SyncSchema {
         try db.create(index: "idx_clips_ckSyncState", on: "clips", columns: ["ckSyncState"])
     }
 
+    /// Add per-field LWW timestamp columns to an existing `clips` table (v14).
+    ///
+    /// Each column tracks the last time a specific **user-intent** field
+    /// changed — enabling per-field last-write-wins conflict resolution.
+    /// Background metadata updates (OG/AI/OCR) bump `updatedAt` but must
+    /// NOT bump these timestamps, so the user's pin/delete/rename intent
+    /// from one device survives stale records from another.
+    ///
+    /// All columns default to NULL ("never explicitly set" = legacy / system-
+    /// default). NULL is treated as "older than any concrete timestamp" in
+    /// the LWW comparison, so the first explicit write from either device
+    /// wins on a previously-default row.
+    public static func addClipUserIntentTimestamps(_ t: TableAlteration) {
+        t.add(column: "isPinnedUpdatedAt",         .datetime)
+        t.add(column: "pinOrderUpdatedAt",         .datetime)
+        t.add(column: "manualOrderUpdatedAt",      .datetime)
+        t.add(column: "isDeletedUpdatedAt",        .datetime)
+        t.add(column: "nicknameUpdatedAt",         .datetime)
+        t.add(column: "excludeFromSyncUpdatedAt",  .datetime)
+        t.add(column: "expiresAtUpdatedAt",        .datetime)
+        t.add(column: "customShortcutUpdatedAt",   .datetime)
+    }
+
+    /// Inline equivalent for fresh-table creation (iOS initial migration).
+    public static func defineClipUserIntentTimestamps(_ t: TableDefinition) {
+        t.column("isPinnedUpdatedAt",         .datetime)
+        t.column("pinOrderUpdatedAt",         .datetime)
+        t.column("manualOrderUpdatedAt",      .datetime)
+        t.column("isDeletedUpdatedAt",        .datetime)
+        t.column("nicknameUpdatedAt",         .datetime)
+        t.column("excludeFromSyncUpdatedAt",  .datetime)
+        t.column("expiresAtUpdatedAt",        .datetime)
+        t.column("customShortcutUpdatedAt",   .datetime)
+    }
+
     /// Backfill `uuid`, `deviceId`, and `updatedAt` on every pre-existing row
     /// that the column-add migration left NULL. Only relevant on Mac (which
     /// has legacy data); iOS starts empty.

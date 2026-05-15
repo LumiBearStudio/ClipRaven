@@ -227,15 +227,17 @@ struct ClipRepository {
         modifiers: UInt32?
     ) throws {
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
                 sql: """
                     UPDATE clips
                        SET customShortcutKeyCode = ?,
                            customShortcutModifiers = ?,
+                           customShortcutUpdatedAt = ?,
                            updatedAt = ?
                      WHERE id = ?
                 """,
-                arguments: [keyCode, modifiers, Date(), id]
+                arguments: [keyCode, modifiers, now, now, id]
             )
         }
     }
@@ -266,7 +268,11 @@ struct ClipRepository {
     func togglePin(id: Int64) throws {
         try dbPool.write { db in
             guard var clip = try Clip.fetchOne(db, id: id) else { return }
-            clip.updatedAt = Date()
+            let now = Date()
+            clip.updatedAt = now
+            // Per-field LWW timestamps — user-intent 변경이므로 갱신.
+            clip.isPinnedUpdatedAt = now
+            clip.pinOrderUpdatedAt = now
 
             if clip.isPinned {
                 // Unpin: clear pinOrder
@@ -282,7 +288,9 @@ struct ClipRepository {
                 ) ?? -1
                 clip.isPinned = true
                 clip.pinOrder = maxOrder + 1
+                // manualOrder = nil 도 user-intent (pin 이 manualOrder 를 override)
                 clip.manualOrder = nil
+                clip.manualOrderUpdatedAt = now
                 try clip.update(db)
             }
         }
@@ -292,18 +300,45 @@ struct ClipRepository {
 
     func updateNickname(id: Int64, nickname: String?) throws {
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
-                sql: "UPDATE clips SET nickname = ?, updatedAt = ? WHERE id = ?",
-                arguments: [nickname, Date(), id]
+                sql: "UPDATE clips SET nickname = ?, nicknameUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [nickname, now, now, id]
+            )
+        }
+    }
+
+    /// 만료 시각 설정/제거 — selective UPDATE 로 LWW timestamp 정확히 추적.
+    /// 이전엔 ViewModel 이 entire-row `clipRepository.update(updated)` 호출해
+    /// 다른 field 도 함께 write 되는 문제 있었음.
+    func updateExpiration(id: Int64, expiresAt: Date?) throws {
+        try dbPool.write { db in
+            let now = Date()
+            try db.execute(
+                sql: "UPDATE clips SET expiresAt = ?, expiresAtUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [expiresAt, now, now, id]
+            )
+        }
+    }
+
+    /// `excludeFromSync` 토글. sync 정책에 큰 영향이라 selective + LWW 필수.
+    /// 다른 device 의 stale state 가 사용자 의도를 역행하지 못하게 함.
+    func updateExcludeFromSync(id: Int64, excludeFromSync: Bool) throws {
+        try dbPool.write { db in
+            let now = Date()
+            try db.execute(
+                sql: "UPDATE clips SET excludeFromSync = ?, excludeFromSyncUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [excludeFromSync, now, now, id]
             )
         }
     }
 
     func softDelete(id: Int64) throws {
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
-                sql: "UPDATE clips SET isDeleted = 1, updatedAt = ? WHERE id = ?",
-                arguments: [Date(), id]
+                sql: "UPDATE clips SET isDeleted = 1, isDeletedUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [now, now, id]
             )
         }
     }
@@ -312,10 +347,11 @@ struct ClipRepository {
         guard !ids.isEmpty else { return }
         try dbPool.write { db in
             let placeholders = ids.map { _ in "?" }.joined(separator: ",")
-            var args: [DatabaseValueConvertible] = [Date()]
+            let now = Date()
+            var args: [DatabaseValueConvertible] = [now, now]
             args.append(contentsOf: ids)
             try db.execute(
-                sql: "UPDATE clips SET isDeleted = 1, updatedAt = ? WHERE id IN (\(placeholders))",
+                sql: "UPDATE clips SET isDeleted = 1, isDeletedUpdatedAt = ?, updatedAt = ? WHERE id IN (\(placeholders))",
                 arguments: StatementArguments(args)
             )
         }
@@ -549,6 +585,8 @@ struct ClipRepository {
 
     /// Pin a clip and insert at a specific position among pinned clips.
     /// Sparse update — pinOrder 가 이미 일치하는 row 는 skip (D-C5).
+    /// LWW timestamps — 사용자 의도 변경이므로 isPinned/pinOrder/manualOrder
+    /// 셋의 timestamp 모두 갱신 (v14).
     func pinClipAtPosition(clipId: Int64, position: Int) throws {
         let now = Date()
         try dbPool.write { db in
@@ -565,8 +603,16 @@ struct ClipRepository {
 
             // Mark the clip as pinned, clear manualOrder
             try db.execute(
-                sql: "UPDATE clips SET isPinned = 1, manualOrder = NULL, updatedAt = ? WHERE id = ?",
-                arguments: [now, clipId]
+                sql: """
+                    UPDATE clips
+                       SET isPinned = 1,
+                           isPinnedUpdatedAt = ?,
+                           manualOrder = NULL,
+                           manualOrderUpdatedAt = ?,
+                           updatedAt = ?
+                     WHERE id = ?
+                """,
+                arguments: [now, now, now, clipId]
             )
 
             try Self.sparseRewritePinOrder(db, newOrderIds: pinnedIds)
@@ -580,8 +626,16 @@ struct ClipRepository {
         try dbPool.write { db in
             // Unpin and clear pinOrder
             try db.execute(
-                sql: "UPDATE clips SET isPinned = 0, pinOrder = NULL, updatedAt = ? WHERE id = ?",
-                arguments: [now, clipId]
+                sql: """
+                    UPDATE clips
+                       SET isPinned = 0,
+                           isPinnedUpdatedAt = ?,
+                           pinOrder = NULL,
+                           pinOrderUpdatedAt = ?,
+                           updatedAt = ?
+                     WHERE id = ?
+                """,
+                arguments: [now, now, now, clipId]
             )
 
             // Recompact remaining pinned clips
@@ -602,11 +656,11 @@ struct ClipRepository {
             let insertAt = min(position, normalIds.count)
             normalIds.insert(clipId, at: insertAt)
 
-            // Assign manualOrder to all
+            // Assign manualOrder to all (with LWW timestamp)
             for (index, id) in normalIds.enumerated() {
                 try db.execute(
-                    sql: "UPDATE clips SET manualOrder = ?, updatedAt = ? WHERE id = ?",
-                    arguments: [index, now, id]
+                    sql: "UPDATE clips SET manualOrder = ?, manualOrderUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                    arguments: [index, now, now, id]
                 )
             }
         }
@@ -679,7 +733,7 @@ struct ClipRepository {
         // sparse update — pinOrder 가 이미 올바른 row 는 건드리지 않음.
         // 모든 row 를 update 하면 SyncChangeCapture 가 N 개 행을 enqueue 해
         // CloudKit 업로드 N배가 되는데, drag 1번에 보통 1~3 행만 실제로 옮겨감.
-        // 성능 감사 D-C5.
+        // 성능 감사 D-C5. LWW timestamp 도 변경된 row 만 갱신 (v14).
         let rows = try Row.fetchAll(db, sql: """
             SELECT id, pinOrder FROM clips
             WHERE isPinned = 1 AND isDeleted = 0
@@ -692,8 +746,8 @@ struct ClipRepository {
             let currentPinOrder: Int? = row["pinOrder"]
             if currentPinOrder == index { continue }
             try db.execute(
-                sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
-                arguments: [index, now, id]
+                sql: "UPDATE clips SET pinOrder = ?, pinOrderUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, now, id]
             )
         }
     }
@@ -702,6 +756,7 @@ struct ClipRepository {
     /// 현재 pinOrder 와 동일한 row 는 update 하지 않는다.
     /// 사용자가 drag 한 row 와 그 사이를 메꾸는 row 들만 실제 update → SyncChangeCapture
     /// enqueue 비용 최소화. (D-C5 sparse reorder)
+    /// LWW timestamp 도 변경된 row 만 갱신 (v14).
     private static func sparseRewritePinOrder(_ db: Database, newOrderIds: [Int64]) throws {
         let rows = try Row.fetchAll(db, sql: """
             SELECT id, pinOrder FROM clips
@@ -716,8 +771,8 @@ struct ClipRepository {
         for (index, id) in newOrderIds.enumerated() {
             if currentOrderById[id] == .some(index) { continue }
             try db.execute(
-                sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
-                arguments: [index, now, id]
+                sql: "UPDATE clips SET pinOrder = ?, pinOrderUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, now, id]
             )
         }
     }
@@ -725,6 +780,7 @@ struct ClipRepository {
     /// normal (non-pinned) 클립의 manualOrder 를 sparse update.
     /// pinOrder 와 같은 이유 — drag 1회에 실제 이동한 row 만 ckLastSyncedAt
     /// NULL 처리해 CloudKit 비용 최소화. (D-C5)
+    /// LWW timestamp 도 변경된 row 만 갱신 (v14).
     private static func sparseRewriteManualOrder(_ db: Database, newOrderIds: [Int64]) throws {
         let rows = try Row.fetchAll(db, sql: """
             SELECT id, manualOrder FROM clips
@@ -739,8 +795,8 @@ struct ClipRepository {
         for (index, id) in newOrderIds.enumerated() {
             if currentOrderById[id] == .some(index) { continue }
             try db.execute(
-                sql: "UPDATE clips SET manualOrder = ?, updatedAt = ? WHERE id = ?",
-                arguments: [index, now, id]
+                sql: "UPDATE clips SET manualOrder = ?, manualOrderUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, now, id]
             )
         }
     }

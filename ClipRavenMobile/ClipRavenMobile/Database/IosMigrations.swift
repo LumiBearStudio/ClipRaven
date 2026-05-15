@@ -54,6 +54,9 @@ enum IosMigrations {
                 t.column("aiCategoryGeneratedAt", .datetime)
                 // Sync metadata — same shape as Mac v12.
                 SyncSchema.defineClipSyncColumns(t)
+                // Per-field LWW timestamps (Mac v14 equivalent — defined inline
+                // here because iOS starts at v1 with the full Mac-v14 schema).
+                SyncSchema.defineClipUserIntentTimestamps(t)
             }
 
             // --- tags table (Mac v1 + sync columns from v12) ---
@@ -150,6 +153,26 @@ enum IosMigrations {
             // --- Sync engine state + device registry (Mac v13 equivalent) ---
             try SyncSchema.createSyncEngineTables(db)
             try SyncSchema.seedThisDevice(db)
+        }
+
+        // Per-field LWW timestamps (Mac v14 equivalent) — for users who
+        // installed iOS before v14 lands. New iOS installs have these
+        // columns already (defined inline in v1_iosInitial above), but a
+        // user who upgrades from an older iOS build needs the ALTER TABLE.
+        // GRDB skips this migration on fresh installs because the columns
+        // already exist (the alter is wrapped in a try; if it fails because
+        // columns exist, we ignore — see body).
+        migrator.registerMigration("v2_iosUserIntentTimestamps") { db in
+            // Detect existing columns via PRAGMA to make this idempotent.
+            let rows = try Row.fetchAll(db, sql: "PRAGMA table_info(clips)")
+            let existingColumns = Set(rows.compactMap { $0["name"] as String? })
+            if existingColumns.contains("isPinnedUpdatedAt") {
+                // Fresh install already has them. No-op.
+                return
+            }
+            try db.alter(table: "clips") { t in
+                SyncSchema.addClipUserIntentTimestamps(t)
+            }
         }
     }
 }

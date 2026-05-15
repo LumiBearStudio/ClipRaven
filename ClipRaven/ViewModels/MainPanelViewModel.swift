@@ -908,9 +908,15 @@ final class MainPanelViewModel: ObservableObject {
     }
 
     func updateExpiration(_ clip: Clip, expiresAt: Date?) {
-        var updated = clip
-        updated.expiresAt = expiresAt
-        try? clipRepository.update(updated)
+        // Selective UPDATE 로 LWW timestamp 정확히 추적 (v14).
+        // 이전엔 entire-row update 라 다른 user-intent field 도 같이 write 돼
+        // sync 시 stale state 회귀 위험 있었음.
+        guard let clipId = clip.id else { return }
+        do {
+            try clipRepository.updateExpiration(id: clipId, expiresAt: expiresAt)
+        } catch {
+            ClipRavenLog.write(.database, "[VM.updateExpiration] failed id=\(clipId): \(error)")
+        }
     }
 
     // MARK: - Paste Stack

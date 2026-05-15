@@ -65,6 +65,28 @@ public struct Clip: Identifiable, Codable, Equatable, Hashable {
     public var ckLastSyncedAt: Date?
     public var excludeFromSync: Bool = false
 
+    // Per-field LWW timestamps (v14) — 사용자 의도(user-intent) field 가 변경된
+    // 정확한 시점. server-wins 정책이 background metadata update (OG fetch/AI/
+    // OCR 결과)로 갱신된 stale state 가 다른 device 의 user toggle 을 역행시키는
+    // 회귀를 막기 위해 도입.
+    //
+    // 의미론: 해당 field 가 마지막으로 사용자 의도로 변경된 시각.
+    // - NULL → "최초 시점부터 변경된 적 없음" (default, backfill 안 함)
+    // - Date → 그 시각 이후 user-intent 변경 발생
+    //
+    // 충돌 해소: server 의 timestamp 가 local 보다 newer 일 때만 server value 적용
+    // (LWW). 동률 또는 local 이 newer 면 local 유지.
+    public var isPinnedUpdatedAt: Date?
+    public var pinOrderUpdatedAt: Date?
+    public var manualOrderUpdatedAt: Date?
+    public var isDeletedUpdatedAt: Date?
+    public var nicknameUpdatedAt: Date?
+    public var excludeFromSyncUpdatedAt: Date?
+    public var expiresAtUpdatedAt: Date?
+    /// `customShortcutKeyCode` + `customShortcutModifiers` 묶음 timestamp.
+    /// 단축키는 항상 두 컬럼 함께 set/clear 되므로 단일 timestamp 로 충분.
+    public var customShortcutUpdatedAt: Date?
+
     /// Memberwise public initializer. Swift only synthesizes an `internal`
     /// memberwise init for structs, so consumers in the host apps need this
     /// to construct Clips outside the package.
@@ -106,7 +128,15 @@ public struct Clip: Identifiable, Codable, Equatable, Hashable {
         ckSystemFields: Data? = nil,
         ckSyncState: Int = 0,
         ckLastSyncedAt: Date? = nil,
-        excludeFromSync: Bool = false
+        excludeFromSync: Bool = false,
+        isPinnedUpdatedAt: Date? = nil,
+        pinOrderUpdatedAt: Date? = nil,
+        manualOrderUpdatedAt: Date? = nil,
+        isDeletedUpdatedAt: Date? = nil,
+        nicknameUpdatedAt: Date? = nil,
+        excludeFromSyncUpdatedAt: Date? = nil,
+        expiresAtUpdatedAt: Date? = nil,
+        customShortcutUpdatedAt: Date? = nil
     ) {
         self.id = id
         self.contentType = contentType
@@ -146,6 +176,14 @@ public struct Clip: Identifiable, Codable, Equatable, Hashable {
         self.ckSyncState = ckSyncState
         self.ckLastSyncedAt = ckLastSyncedAt
         self.excludeFromSync = excludeFromSync
+        self.isPinnedUpdatedAt = isPinnedUpdatedAt
+        self.pinOrderUpdatedAt = pinOrderUpdatedAt
+        self.manualOrderUpdatedAt = manualOrderUpdatedAt
+        self.isDeletedUpdatedAt = isDeletedUpdatedAt
+        self.nicknameUpdatedAt = nicknameUpdatedAt
+        self.excludeFromSyncUpdatedAt = excludeFromSyncUpdatedAt
+        self.expiresAtUpdatedAt = expiresAtUpdatedAt
+        self.customShortcutUpdatedAt = customShortcutUpdatedAt
     }
 }
 

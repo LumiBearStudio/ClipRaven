@@ -387,5 +387,22 @@ enum DatabaseMigrations {
             try SyncSchema.createSyncEngineTables(db)
             try SyncSchema.seedThisDevice(db)
         }
+
+        // MARK: - v14: Per-field LWW timestamps
+        //
+        // server-wins on Mutable fields (SyncRecordMapper.decode 의 `// Mutable —
+        // server wins today. LWW deferred.` 주석) 가 회귀를 일으킴: iPhone 의
+        // OG/AI/OCR background update 가 stale isPinned 값을 newer updatedAt 으로
+        // server 에 보내면, Mac 의 새 user-intent 변경이 conflict 시 역행.
+        //
+        // v14 는 user-intent field 별 timestamp 를 추가해 per-field LWW 활성화.
+        // 기존 row 는 timestamp 모두 NULL — "한 번도 명시적으로 set 안 됨" 의미.
+        // NULL < 모든 구체 Date 로 취급해 다른 device 가 처음 set 한 시점 이후
+        // LWW 가 정상 작동.
+        migrator.registerMigration("v14_userIntentTimestamps") { db in
+            try db.alter(table: "clips") { t in
+                SyncSchema.addClipUserIntentTimestamps(t)
+            }
+        }
     }
 }

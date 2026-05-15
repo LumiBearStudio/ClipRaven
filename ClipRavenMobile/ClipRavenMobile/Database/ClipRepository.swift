@@ -402,11 +402,13 @@ struct ClipRepository {
     /// Soft-delete (sets `isDeleted = 1` and bumps `updatedAt`). The sync
     /// engine will replicate this to other devices via the normal upload
     /// path — `SyncChangeCapture` sees `isDeleted` flipped → enqueueDelete.
+    /// LWW: `isDeletedUpdatedAt` 도 함께 갱신 (v14).
     func softDelete(uuid: String) throws {
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
-                sql: "UPDATE clips SET isDeleted = 1, updatedAt = ? WHERE uuid = ?",
-                arguments: [Date(), uuid]
+                sql: "UPDATE clips SET isDeleted = 1, isDeletedUpdatedAt = ?, updatedAt = ? WHERE uuid = ?",
+                arguments: [now, now, uuid]
             )
         }
     }
@@ -423,9 +425,10 @@ struct ClipRepository {
 
     func updateNickname(uuid: String, nickname: String?) throws {
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
-                sql: "UPDATE clips SET nickname = ?, updatedAt = ? WHERE uuid = ?",
-                arguments: [nickname?.nilIfEmpty, Date(), uuid]
+                sql: "UPDATE clips SET nickname = ?, nicknameUpdatedAt = ?, updatedAt = ? WHERE uuid = ?",
+                arguments: [nickname?.nilIfEmpty, now, now, uuid]
             )
         }
     }
@@ -435,24 +438,33 @@ struct ClipRepository {
         let hash = XXHash64Wrapper.hash(normalized)
         let chosung = ChosungConverter.extractChosung(from: newText)
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
                 sql: """
                     UPDATE clips
                     SET contentText = ?, contentHash = ?, contentChosung = ?,
-                        nickname = ?, updatedAt = ?
+                        nickname = ?, nicknameUpdatedAt = ?, updatedAt = ?
                     WHERE uuid = ?
                     """,
                 arguments: [newText, hash, chosung.isEmpty ? nil : chosung,
-                            nickname?.nilIfEmpty, Date(), uuid]
+                            nickname?.nilIfEmpty, now, now, uuid]
             )
         }
     }
 
+    /// excludeFromSync 토글 — LWW timestamp 함께 갱신 (v14).
     func toggleExcludeFromSync(uuid: String) throws {
         try dbPool.write { db in
+            let now = Date()
             try db.execute(
-                sql: "UPDATE clips SET excludeFromSync = NOT excludeFromSync, updatedAt = ? WHERE uuid = ?",
-                arguments: [Date(), uuid]
+                sql: """
+                    UPDATE clips
+                       SET excludeFromSync = NOT excludeFromSync,
+                           excludeFromSyncUpdatedAt = ?,
+                           updatedAt = ?
+                     WHERE uuid = ?
+                """,
+                arguments: [now, now, uuid]
             )
         }
     }
@@ -490,8 +502,12 @@ struct ClipRepository {
     func togglePin(uuid: String) throws {
         try dbPool.write { db in
             guard var clip = try Clip.filter(Column("uuid") == uuid).fetchOne(db) else { return }
+            let now = Date()
             clip.isPinned.toggle()
-            clip.updatedAt = Date()
+            clip.updatedAt = now
+            // Per-field LWW timestamps — user-intent 변경이므로 갱신 (v14).
+            clip.isPinnedUpdatedAt = now
+            clip.pinOrderUpdatedAt = now
             // 아키텍처 감사 C: pinOrder compaction 을 macOS 와 통일.
             // 이전 iOS: unpin 시 pinOrder=nil 만 처리, 남은 pin 들의 hole 없이 압축 안 함.
             //          → sync 후 Mac 에서 다시 toggle 시 압축 일어나는 비대칭.
@@ -512,17 +528,21 @@ struct ClipRepository {
 
     /// 남은 핀 클립의 pinOrder 를 0, 1, 2, ... 로 압축.
     /// macOS ClipRepository.recompactPinOrder 와 동일 SQL. Mac/iOS 동작 통일.
+    /// LWW timestamp 도 변경된 row 만 갱신 (v14).
     private static func recompactPinOrder(_ db: Database) throws {
-        let pinnedIds = try Int64.fetchAll(db, sql: """
-            SELECT id FROM clips
+        let rows = try Row.fetchAll(db, sql: """
+            SELECT id, pinOrder FROM clips
             WHERE isPinned = 1 AND isDeleted = 0
             ORDER BY pinOrder ASC, lastCopiedAt DESC
         """)
         let now = Date()
-        for (index, id) in pinnedIds.enumerated() {
+        for (index, row) in rows.enumerated() {
+            let id: Int64 = row["id"]
+            let currentPinOrder: Int? = row["pinOrder"]
+            if currentPinOrder == index { continue }
             try db.execute(
-                sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
-                arguments: [index, now, id]
+                sql: "UPDATE clips SET pinOrder = ?, pinOrderUpdatedAt = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, now, id]
             )
         }
     }
