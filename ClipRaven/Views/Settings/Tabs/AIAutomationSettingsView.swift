@@ -236,7 +236,7 @@ struct SmartRulesSettingsView: View {
         .sheet(isPresented: $showingAddSheet) {
             AddSmartRuleView(tags: tags) { newRule in
                 var rule = newRule
-                try? ruleRepo.save(&rule)
+                _ = try? ruleRepo.save(&rule)
                 Task { await SmartRuleEngine.shared.reloadRules() }
                 loadData()
             }

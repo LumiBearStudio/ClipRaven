@@ -350,11 +350,12 @@ struct IcloudSyncSettingsView: View {
         wipeInProgress = true
         wipeResult = nil
         Task { @MainActor in
-            // Ask AppDelegate to shut down and hand back a token. This
-            // notification path keeps SyncEngine ownership in AppDelegate.
-            let tokenBox = NotificationCenter.default
+            // Ask AppDelegate to shut down. AppDelegate listens to this
+            // notification and produces the shutdown token internally; the
+            // notification post itself returns Void so there's nothing to
+            // capture here.
+            NotificationCenter.default
                 .post(name: .clipRavenSyncShutdownRequested, object: nil)
-            _ = tokenBox  // consumed by AppDelegate handler
 
             // Local sync_engine_state wipe. Use a synthesized token —
             // SyncStateStore.clearAll requires the proof-token type, but

@@ -71,7 +71,7 @@ struct TagRepository {
 
     func removeTag(clipId: Int64, tagId: Int64) throws {
         try dbPool.write { db in
-            try ClipTag
+            _ = try ClipTag
                 .filter(Column("clipId") == clipId && Column("tagId") == tagId)
                 .deleteAll(db)
         }

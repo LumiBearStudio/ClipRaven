@@ -74,7 +74,7 @@ struct PasteStackRepository {
 
     func remove(clipId: Int64) throws {
         try dbPool.write { db in
-            try PasteStackItem
+            _ = try PasteStackItem
                 .filter(Column("clipId") == clipId)
                 .deleteAll(db)
         }

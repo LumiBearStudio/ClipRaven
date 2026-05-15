@@ -341,7 +341,9 @@ actor ClipProcessor {
         )
         stampSyncMetadata(&clip, text: nil)
 
-        try? clipRepository.save(&clip)
+        // try? 의 Void? 결과는 의도적으로 무시 (실패 시 ClipRavenLog 도 안 남기는
+        // 기존 동작 유지) — `_ =` 로 unused warning 만 silence.
+        _ = try? clipRepository.save(&clip)
 
         await smartRuleEngine.applyRulesAndAssignTags(to: clip)
 

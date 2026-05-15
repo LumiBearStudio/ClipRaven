@@ -1031,7 +1031,7 @@ final class MainPanelViewModel: ObservableObject {
             lastCopiedAt: Date()
         )
 
-        try? clipRepository.save(&newClip)
+        _ = try? clipRepository.save(&newClip)
     }
 
     // MARK: - Similar Images (dHash-based)
