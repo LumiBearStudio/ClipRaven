@@ -3,6 +3,7 @@ import SwiftUI
 import GRDB
 import CryptoKit
 import ImageIO
+import UniformTypeIdentifiers
 import os.log
 import ClipRavenSync
 
@@ -1079,7 +1080,7 @@ class KeyboardViewController: UIInputViewController {
             return
         }
 
-        // 이미지 — ImageIO 기반 메모리 효율 캡처 (성능 감사 D-M2).
+        // 이미지 — ImageIO 기반 메모리 효율 캡처 (성능 감사 D-M2 + D-M1 baseline).
         //
         // 이전엔 `pasteboard.image` → UIImage full bitmap (~14MB) → pngData()
         // (또 다른 3~6MB) → SHA-256 → UIGraphicsImageRenderer thumbnail 로
@@ -1091,8 +1092,10 @@ class KeyboardViewController: UIInputViewController {
         // 2. SHA-256 은 raw data 에 직접
         // 3. ImageIO `CGImageSourceCreateThumbnailAtIndex` 로 thumbnail 생성
         //    (`kCGImageSourceThumbnailMaxPixelSize=200` 명시, 디코드 거치지 않음)
+        // 4. `autoreleasepool` 로 임시 CFData/CGImage/Data 즉시 해제 — 다음
+        //    run loop 까지 보관되지 않게 해 baseline 메모리 유지 (D-M1).
         //
-        // 결과: 피크 메모리 30MB → 5~8MB 수준.
+        // 결과: 피크 메모리 30MB → 5~8MB, capture 직후 baseline 으로 복귀.
         if pasteboard.hasImages, let imageData = Self.bestImageBytes(from: pasteboard) {
             let imageHash = Self.sha256(imageData)
             guard !recentCapturedHashes.contains(imageHash) else {
@@ -1102,9 +1105,13 @@ class KeyboardViewController: UIInputViewController {
             recentCapturedHashes.insert(imageHash)
             cleanRecentHashes()
 
-            let thumbnailData = Self.makeThumbnailJPEG(
-                from: imageData, maxPixelSize: 200, quality: 0.7
-            )
+            // autoreleasepool — CGImageSource / CGImage / NSMutableData 등의 임시
+            // 객체가 즉시 풀에서 release 되도록 강제. 안 감싸면 main run loop
+            // 한 cycle 동안 약 ~10MB 가 추가로 살아 있어 익스텐션 30MB 한도 초과
+            // 위험이 증가한다 (D-M1 baseline).
+            let thumbnailData = autoreleasepool {
+                Self.makeThumbnailJPEG(from: imageData, maxPixelSize: 200, quality: 0.7)
+            }
             let thumbBase64 = thumbnailData?.base64EncodedString()
 
             let now = Date()
@@ -1150,7 +1157,11 @@ class KeyboardViewController: UIInputViewController {
         return pasteboard.image?.pngData()
     }
 
-    /// ImageIO 기반 thumbnail JPEG 생성 — fullsize 디코드 우회.
+    /// ImageIO 기반 thumbnail JPEG 생성 — fullsize 디코드 우회 + UIImage round-trip 제거.
+    ///
+    /// 이전엔 `UIImage(cgImage:).jpegData(...)` 로 UIKit 가 imageOrientation/scale
+    /// metadata 를 새 UIImage 에 추가하고 jpegData 가 또 다른 bitmap 을 그렸음.
+    /// D-M1 baseline: CGImageDestination 으로 직접 JPEG encode → UIImage 우회.
     private static func makeThumbnailJPEG(
         from data: Data,
         maxPixelSize: Int,
@@ -1159,16 +1170,29 @@ class KeyboardViewController: UIInputViewController {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
             return nil
         }
-        let opts: [CFString: Any] = [
+        let thumbnailOptions: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,   // EXIF orientation 반영
             kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
-            kCGImageSourceShouldCacheImmediately: false  // 메모리 보존
+            kCGImageSourceShouldCacheImmediately: false         // 메모리 보존
         ]
-        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, opts as CFDictionary) else {
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(
+            source, 0, thumbnailOptions as CFDictionary
+        ) else {
             return nil
         }
-        let thumbnail = UIImage(cgImage: cgImage)
-        return thumbnail.jpegData(compressionQuality: quality)
+        let mutableData = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            mutableData, UTType.jpeg.identifier as CFString, 1, nil
+        ) else {
+            return nil
+        }
+        let destinationOptions: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: quality
+        ]
+        CGImageDestinationAddImage(destination, cgImage, destinationOptions as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { return nil }
+        return mutableData as Data
     }
 
     /// capture 한 클립을 self.clips 에 prepend 하고 collection view 즉시 reload.
@@ -1206,20 +1230,6 @@ class KeyboardViewController: UIInputViewController {
     private static func sha256(_ data: Data) -> String {
         let digest = SHA256.hash(data: data)
         return digest.map { String(format: "%02x", $0) }.joined()
-    }
-
-    private static func makeThumbnail(_ image: UIImage, maxDimension: CGFloat) -> UIImage? {
-        let longSide = max(image.size.width, image.size.height)
-        guard longSide > maxDimension else { return image }
-        let scale = maxDimension / longSide
-        let newSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = false
-        let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
-        return renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-        }
     }
 
     // MARK: - Insert
