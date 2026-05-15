@@ -37,3 +37,9 @@ docs/*
 
 # Sentry CLI installer binary (~111MB) — not source code
 sentry-wizard
+
+# Temporary build/processing artifacts (e.g. crow walking frame extraction)
+build-artifacts/
+
+# Raw animation source videos (frames are extracted into imagesets)
+*.mp4
