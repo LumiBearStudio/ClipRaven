@@ -297,6 +297,10 @@ struct ClipCardView: View {
     @State private var imageResolution: String?
     @Environment(\.colorScheme) var colorScheme
     @ObservedObject private var theme = ThemeManager.shared
+    /// 트라이얼 만료 시 카드 중앙 자물쇠 표시 + paste 차단 안내용.
+    /// PurchaseManager.shared 는 singleton 이라 인스턴스 비용 최소.
+    /// SwiftUI diff 가 lockState 안 바뀌면 redraw skip.
+    @ObservedObject private var pm = PurchaseManager.shared
 
     // A1: Stagger appearance state
     var appearanceIndex: Int = 0
@@ -379,6 +383,23 @@ struct ClipCardView: View {
                     Spacer()
                 }
                 .allowsHitTesting(false)
+            }
+
+            // Layer 7: 트라이얼 만료 잠금 표시 — 카드 중앙 자물쇠 + dim.
+            // ClipRaven 정체성 ("한 번 구매로 영구") 강조 — 데이터는 그대로
+            // 보이되 paste 시도 시 PaywallWindow 자동 표시 (MainPanelViewModel
+            // 의 guardExpiredLockAndShowPaywall 가 처리).
+            if pm.lockState == .expired {
+                ZStack {
+                    // 카드 dim — 데이터는 보이지만 비활성 시그널
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.black.opacity(0.45))
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 32, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .shadow(color: .black.opacity(0.5), radius: 6)
+                }
+                .allowsHitTesting(false)  // 클릭은 FastClickableView 가 받음 — paste 호출 → guard 가 paywall 표시
             }
 
         }

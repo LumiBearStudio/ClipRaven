@@ -316,7 +316,19 @@ final class MainPanelViewModel: ObservableObject {
 
     // MARK: - Paste (with Cmd+V simulation)
 
+    /// 트라이얼 만료 상태면 paste 동작 차단 + PaywallWindow 표시.
+    /// 모든 paste 진입점 (pasteClip, AsPlainText, AsMarkdown 등) 의 single source
+    /// of truth. true 반환 시 호출자는 paste 진행 중단.
+    private func guardExpiredLockAndShowPaywall() -> Bool {
+        if PurchaseManager.shared.lockState == .expired {
+            PaywallWindowController.shared.show()
+            return true
+        }
+        return false
+    }
+
     func pasteClip(_ clip: Clip) {
+        if guardExpiredLockAndShowPaywall() { return }
         Self.pasteClipStatic(clip, clipRepository: clipRepository)
     }
 
@@ -462,6 +474,7 @@ final class MainPanelViewModel: ObservableObject {
     }
 
     func pasteClipAsPlainText(_ clip: Clip) {
+        if guardExpiredLockAndShowPaywall() { return }
         guard let rawContent = clip.contentText else { return }
 
         // Also strip URL tracking params for URL clips on plain-text paste
@@ -498,6 +511,7 @@ final class MainPanelViewModel: ObservableObject {
     /// If the clip text is detected as HTML, run it through FormatConverter.htmlToMarkdown.
     /// Otherwise the text is already Markdown or plain — passed through as-is.
     func pasteClipAsMarkdown(_ clip: Clip) {
+        if guardExpiredLockAndShowPaywall() { return }
         guard let raw = clip.contentText else { return }
 
         let content: String
@@ -529,6 +543,7 @@ final class MainPanelViewModel: ObservableObject {
     /// - Markdown / plain → parsed by NSAttributedString(markdown:)
     /// Falls back to plain text if conversion fails.
     func pasteClipAsRichText(_ clip: Clip) {
+        if guardExpiredLockAndShowPaywall() { return }
         guard let raw = clip.contentText else { return }
 
         // Build the richest representation available
@@ -571,6 +586,7 @@ final class MainPanelViewModel: ObservableObject {
 
     /// 텍스트/코드 클립을 주어진 변환(대문자/소문자/공백제거/한줄합치기)을 적용한 뒤 붙여넣기
     func pasteClipWithTransform(_ clip: Clip, transform: TextTransform) {
+        if guardExpiredLockAndShowPaywall() { return }
         // 텍스트/코드 타입만 지원
         guard clip.contentType == .text || clip.contentType == .code else { return }
         guard let content = clip.contentText else { return }
