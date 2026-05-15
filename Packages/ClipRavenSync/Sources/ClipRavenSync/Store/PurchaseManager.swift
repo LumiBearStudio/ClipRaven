@@ -16,7 +16,22 @@ public final class PurchaseManager: ObservableObject {
     public static let shared = PurchaseManager()
     public static let productID = "com.lumibear.clipraven.fullaccess"
 
-    @Published public private(set) var lockState: LockState = .trial(daysLeft: TrialManager.trialDays)
+    // 초기값을 즉시 keychain 의 firstLaunchDate 기준으로 계산.
+    //
+    // 이전엔 `.trial(daysLeft: TrialManager.trialDays)` (= 항상 15) 로 초기화 후
+    // `refresh()` 의 `updateLockState()` 가 정확한 값으로 갱신하는 패턴이었음.
+    // 그런데 `Transaction.currentEntitlements` 의 for-await 가 sandbox 미설정
+    // 환경(App Store Connect product 미등록 + StoreKitTest .storekit 없음)에선
+    // stream 이 즉시 close 안 하고 hang 하는 케이스가 관찰됨 (로그에 "lockState
+    // updated:" info 가 한 번도 안 찍힘 = 함수가 그 라인까지 도달 안 함). 결과로
+    // UI 는 초기값 15 그대로 계속 표시.
+    //
+    // 해결: 초기값을 호출 시점에 즉시 정확한 daysRemaining 으로 계산. paid 사용자도
+    // 1초 미만 잠시 .trial(N) 로 보일 수 있지만 `refresh()` 가 곧 .paid 로 갱신.
+    @Published public private(set) var lockState: LockState = PurchaseManager.computeLockState(
+        daysLeft: TrialManager.shared.daysRemaining(),  // instance API (정적 호환 layer 의 deprecated 경고 회피)
+        hasPaidEntitlement: false
+    )
     @Published public private(set) var product: Product?
     @Published public private(set) var isPurchasing = false
     @Published public private(set) var errorMessage: String?
@@ -127,7 +142,7 @@ public final class PurchaseManager: ObservableObject {
             }
         }
         lockState = Self.computeLockState(
-            daysLeft: TrialManager.daysRemaining(),
+            daysLeft: TrialManager.shared.daysRemaining(),
             hasPaidEntitlement: false
         )
         log.info("lockState updated: \(String(describing: self.lockState), privacy: .public)")
