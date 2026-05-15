@@ -358,6 +358,65 @@
         }
       }
     },
+    "1회 결제 · 구독 없음": {
+      "comment": "Price subheadline — emphasizes one-time payment vs. competitors' subscriptions.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einmalige Zahlung · Kein Abo"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-time payment · No subscription"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pago único · Sin suscripción"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paiement unique · Sans abonnement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagamento unico · Senza abbonamento"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1回限りのお支払い・サブスクリプションなし"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagamento único · Sem assinatura"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一次性付款 · 无订阅"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一次性付款 · 無訂閱"
+          }
+        }
+      }
+    },
     "2단계 인증 코드 자동 필터": {
       "extractionState": "stale",
       "localizations": {
@@ -892,6 +951,65 @@
     "Français": {},
     "HD": {},
     "Italiano": {},
+    "Mac + iPhone/iPad 영구 무제한 사용": {
+      "comment": "Feature row — emphasizes unlimited cross-platform use.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unbegrenzte Nutzung auf Mac + iPhone/iPad"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlimited use on Mac + iPhone/iPad"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uso ilimitado en Mac + iPhone/iPad"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utilisation illimitée sur Mac + iPhone/iPad"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uso illimitato su Mac + iPhone/iPad"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac + iPhone/iPad で無制限に利用可能"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uso ilimitado em Mac + iPhone/iPad"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac + iPhone/iPad 永久无限使用"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mac + iPhone/iPad 永久無限使用"
+          }
+        }
+      }
+    },
     "Mac ClipRaven과 동기화하려면\niCloud 동기화를 켜세요.\n나중에 설정에서 언제든지 변경할 수 있어요.": {
       "extractionState": "stale",
       "localizations": {
@@ -1549,34 +1667,16 @@
     },
     "by LumiBear Studio": {
       "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "by LumiBear Studio"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "by LumiBear Studio"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "by LumiBear Studio"
-          }
-        },
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "von LumiBear Studio"
           }
         },
-        "fr": {
+        "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "par LumiBear Studio"
+            "value": "by LumiBear Studio"
           }
         },
         "es": {
@@ -1585,10 +1685,10 @@
             "value": "por LumiBear Studio"
           }
         },
-        "zh-Hant": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "by LumiBear Studio"
+            "value": "par LumiBear Studio"
           }
         },
         "it": {
@@ -1597,10 +1697,28 @@
             "value": "di LumiBear Studio"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by LumiBear Studio"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
             "value": "por LumiBear Studio"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by LumiBear Studio"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by LumiBear Studio"
           }
         }
       }
@@ -1963,6 +2081,65 @@
     "日本語": {},
     "简体中文": {},
     "繁體中文": {},
+    "가족 공유 지원": {
+      "comment": "Feature row — Family Sharing support.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Familienfreigabe unterstützt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Family Sharing support"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compatible con Compartir en Familia"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compatible avec le Partage familial"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporta In famiglia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファミリー共有対応"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compatível com Compartilhamento Familiar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "支持家庭共享"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "支援家人共享"
+          }
+        }
+      }
+    },
     "개인": {
       "extractionState": "stale",
       "localizations": {
@@ -2720,6 +2897,124 @@
           "stringUnit": {
             "state": "translated",
             "value": "訂閱資訊"
+          }
+        }
+      }
+    },
+    "구매 복원": {
+      "comment": "Restore Purchase button.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kauf wiederherstellen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Purchase"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurer l'achat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina acquisto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复购买"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復原購買"
+          }
+        }
+      }
+    },
+    "기기 간 iCloud 동기화": {
+      "comment": "Feature row — iCloud sync across devices.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Synchronisierung zwischen Geräten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud sync across devices"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronización iCloud entre dispositivos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronisation iCloud entre appareils"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizzazione iCloud tra dispositivi"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デバイス間のiCloud同期"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronização iCloud entre dispositivos"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跨设备 iCloud 同步"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跨裝置 iCloud 同步"
           }
         }
       }
@@ -4300,6 +4595,124 @@
           "stringUnit": {
             "state": "translated",
             "value": "所有剪貼儲存在此裝置,\niCloud 同步為選用。"
+          }
+        }
+      }
+    },
+    "무료 체험 **%@일** 남음": {
+      "comment": "Trial-banner status with Markdown bold — %@ is the integer number of days left.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kostenlose Testversion: **%@ Tage** übrig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Free trial: **%@ days** left"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prueba gratis: **%@ días** restantes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essai gratuit : **%@ jours** restants"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prova gratuita: **%@ giorni** rimasti"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無料体験 残り **%@日**"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avaliação grátis: **%@ dias** restantes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免费试用,剩余 **%@ 天**"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免費試用,剩餘 **%@ 天**"
+          }
+        }
+      }
+    },
+    "무료 체험이 종료되었습니다": {
+      "comment": "Heading shown on the iOS paywall when the trial has expired.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine kostenlose Testversion ist abgelaufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your free trial has ended"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu prueba gratuita ha terminado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre essai gratuit est terminé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua prova gratuita è terminata"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無料体験が終了しました"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sua avaliação gratuita terminou"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免费试用已结束"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免費試用已結束"
           }
         }
       }
@@ -6306,31 +6719,13 @@
     },
     "애니메이션": {
       "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Animations"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アニメーション"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "动画"
-          }
-        },
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Animationen"
           }
         },
-        "fr": {
+        "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Animations"
@@ -6342,10 +6737,10 @@
             "value": "Animaciones"
           }
         },
-        "zh-Hant": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "動畫"
+            "value": "Animations"
           }
         },
         "it": {
@@ -6354,44 +6749,44 @@
             "value": "Animazioni"
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アニメーション"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
             "value": "Animações"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "动画"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "動畫"
           }
         }
       }
     },
     "애니메이션을 끄면 화면 전환이 즉시 표시됩니다.": {
       "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Turn off to make screen transitions instant."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "オフにすると画面遷移が即時表示になります。"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "关闭后画面切换会立即显示。"
-          }
-        },
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Deaktivieren Sie, um Übergänge sofort anzuzeigen."
           }
         },
-        "fr": {
+        "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Désactivez pour des transitions instantanées."
+            "value": "Turn off to make screen transitions instant."
           }
         },
         "es": {
@@ -6400,10 +6795,10 @@
             "value": "Desactívalo para transiciones instantáneas."
           }
         },
-        "zh-Hant": {
+        "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "關閉後畫面切換會立即顯示。"
+            "value": "Désactivez pour des transitions instantanées."
           }
         },
         "it": {
@@ -6412,10 +6807,28 @@
             "value": "Disattiva per transizioni istantanee."
           }
         },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフにすると画面遷移が即時表示になります。"
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
             "value": "Desative para transições instantâneas."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭后画面切换会立即显示。"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "關閉後畫面切換會立即顯示。"
           }
         }
       }
@@ -6883,6 +7296,65 @@
           "stringUnit": {
             "state": "translated",
             "value": "請結束並重新開啟 ClipRaven 以套用語言。"
+          }
+        }
+      }
+    },
+    "업그레이드": {
+      "comment": "Trial-banner CTA button — opens purchase flow.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrade"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrade"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejorar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mettre à niveau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アップグレード"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualizar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "升级"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "升級"
           }
         }
       }
@@ -9177,6 +9649,65 @@
           "stringUnit": {
             "state": "translated",
             "value": "重要"
+          }
+        }
+      }
+    },
+    "지금 구매하기": {
+      "comment": "Primary paywall CTA — initiates purchase.",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt kaufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy Now"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprar ahora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acheter"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acquista ora"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今すぐ購入"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprar agora"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即购买"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即購買"
           }
         }
       }
