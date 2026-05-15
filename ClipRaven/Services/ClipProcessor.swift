@@ -173,53 +173,21 @@ actor ClipProcessor {
 
     // MARK: - Image Processing
 
+    /// 이미지 캡처 진입점. 품질 감사 B-CS6 권고에 따라 dedup 4단계 + save 분해.
+    /// 각 단계가 "이미 dedup 됐다 (skip)" 이면 true 반환, false 면 다음 단계 진행.
     private func processImage(_ imageData: Data, sourceApp: SourceAppInfo) async {
         let imageHash = SHA256Hash.compute(imageData)
 
-        // In-memory dedupe
         cleanExpiredHashes()
-        if recentHashes[imageHash] != nil {
-            if let existing = try? clipRepository.fetchByImageHash(imageHash),
-               let existingId = existing.id {
-                try? clipRepository.incrementCopyCount(id: existingId)
-            }
-            return
-        }
 
-        // DB duplicate check
-        if let existing = try? clipRepository.fetchByImageHash(imageHash),
-           let existingId = existing.id {
-            try? clipRepository.incrementCopyCount(id: existingId)
-            recentHashes[imageHash] = Date()
-            return
-        }
-
-        // Cross-device sync race dedup — exact imageHash match.
-        if let recent = try? clipRepository.fetchRecentSyncedClip(
-            withImageHash: imageHash,
-            otherThanDeviceId: DeviceIdentity.deviceId,
-            window: 30
-        ) {
-            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: cross-device image sync race (hash), existing=\(recent.id ?? -1)")
-            recentHashes[imageHash] = Date()
-            return
-        }
-
-        // UC Stage-2 dedup: Stage 1 (com.apple.is-remote-clipboard) was skipped by
-        // ClipboardMonitor, but the actual image data arrives separately after paste
-        // without the UC marker. If Stage 1 was seen within 60s AND a synced image
-        // clip from another device is already in DB, this is Stage 2 — suppress it.
-        if let skipTime = lastUCSkipTime,
-           Date().timeIntervalSince(skipTime) < 60,
-           let recent = try? clipRepository.fetchRecentSyncedImageClip(
-               otherThanDeviceId: DeviceIdentity.deviceId,
-               window: 90
-           ) {
-            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: UC Stage-2 suppressed (Stage-1 skip \(Int(Date().timeIntervalSince(skipTime)))s ago, existing=\(recent.id ?? -1))")
-            recentHashes[imageHash] = Date()
-            lastUCSkipTime = nil
-            return
-        }
+        // 1. In-memory 2초 윈도우 dedup
+        if dedupInMemoryImage(imageHash: imageHash) { return }
+        // 2. DB 해시 dedup
+        if dedupByImageHashDB(imageHash: imageHash) { return }
+        // 3. Cross-device sync race dedup (30초 윈도우)
+        if dedupCrossDeviceImage(imageHash: imageHash) { return }
+        // 4. UC Stage-2 dedup (Stage-1 marker 60초 이내)
+        if dedupUCStage2(imageHash: imageHash) { return }
 
         recentHashes[imageHash] = Date()
 
@@ -227,31 +195,101 @@ actor ClipProcessor {
         let imagePath = ImageStorageService.saveImage(imageData)
         let dHash = DHash.compute(from: imageData)
 
-        // Universal Clipboard 2-stage dedup: if the immediately preceding clip is a
-        // file clip whose path looks like an image file (single file only), upgrade it
-        // in-place rather than creating a duplicate image clip.
-        // Stage 1: clipboard fires with public.file-url only (lazy data provider).
-        // Stage 2: paste triggers actual image fetch → another clipboard change fires.
-        if let prev = try? clipRepository.fetchMostRecentNonDeleted(),
-           prev.contentType == .file,
-           let paths = prev.contentText,
-           !paths.contains("\n"),          // single-file only
-           let prevId = prev.id,
-           Self.isImageFilePath(paths) {
-            ClipRavenLog.write(.processor, "[ClipProc] UC 2-stage: upgrading file clip \(prevId) → image")
-            try? clipRepository.upgradeFileClipToImage(
-                id: prevId,
-                imageHash: imageHash,
-                imageDhash: dHash,
-                imagePath: imagePath,
-                thumbnail: thumbnail
-            )
-            Task.detached(priority: .utility) { [ocrService] in
-                await ocrService.performOCR(on: imageData, clipId: prevId)
-            }
-            return
-        }
+        // 5. UC 2-stage upgrade — 직전 file clip 이 같은 이미지 파일 경로면 in-place 업그레이드
+        if upgradeRecentFileClipToImage(
+            imageHash: imageHash, imageDhash: dHash,
+            imagePath: imagePath, thumbnail: thumbnail, imageData: imageData
+        ) { return }
 
+        // 6. 새 image clip 저장 + smart rule + OCR
+        await saveNewImageClip(
+            imageHash: imageHash, dHash: dHash, imagePath: imagePath,
+            thumbnail: thumbnail, imageData: imageData, sourceApp: sourceApp
+        )
+    }
+
+    // MARK: - processImage dedup helpers (B-CS6 분해)
+
+    /// In-memory 2초 윈도우 dedup. recentHashes 에 같은 hash 가 있으면 copyCount++ 후 true.
+    private func dedupInMemoryImage(imageHash: String) -> Bool {
+        guard recentHashes[imageHash] != nil else { return false }
+        if let existing = try? clipRepository.fetchByImageHash(imageHash),
+           let existingId = existing.id {
+            try? clipRepository.incrementCopyCount(id: existingId)
+        }
+        return true
+    }
+
+    /// DB 의 imageHash 컬럼에 같은 값이 있으면 copyCount++ 후 true.
+    private func dedupByImageHashDB(imageHash: String) -> Bool {
+        guard let existing = try? clipRepository.fetchByImageHash(imageHash),
+              let existingId = existing.id else {
+            return false
+        }
+        try? clipRepository.incrementCopyCount(id: existingId)
+        recentHashes[imageHash] = Date()
+        return true
+    }
+
+    /// Cross-device sync race: 다른 device 가 30초 이내에 같은 이미지를 sync 로 보낸 케이스.
+    private func dedupCrossDeviceImage(imageHash: String) -> Bool {
+        guard let recent = try? clipRepository.fetchRecentSyncedClip(
+            withImageHash: imageHash,
+            otherThanDeviceId: DeviceIdentity.deviceId,
+            window: 30
+        ) else { return false }
+        ClipRavenLog.write(.processor, "[ClipProc] DEDUP: cross-device image sync race (hash), existing=\(recent.id ?? -1)")
+        recentHashes[imageHash] = Date()
+        return true
+    }
+
+    /// UC Stage-2: Stage 1 marker 가 60초 이내에 있었고, 다른 device 가 90초 이내에
+    /// 동일 이미지를 sync 로 보낸 경우 (Universal Clipboard 의 지연 Stage 2 image arrival).
+    private func dedupUCStage2(imageHash: String) -> Bool {
+        guard let skipTime = lastUCSkipTime,
+              Date().timeIntervalSince(skipTime) < 60,
+              let recent = try? clipRepository.fetchRecentSyncedImageClip(
+                  otherThanDeviceId: DeviceIdentity.deviceId,
+                  window: 90
+              ) else { return false }
+        ClipRavenLog.write(.processor, "[ClipProc] DEDUP: UC Stage-2 suppressed (Stage-1 skip \(Int(Date().timeIntervalSince(skipTime)))s ago, existing=\(recent.id ?? -1))")
+        recentHashes[imageHash] = Date()
+        lastUCSkipTime = nil
+        return true
+    }
+
+    /// UC 2-stage upgrade: 직전 클립이 단일 이미지 파일 path 인 file clip 이면
+    /// 새 row 만들지 않고 in-place 로 image 로 승격. 사용자에게 같은 클립이 두 장 보이는
+    /// 시각 중복 방지. 처리됐으면 true.
+    private func upgradeRecentFileClipToImage(
+        imageHash: String, imageDhash: Int64?,
+        imagePath: String?, thumbnail: Data?, imageData: Data
+    ) -> Bool {
+        guard let prev = try? clipRepository.fetchMostRecentNonDeleted(),
+              prev.contentType == .file,
+              let paths = prev.contentText,
+              !paths.contains("\n"),          // single-file only
+              let prevId = prev.id,
+              Self.isImageFilePath(paths) else { return false }
+        ClipRavenLog.write(.processor, "[ClipProc] UC 2-stage: upgrading file clip \(prevId) → image")
+        try? clipRepository.upgradeFileClipToImage(
+            id: prevId,
+            imageHash: imageHash,
+            imageDhash: imageDhash,
+            imagePath: imagePath,
+            thumbnail: thumbnail
+        )
+        Task.detached(priority: .utility) { [ocrService] in
+            await ocrService.performOCR(on: imageData, clipId: prevId)
+        }
+        return true
+    }
+
+    /// 모든 dedup 통과한 새 이미지를 DB 에 저장 + smart rule + 백그라운드 OCR.
+    private func saveNewImageClip(
+        imageHash: String, dHash: Int64?, imagePath: String?,
+        thumbnail: Data?, imageData: Data, sourceApp: SourceAppInfo
+    ) async {
         var clip = Clip(
             contentType: .image,
             imageHash: imageHash,
@@ -267,10 +305,8 @@ actor ClipProcessor {
 
         try? clipRepository.save(&clip)
 
-        // Apply smart rules for auto-tagging
         await smartRuleEngine.applyRulesAndAssignTags(to: clip)
 
-        // Trigger OCR asynchronously for image clips
         if let clipId = clip.id {
             Task.detached(priority: .utility) { [ocrService] in
                 await ocrService.performOCR(on: imageData, clipId: clipId)
