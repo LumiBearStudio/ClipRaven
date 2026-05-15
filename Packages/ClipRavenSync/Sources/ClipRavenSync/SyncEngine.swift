@@ -217,6 +217,21 @@ public final class SyncEngine: NSObject {
             newEngine.state.add(pendingRecordZoneChanges: pendingDeleteChanges)
         }
 
+        // Backfill: 사용자가 sync OFF 상태에서 만든 기존 클립을 일괄 enqueue.
+        // SyncChangeCapture 는 TransactionObserver 라 sync ON 이후 commit 만 잡으므로,
+        // sync 토글 ON 시점에 이미 DB 에 있는 미동기화 클립은 그대로 두면 iCloud 로
+        // 영원히 안 간다. `ckLastSyncedAt IS NULL` 인 live 클립 (최신 1000개)을
+        // saveRecord 로 enqueue → 다음 cycle 에서 일괄 업로드.
+        // CKSyncEngine 이 recordID 로 dedup 하므로 중복 enqueue 무해 (이미 큐에 있으면 no-op).
+        let unsyncedSaves = (try? clipRepository.fetchUnsyncedClipUUIDs()) ?? []
+        if !unsyncedSaves.isEmpty {
+            Self.log.info("startup: backfill \(unsyncedSaves.count, privacy: .public) unsynced clip(s) (legacy + pre-toggle data)")
+            let pendingSaveChanges: [CKSyncEngine.PendingRecordZoneChange] = unsyncedSaves.map {
+                .saveRecord(CKRecord.ID(recordName: $0, zoneID: SyncRecordMapper.zoneID))
+            }
+            newEngine.state.add(pendingRecordZoneChanges: pendingSaveChanges)
+        }
+
         // Subscribe for silent push so device B wakes up when device A
         // commits. CKSyncEngine doesn't manage subscriptions — we own this
         // side-channel. Safe to fire-and-forget; a failure degrades to

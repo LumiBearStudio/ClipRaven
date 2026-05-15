@@ -54,6 +54,32 @@ public struct ClipSyncRepository {
         }
     }
 
+    /// 동기화 시작 시점에 아직 한 번도 sync 되지 않은 클립의 UUID 를 반환.
+    ///
+    /// 사용자가 sync OFF 상태에서 만든 클립은 SyncChangeCapture 에 enqueue 된 적
+    /// 없어 그대로 두면 iCloud 로 가지 않는다. `startIfEligible()` 가 이걸 호출해
+    /// 일괄 backfill enqueue 한다.
+    ///
+    /// 조건: live 클립 (isDeleted=0) + uuid 있음 + 사용자가 명시적으로 제외 안 함
+    ///       (excludeFromSync=0) + 한 번도 sync 안 됨 (ckLastSyncedAt IS NULL).
+    ///
+    /// 최신순 정렬 — 사용자가 최근 클립을 먼저 보고 싶어할 가능성 큼.
+    /// LIMIT 1000 — 일회성 대량 enqueue 의 CloudKit rate limit 안전.
+    public func fetchUnsyncedClipUUIDs(limit: Int = 1000) throws -> [String] {
+        try dbPool.read { db in
+            try String.fetchAll(db, sql: """
+                SELECT uuid FROM clips
+                WHERE isDeleted = 0
+                  AND uuid IS NOT NULL
+                  AND uuid != ''
+                  AND excludeFromSync = 0
+                  AND ckLastSyncedAt IS NULL
+                ORDER BY lastCopiedAt DESC
+                LIMIT ?
+            """, arguments: [limit])
+        }
+    }
+
     /// Mark a batch of successfully-deleted CloudKit records as ack'd.
     /// Sets `ckLastSyncedAt = now` on each soft-deleted row so:
     /// 1. `SyncChangeCapture`'s `ckLastSyncedAt > updatedAt` guard prevents
