@@ -492,18 +492,38 @@ struct ClipRepository {
             guard var clip = try Clip.filter(Column("uuid") == uuid).fetchOne(db) else { return }
             clip.isPinned.toggle()
             clip.updatedAt = Date()
-            // pinOrder management — assign tail position when pinning,
-            // clear when unpinning. iOS doesn't manage pinOrder compaction
-            // (Mac does it on every toggle); for now duplicates are OK.
+            // 아키텍처 감사 C: pinOrder compaction 을 macOS 와 통일.
+            // 이전 iOS: unpin 시 pinOrder=nil 만 처리, 남은 pin 들의 hole 없이 압축 안 함.
+            //          → sync 후 Mac 에서 다시 toggle 시 압축 일어나는 비대칭.
+            // 현재 iOS: pin 시 max+1, unpin 시 nil + 남은 pin 압축 (Mac 과 동일 헬퍼).
             if clip.isPinned {
                 let max = try Int.fetchOne(db, sql:
                     "SELECT COALESCE(MAX(pinOrder), -1) FROM clips WHERE isPinned = 1 AND isDeleted = 0"
                 ) ?? -1
                 clip.pinOrder = max + 1
+                try clip.update(db)
             } else {
                 clip.pinOrder = nil
+                try clip.update(db)
+                try Self.recompactPinOrder(db)
             }
-            try clip.update(db)
+        }
+    }
+
+    /// 남은 핀 클립의 pinOrder 를 0, 1, 2, ... 로 압축.
+    /// macOS ClipRepository.recompactPinOrder 와 동일 SQL. Mac/iOS 동작 통일.
+    private static func recompactPinOrder(_ db: Database) throws {
+        let pinnedIds = try Int64.fetchAll(db, sql: """
+            SELECT id FROM clips
+            WHERE isPinned = 1 AND isDeleted = 0
+            ORDER BY pinOrder ASC, lastCopiedAt DESC
+        """)
+        let now = Date()
+        for (index, id) in pinnedIds.enumerated() {
+            try db.execute(
+                sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, id]
+            )
         }
     }
 
