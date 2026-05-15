@@ -1302,10 +1302,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSMinimumSystemVersion = 14.0;
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppDataUsageDescription = "";
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "ClipRaven은 선택한 클립을 현재 활성화된 앱에 자동으로 붙여넣기 위해 시스템 이벤트를 사용합니다.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 LumiBear Studio";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1333,10 +1331,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSMinimumSystemVersion = 14.0;
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppDataUsageDescription = "";
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "ClipRaven은 선택한 클립을 현재 활성화된 앱에 자동으로 붙여넣기 위해 시스템 이벤트를 사용합니다.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 LumiBear Studio";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

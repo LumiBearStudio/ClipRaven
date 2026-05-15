@@ -32,6 +32,20 @@
 				<string>CA92.1</string>
 			</array>
 		</dict>
+
+		<!-- FileTimestamp: AssetStaging 이 자기 sandbox 안 staging 디렉토리의
+		     오래된 이미지 파일을 contentModificationDate 기준으로 정리.
+		     ImageBinaryCleanup / FileCardBody 의 attributesOfItem(.size) 호출도
+		     같은 API surface 에 속해 보수적으로 함께 선언.
+		     3B52.1 — 앱이 생성한 파일/디렉토리의 timestamp 접근. -->
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>3B52.1</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>
