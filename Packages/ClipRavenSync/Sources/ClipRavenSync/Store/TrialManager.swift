@@ -102,44 +102,56 @@ public struct SystemKeychain: KeychainStorage {
     }
 }
 
-/// App Group container 의 UserDefaults 를 쓰는 구현.
+/// App Group container 의 plain file 에 trial 시작일을 저장하는 구현.
 ///
-/// macOS sandbox 앱이 매 실행마다 keychain TCC 컨펌 다이얼로그를 띄우는
-/// 회귀를 회피하기 위해 도입. App Group container 는 sandbox 안에서
-/// 프롬프트 없이 자유 접근 가능하며, sandbox 앱이 삭제되면 어차피
-/// container 도 함께 삭제되므로 keychain 대비 보안 손실 없음 (macOS 한정).
+/// macOS sandbox 앱이 매 실행마다 다음 TCC 다이얼로그를 띄우는 회귀를
+/// 회피하기 위해 도입:
+/// - keychain 컨펌 (`SecItemCopyMatching` 매 실행 검증)
+/// - "다른 앱의 데이터에 접근" (`UserDefaults(suiteName:)` → cfprefsd 경유 시
+///   macOS Sonoma+ 에서 group container plist 접근이 TCC trigger 되는 사례)
 ///
-/// iOS 에서는 keychain 이 앱 삭제 후에도 잔존하는 이점이 있으니
-/// `SystemKeychain` 을 그대로 유지하는 게 좋다.
-public struct AppGroupStorage: KeychainStorage {  // 이름은 historical (프로토콜 이름이 KeychainStorage)
-    private let suiteName: String
-    private let key: String
+/// 해결: `FileManager.containerURL(forSecurityApplicationGroupIdentifier:)` 가
+/// 반환하는 정확한 group container 경로에 raw `Data` 로 write/read. 이 경로는
+/// app sandbox profile 이 자동 부여하는 RW 권한 안에 있어 어떤 TCC 검증도
+/// 거치지 않는다.
+///
+/// 보안: macOS sandbox 앱은 어차피 앱 삭제 시 group container 가 함께
+/// 삭제되므로 keychain 대비 손실 없음. iOS 는 keychain (`SystemKeychain`) 으로
+/// 잔존 이점 유지.
+public struct AppGroupStorage: KeychainStorage {  // 이름은 historical (프로토콜이 KeychainStorage)
+    private let groupIdentifier: String
+    private let fileName: String
 
-    public init(suiteName: String, key: String = "firstLaunchDate") {
-        self.suiteName = suiteName
-        self.key = key
+    public init(groupIdentifier: String, fileName: String = "trial.dat") {
+        self.groupIdentifier = groupIdentifier
+        self.fileName = fileName
     }
 
-    private var defaults: UserDefaults? {
-        UserDefaults(suiteName: suiteName)
+    private var fileURL: URL? {
+        guard let container = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: groupIdentifier) else {
+            return nil
+        }
+        return container.appendingPathComponent(fileName)
     }
 
     public func saveFirstLaunchDate(_ date: Date) throws {
-        guard let defaults else {
+        guard let url = fileURL else {
             throw NSError(
                 domain: "ClipRavenSync.AppGroupStorage", code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "Failed to open App Group suite \(suiteName)"]
+                userInfo: [NSLocalizedDescriptionKey: "App Group container 접근 실패: \(groupIdentifier)"]
             )
         }
-        defaults.set(date.timeIntervalSince1970, forKey: key)
+        let interval = date.timeIntervalSince1970
+        let data = withUnsafeBytes(of: interval) { Data($0) }
+        try data.write(to: url, options: .atomic)
     }
 
     public func loadFirstLaunchDate() -> Date? {
-        guard let defaults else { return nil }
-        // `object(forKey:)` 가 nil 이면 "키 없음", `double(forKey:)` 는
-        // 키 없을 때 0.0 을 반환해 1970-01-01 로 오인될 수 있어 분리.
-        guard defaults.object(forKey: key) != nil else { return nil }
-        let interval = defaults.double(forKey: key)
+        guard let url = fileURL,
+              let data = try? Data(contentsOf: url),
+              data.count >= 8 else { return nil }
+        let interval = data.withUnsafeBytes { $0.load(as: Double.self) }
         return Date(timeIntervalSince1970: interval)
     }
 }
@@ -190,33 +202,20 @@ public final class TrialManager {
         self.trialDays = trialDays
     }
 
-    /// 플랫폼별 default storage 를 선택하고, macOS 의 경우 legacy keychain →
-    /// App Group 마이그레이션을 정확히 1회 수행해 기존 사용자 트라이얼 일수를
-    /// 보존한다.
+    /// 플랫폼별 default storage 를 선택한다.
     ///
-    /// **flag 로 한 번만 시도하는 이유**: `SystemKeychain.loadFirstLaunchDate()`
-    /// 가 `SecItemCopyMatching` 을 호출하는데, 슬롯이 비어있지 않다면 sandbox
-    /// 환경에서 매 실행마다 TCC 컨펌 다이얼로그를 띄울 수 있다. 마이그레이션을
-    /// flag 로 한 번만 시도하면 그 한 번 외엔 keychain 을 영영 touch 하지 않아
-    /// prompt 가 영구히 사라진다.
+    /// - macOS: `AppGroupStorage` (raw file IO, prompt 없음).
+    /// - iOS: `SystemKeychain` (앱 삭제 후 잔존 이점 유지).
+    ///
+    /// **legacy keychain → App Group 마이그레이션 안 함**: 아직 production
+    /// 출시 전이라 마이그레이션이 필요한 사용자 집합이 0. 마이그레이션 시도
+    /// 자체가 `SystemKeychain.loadFirstLaunchDate()` 를 호출해 sandbox keychain
+    /// TCC prompt 를 매 첫 실행마다 한 번씩 띄울 수 있어 회귀를 정확히
+    /// 0 로 만들기 위해 skip. 출시 후 keychain 기반 잔존 사용자가 생긴 뒤
+    /// 마이그레이션 필요가 생기면 file-based flag 로 1회 재시도 도입.
     private static func makeShared() -> TrialManager {
         #if os(macOS)
-        let primary = AppGroupStorage(suiteName: trialAppGroup)
-        let defaults = UserDefaults(suiteName: trialAppGroup)
-        let migrationKey = "trialKeychainMigrationCompleted"
-
-        if defaults?.bool(forKey: migrationKey) != true {
-            // 최초 1회: legacy keychain 확인. App Group 이 이미 채워져 있으면
-            // 마이그레이션 skip 하고 flag 만 세움.
-            if primary.loadFirstLaunchDate() == nil {
-                let legacy = SystemKeychain()
-                if let legacyDate = legacy.loadFirstLaunchDate() {
-                    try? primary.saveFirstLaunchDate(legacyDate)
-                }
-            }
-            defaults?.set(true, forKey: migrationKey)
-        }
-        return TrialManager(storage: primary)
+        return TrialManager(storage: AppGroupStorage(groupIdentifier: trialAppGroup))
         #else
         return TrialManager(storage: SystemKeychain())
         #endif
