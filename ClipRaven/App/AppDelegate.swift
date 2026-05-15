@@ -385,6 +385,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// 명시적으로 즉시 종료 허용. SwiftUI App + NSApplicationDelegateAdaptor 결합에서
+    /// default 가 NSTerminateCancel 로 보고되는 회귀 사례가 있어 명시. `relaunch()`
+    /// 패턴이 옛 인스턴스 self-terminate 에 의존하므로 이 메서드가 .terminateNow
+    /// 반환을 보장해야 새 인스턴스가 두 개 동시 실행 상태에 빠지지 않는다.
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        return .terminateNow
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         clipboardMonitor.stop()
         hotKeyManager.unregister()
@@ -457,8 +465,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let myPID = ProcessInfo.processInfo.processIdentifier
         let myBundleID = Bundle.main.bundleIdentifier ?? ""
 
-        for app in NSRunningApplication.runningApplications(withBundleIdentifier: myBundleID) {
-            guard app.processIdentifier != myPID else { continue }
+        let others = NSRunningApplication.runningApplications(withBundleIdentifier: myBundleID)
+            .filter { $0.processIdentifier != myPID }
+
+        ClipRavenLog.app.info("terminateOtherInstances: my=\(myPID, privacy: .public), found \(others.count, privacy: .public) other instance(s)")
+
+        for app in others {
+            let otherPID = app.processIdentifier
+            ClipRavenLog.app.info("terminating other instance PID=\(otherPID, privacy: .public)")
             app.terminate()
             // Synchronously wait for the old instance to actually exit — otherwise
             // its Carbon hotkey registration blocks us (-9868 eventHotKeyExistsErr)
@@ -468,11 +482,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.05))
             }
             if !app.isTerminated {
+                ClipRavenLog.app.error("PID=\(otherPID, privacy: .public) ignored .terminate() after 2s — escalating to forceTerminate()")
                 app.forceTerminate()
                 let hardDeadline = Date().addingTimeInterval(1.0)
                 while !app.isTerminated && Date() < hardDeadline {
                     RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.05))
                 }
+                if !app.isTerminated {
+                    ClipRavenLog.app.error("PID=\(otherPID, privacy: .public) survived forceTerminate() — duplicate instance regression")
+                }
+            } else {
+                ClipRavenLog.app.info("PID=\(otherPID, privacy: .public) terminated successfully")
             }
         }
     }

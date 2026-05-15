@@ -124,13 +124,27 @@ struct SettingsView: View {
 
 extension NSApplication {
     /// 앱을 재실행한다. 언어 변경 적용 등에 사용.
+    ///
+    /// **이전 회귀**: `DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)`
+    /// 로 무조건 0.5 초 뒤 self-terminate 했더니, 새 인스턴스 launch 와
+    /// 옛 인스턴스 self-terminate 의 race 가 발생해 두 인스턴스 동시 실행
+    /// 상태에 빠질 수 있었다 (메뉴바 statusItem 두 개 / Dock 아이콘 두 개).
+    ///
+    /// 수정: completion handler 기반으로 변경. NSWorkspace 가 새 인스턴스
+    /// launch 를 "확정" 한 시점에서 옛 인스턴스를 self-terminate. 옛 인스턴스의
+    /// `applicationShouldTerminate` 가 `.terminateNow` 를 반환하도록 명시되어
+    /// 있어 cancel 불가.
     func relaunch() {
         let url = Bundle.main.bundleURL
         let config = NSWorkspace.OpenConfiguration()
         config.createsNewApplicationInstance = true
-        NSWorkspace.shared.openApplication(at: url, configuration: config)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            NSApp.terminate(nil)
+        NSWorkspace.shared.openApplication(at: url, configuration: config) { _, error in
+            DispatchQueue.main.async {
+                if let error {
+                    ClipRavenLog.app.error("relaunch openApplication failed: \(error.localizedDescription, privacy: .public) — self-terminate anyway")
+                }
+                NSApp.terminate(nil)
+            }
         }
     }
 }
