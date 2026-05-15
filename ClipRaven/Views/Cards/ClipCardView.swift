@@ -240,13 +240,14 @@ final class DraggableClickView: NSView, NSDraggingSource {
     }
 
     /// Rounded-rect placeholder used when the real snapshot is unavailable.
+    /// `NSImage(size:flipped:drawingHandler:)` 는 lockFocus 보다 권장 API
+    /// (스레드 안전 + lazy 렌더링). 성능 감사 D-M5 의 일부.
     private func makeFallbackImage(size: NSSize) -> NSImage {
-        let img = NSImage(size: size)
-        img.lockFocus()
-        NSColor.windowBackgroundColor.withAlphaComponent(0.85).setFill()
-        NSBezierPath(roundedRect: NSRect(origin: .zero, size: size), xRadius: 12, yRadius: 12).fill()
-        img.unlockFocus()
-        return img
+        NSImage(size: size, flipped: false) { rect in
+            NSColor.windowBackgroundColor.withAlphaComponent(0.85).setFill()
+            NSBezierPath(roundedRect: rect, xRadius: 12, yRadius: 12).fill()
+            return true
+        }
     }
 }
 
