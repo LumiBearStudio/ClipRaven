@@ -272,7 +272,11 @@ public enum SyncRecordMapper {
     ///
     /// Tie (equal Dates) also resolves to server-wins so the order in which
     /// two devices' identical-instant writes land on the server is stable.
-    fileprivate static func serverWinsLWW(serverTS: Date?, localTS: Date?) -> Bool {
+    ///
+    /// Internal access so the package's unit tests can exercise the table
+    /// directly without indirection through `decode(_:merging:)`. Production
+    /// callers go through decode.
+    internal static func serverWinsLWW(serverTS: Date?, localTS: Date?) -> Bool {
         switch (serverTS, localTS) {
         case (nil, nil):      return true   // both unset → fallback server-wins
         case (nil, _):        return false  // only local explicit → local wins
