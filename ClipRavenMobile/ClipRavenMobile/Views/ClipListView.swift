@@ -51,18 +51,22 @@ struct ClipListView: View {
     // MARK: - iPhone Layout
 
     private var iPhoneLayout: some View {
-        NavigationStack {
-            gridContent
-                .navigationTitle("ClipRaven")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar { toolbarContent }
-                .refreshable { await viewModel.refreshAwaiting() }
-                .overlay(alignment: .bottom) { errorBanner }
-                .background(Color(.systemGroupedBackground))
-        }
-        .safeAreaInset(edge: .top, spacing: 0) {
+        // TrialBanner 를 NavigationStack 위 VStack 으로 분리 — 이전엔
+        // `.safeAreaInset(.top)` 이 NavigationStack 에 붙어 있어 navigationBar
+        // toolbar (설정/추가 버튼) 와 hit-test 영역이 시각적으로 겹쳐
+        // 사용자가 트라이얼 기간 중 설정 버튼을 누를 수 없는 회귀가 있었다.
+        VStack(spacing: 0) {
             if case .trial(let days) = pm.lockState {
                 TrialBannerView(daysLeft: days)
+            }
+            NavigationStack {
+                gridContent
+                    .navigationTitle("ClipRaven")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { toolbarContent }
+                    .refreshable { await viewModel.refreshAwaiting() }
+                    .overlay(alignment: .bottom) { errorBanner }
+                    .background(Color(.systemGroupedBackground))
             }
         }
         .overlay(alignment: .top) { copyToastBanner }
@@ -97,18 +101,19 @@ struct ClipListView: View {
         NavigationSplitView {
             IPadSidebarView(viewModel: viewModel)
         } detail: {
-            NavigationStack {
-                gridContent
-                    .navigationTitle("ClipRaven")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar { toolbarContent }
-                    .refreshable { await viewModel.refreshAwaiting() }
-                    .overlay(alignment: .bottom) { errorBanner }
-                    .background(Color(.systemGroupedBackground))
-            }
-            .safeAreaInset(edge: .top, spacing: 0) {
+            // TrialBanner 위치 — iPhoneLayout 와 동일 이유 (toolbar hit-test 회피).
+            VStack(spacing: 0) {
                 if case .trial(let days) = pm.lockState {
                     TrialBannerView(daysLeft: days)
+                }
+                NavigationStack {
+                    gridContent
+                        .navigationTitle("ClipRaven")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar { toolbarContent }
+                        .refreshable { await viewModel.refreshAwaiting() }
+                        .overlay(alignment: .bottom) { errorBanner }
+                        .background(Color(.systemGroupedBackground))
                 }
             }
             .inspector(isPresented: isInspectorPresented) {
