@@ -1,6 +1,29 @@
 import SwiftUI
 import ClipRavenSync
 
+/// 메인 패널 상단의 필터 바 — 콘텐츠 타입 chips + 검색 + 부필터 메뉴 + 태그 chips.
+///
+/// 671줄 단일 struct 로 유지하는 이유: 모든 sub-view 가 동일 `@State` (private)
+/// 와 `@Binding` 을 공유. SwiftUI ViewBuilder 의 자연스러운 형태로, 별도 struct
+/// 로 분리 시 다수의 Binding 을 init 매개변수로 전달해야 해서 가독성이 오히려
+/// 떨어진다. 품질 감사 B-CS3 권고이지만 ClipCardView (P3d) 와 같이 풍부한 MARK
+/// 구역 가이드로 navigation 효율을 보장한다.
+///
+/// ### 구역 가이드 (Navigator 에서 MARK jump)
+/// - **Body** (라인 4~217) — 메인 HStack 레이아웃 + 필터/검색/태그 칩 그리드
+/// - **Filter Segment Group** (라인 218~) — 콘텐츠 타입 chip row (전체/텍스트/...)
+/// - **Search Field** (라인 277~) — 검색 입력 + 한영 자판 자동 변환 안내
+/// - **Toolbar Icon Button** (라인 312~) — 배경 없는 아이콘 버튼 helper
+/// - **Source App Menu** (라인 333~) — 소스 앱 필터 메뉴
+/// - **Date Range Menu** (라인 373~) — 날짜 범위 필터 메뉴 (오늘/어제/최근 7일/30일)
+/// - **AI Category Menu** (라인 410~) — Foundation Models 카테고리 필터
+/// - **Tag Chip** (라인 449~) — 태그 칩 (필터 세그먼트와 동일 스타일)
+/// - **Inline Create Form** (라인 500~) — 새 태그 생성 인라인 폼
+/// - **Inline Edit Form** (라인 540~) — 기존 태그 편집 인라인 폼
+/// - **Actions** (라인 580~) — 태그 CRUD 액션
+///
+/// 마지막 부분 (라인 619+) 의 `ToolbarPillModifier`, `FilterButton` 은 이미
+/// FilterBarView 와 독립적인 helper struct.
 struct FilterBarView: View {
     @ObservedObject private var theme = ThemeManager.shared
     @Binding var selectedFilter: ContentTypeFilter
