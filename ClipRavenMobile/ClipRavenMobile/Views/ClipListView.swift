@@ -181,6 +181,9 @@ struct ClipListView: View {
                     if !pinned.isEmpty && viewModel.searchQuery.isEmpty && viewModel.selectedTagIds.isEmpty {
                         PinnedStrip(
                             clips: pinned,
+                            // columnCount 를 그리드와 동일하게 전달해 핀 카드 너비를
+                            // 일반 카드와 1:1 매칭. 다른 디바이스/사이즈 클래스 자동 대응.
+                            columnCount: columns.count,
                             onCopy: { copyWithFeedback($0) },
                             onPreview: { selectedClip = $0 },
                             onTogglePin: { clip in Task { await viewModel.togglePin(clip) } },
