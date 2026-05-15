@@ -14,7 +14,7 @@ import GRDB
 /// - **만료 / 검색**: `expiresAt`, `contentChosung` (한글 초성), `aiCategory`
 /// - **동기화 (v12+)**: `uuid` (CloudKit recordName), `deviceId`, `schemaVersion`,
 ///   `ckLastSyncedAt`, `ckSystemFields`, `excludeFromSync`
-public struct Clip: Identifiable, Codable, Equatable, Hashable {
+public struct Clip: Identifiable, Codable, Equatable, Hashable, Sendable {
     public var id: Int64?
     public var contentType: ContentType
     public var contentText: String?

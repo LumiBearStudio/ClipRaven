@@ -291,8 +291,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 queue: .main
             ) { [weak self] _ in
                 guard let self else { return }
-                if #available(macOS 14.0, *), let engine = self.syncEngineBox as? SyncEngine {
-                    _ = engine.shutdown()
+                // Deployment target is macOS 14.0 — #available 가드 불필요.
+                // shutdown() 은 @MainActor isolated 이고 이 closure 는 main
+                // queue 에서 호출됨. main-actor jump 명시로 Swift 6 strict
+                // concurrency 만족.
+                if let engine = self.syncEngineBox as? SyncEngine {
+                    Task { @MainActor in
+                        _ = engine.shutdown()
+                    }
                 }
             }
         }

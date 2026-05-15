@@ -411,22 +411,28 @@ private struct MacClipStats {
     var syncCompleted: Int = 0   // ckLastSyncedAt IS NOT NULL
 
     static func collect() async -> MacClipStats {
+        // GRDB read closure 가 `@Sendable` 라 외부 `var s` mutation 이 Swift 6
+        // 에선 error. 결과 tuple 을 closure 반환값으로 받아 immutable 패턴으로
+        // 재작성.
         let pool = AppDatabase.shared.dbPool
+        let result: (total: Int, syncTarget: Int, syncCompleted: Int)? = try? await pool.read { db in
+            let total = try Int.fetchOne(
+                db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0"
+            ) ?? 0
+            let syncTarget = try Int.fetchOne(
+                db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0"
+            ) ?? 0
+            let syncCompleted = try Int.fetchOne(
+                db,
+                sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0 AND ckLastSyncedAt IS NOT NULL"
+            ) ?? 0
+            return (total, syncTarget, syncCompleted)
+        }
+        guard let result else { return MacClipStats() }
         var s = MacClipStats()
-        do {
-            try await pool.read { db in
-                s.total = try Int.fetchOne(
-                    db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0"
-                ) ?? 0
-                s.syncTarget = try Int.fetchOne(
-                    db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0"
-                ) ?? 0
-                s.syncCompleted = try Int.fetchOne(
-                    db,
-                    sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0 AND ckLastSyncedAt IS NOT NULL"
-                ) ?? 0
-            }
-        } catch { /* fail-silent */ }
+        s.total = result.total
+        s.syncTarget = result.syncTarget
+        s.syncCompleted = result.syncCompleted
         return s
     }
 }

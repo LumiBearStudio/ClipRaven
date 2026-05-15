@@ -11,7 +11,7 @@ import Foundation
 ///
 /// `rawValue` 는 SQLite 컬럼에 그대로 저장된다. 한 번 정해진 값은 마이그레이션
 /// 없이 변경 불가.
-public enum ContentType: String, Codable, CaseIterable {
+public enum ContentType: String, Codable, CaseIterable, Sendable {
     case text
     case code
     case url

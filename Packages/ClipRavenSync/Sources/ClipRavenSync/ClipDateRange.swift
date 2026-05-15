@@ -18,7 +18,12 @@ import Foundation
 /// - `thisWeek` — 이번 주 시작 (월/일 기준 캘린더) 부터 현재까지
 /// - `thisMonth` — 이번 달 1일부터 현재까지
 /// - `custom(from:to:)` — 임의 구간
-public enum ClipDateRange: Equatable, Sendable {
+public enum ClipDateRange: Equatable, Sendable, Identifiable {
+    /// `id` 는 `stableKey` 와 동일. SwiftUI List/Picker 가 case 별 view 를
+    /// stable 하게 식별. (이전엔 iOS 측 retroactive conformance 였는데
+    /// "imported type to imported protocol" 경고 막기 위해 정의 자체로 이동.)
+    public var id: String { stableKey }
+
     case today
     case yesterday
     case lastWeek

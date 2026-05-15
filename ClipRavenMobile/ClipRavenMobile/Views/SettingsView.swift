@@ -485,22 +485,27 @@ private struct ClipStats {
     var syncedText: String { "\(syncCompleted) / \(syncTarget)" }
 
     static func collect() async -> ClipStats {
+        // GRDB read closure 가 `@Sendable` 이라 외부 `var s` mutation 이 Swift 6
+        // strict concurrency 에서 error. immutable tuple 반환 패턴으로 재작성.
         let pool = AppDatabase.shared.dbPool
+        let result: (total: Int, syncTarget: Int, syncCompleted: Int)? = try? await pool.read { db in
+            let total = try Int.fetchOne(
+                db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0"
+            ) ?? 0
+            let syncTarget = try Int.fetchOne(
+                db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0"
+            ) ?? 0
+            let syncCompleted = try Int.fetchOne(
+                db,
+                sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0 AND ckLastSyncedAt IS NOT NULL"
+            ) ?? 0
+            return (total, syncTarget, syncCompleted)
+        }
+        guard let result else { return ClipStats() }
         var s = ClipStats()
-        do {
-            try await pool.read { db in
-                s.total = try Int.fetchOne(
-                    db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0"
-                ) ?? 0
-                s.syncTarget = try Int.fetchOne(
-                    db, sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0"
-                ) ?? 0
-                s.syncCompleted = try Int.fetchOne(
-                    db,
-                    sql: "SELECT COUNT(*) FROM clips WHERE isDeleted = 0 AND excludeFromSync = 0 AND ckLastSyncedAt IS NOT NULL"
-                ) ?? 0
-            }
-        } catch { /* fail-silent */ }
+        s.total = result.total
+        s.syncTarget = result.syncTarget
+        s.syncCompleted = result.syncCompleted
         return s
     }
 }

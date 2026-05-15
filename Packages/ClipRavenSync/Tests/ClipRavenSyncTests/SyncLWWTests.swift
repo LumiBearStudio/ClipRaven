@@ -171,7 +171,7 @@ final class SyncLWWTests: XCTestCase {
         let earlier = now.addingTimeInterval(-30)
         let laterTime = now.addingTimeInterval(-10)
 
-        var local = Clip(
+        let local = Clip(
             id: 1, contentType: .text, contentText: "hello",
             nickname: "local-name",
             uuid: "u",
@@ -195,7 +195,7 @@ final class SyncLWWTests: XCTestCase {
         let t1 = now.addingTimeInterval(-30)
         let exp = now.addingTimeInterval(86400 * 7)  // 1주일 뒤
 
-        var local = Clip(
+        let local = Clip(
             id: 1, contentType: .text, contentText: "hello",
             uuid: "u",
             updatedAt: now,

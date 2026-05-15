@@ -5,7 +5,7 @@ import GRDB
 ///
 /// 클립 ↔ 태그 다대다 관계는 `ClipTag` 조인 테이블이 담당. 동기화 단위로
 /// `uuid` / `deviceId` / `updatedAt` 메타가 v12 부터 추가됨.
-public struct Tag: Identifiable, Codable, Equatable {
+public struct Tag: Identifiable, Codable, Equatable, Sendable {
     public var id: Int64?
     public var name: String
     public var colorHex: String

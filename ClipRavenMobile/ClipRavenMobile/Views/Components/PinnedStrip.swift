@@ -108,7 +108,10 @@ struct PinnedStrip: View {
 /// `.background(GeometryReader { ... preference ... })` 는 GeometryReader 가
 /// 자체 frame 을 차지하지 않으면서 측정값만 흘리는 SwiftUI 표준 패턴.
 private struct PinnedStripWidthKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
+    // Swift 6 strict concurrency: `static let` (immutable) is concurrency-safe.
+    // Original `static var = 0` triggered "not concurrency-safe" because var
+    // implies shared mutable state. PreferenceKey only needs read-access.
+    static let defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
     }

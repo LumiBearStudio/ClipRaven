@@ -7,8 +7,10 @@ import ClipRavenSync
 // extension 으로 본 파일에서 부여.
 typealias DateRangeFilter = ClipDateRange
 
-extension ClipDateRange: Identifiable {
-    public var id: String { stableKey }
+// Identifiable conformance 는 ClipRavenSync.ClipDateRange 자체로 이동 (Swift 6
+// "imported type to imported protocol" 경고 회피). iOS UI 컨벤션 (displayName +
+// icon) 은 여기 retroactive extension 유지.
+extension ClipDateRange {
 
     /// iOS 칩 라벨 — String(localized:) 로 한/영 자동 선택.
     var displayName: String {
