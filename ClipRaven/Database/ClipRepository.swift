@@ -502,9 +502,9 @@ struct ClipRepository {
 
     // MARK: - Drag & Drop Reordering
 
-    /// Reorder a pinned clip to a new position among pinned clips
+    /// Reorder a pinned clip to a new position among pinned clips.
+    /// Sparse update — pinOrder 가 이미 일치하는 row 는 skip (D-C5).
     func reorderPinnedClip(clipId: Int64, newIndex: Int) throws {
-        let now = Date()
         try dbPool.write { db in
             // Get all pinned clips in current order
             var pinnedIds = try Int64.fetchAll(db, sql: """
@@ -520,19 +520,13 @@ struct ClipRepository {
             let insertAt = min(newIndex, pinnedIds.count)
             pinnedIds.insert(clipId, at: insertAt)
 
-            // Reassign sequential pinOrder
-            for (index, id) in pinnedIds.enumerated() {
-                try db.execute(
-                    sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
-                    arguments: [index, now, id]
-                )
-            }
+            try Self.sparseRewritePinOrder(db, newOrderIds: pinnedIds)
         }
     }
 
-    /// Reorder a normal clip to a new position among normal clips
+    /// Reorder a normal clip to a new position among normal clips.
+    /// Sparse update — manualOrder 가 이미 일치하는 row 는 skip (D-C5).
     func reorderNormalClip(clipId: Int64, newIndex: Int) throws {
-        let now = Date()
         try dbPool.write { db in
             // Get all normal (non-pinned) clips in current display order
             var normalIds = try Int64.fetchAll(db, sql: """
@@ -549,17 +543,12 @@ struct ClipRepository {
             let insertAt = min(newIndex, normalIds.count)
             normalIds.insert(clipId, at: insertAt)
 
-            // Assign manualOrder to all visible normal clips
-            for (index, id) in normalIds.enumerated() {
-                try db.execute(
-                    sql: "UPDATE clips SET manualOrder = ?, updatedAt = ? WHERE id = ?",
-                    arguments: [index, now, id]
-                )
-            }
+            try Self.sparseRewriteManualOrder(db, newOrderIds: normalIds)
         }
     }
 
-    /// Pin a clip and insert at a specific position among pinned clips
+    /// Pin a clip and insert at a specific position among pinned clips.
+    /// Sparse update — pinOrder 가 이미 일치하는 row 는 skip (D-C5).
     func pinClipAtPosition(clipId: Int64, position: Int) throws {
         let now = Date()
         try dbPool.write { db in
@@ -580,17 +569,12 @@ struct ClipRepository {
                 arguments: [now, clipId]
             )
 
-            // Reassign all pinOrder values
-            for (index, id) in pinnedIds.enumerated() {
-                try db.execute(
-                    sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
-                    arguments: [index, now, id]
-                )
-            }
+            try Self.sparseRewritePinOrder(db, newOrderIds: pinnedIds)
         }
     }
 
-    /// Unpin a clip and insert at a specific position among normal clips
+    /// Unpin a clip and insert at a specific position among normal clips.
+    /// Sparse update — manualOrder 가 이미 일치하는 row 는 skip (D-C5).
     func unpinClipAtPosition(clipId: Int64, position: Int) throws {
         let now = Date()
         try dbPool.write { db in
@@ -692,16 +676,70 @@ struct ClipRepository {
     // MARK: - Private Helpers
 
     private static func recompactPinOrder(_ db: Database) throws {
-        let pinnedIds = try Int64.fetchAll(db, sql: """
-            SELECT id FROM clips
+        // sparse update — pinOrder 가 이미 올바른 row 는 건드리지 않음.
+        // 모든 row 를 update 하면 SyncChangeCapture 가 N 개 행을 enqueue 해
+        // CloudKit 업로드 N배가 되는데, drag 1번에 보통 1~3 행만 실제로 옮겨감.
+        // 성능 감사 D-C5.
+        let rows = try Row.fetchAll(db, sql: """
+            SELECT id, pinOrder FROM clips
             WHERE isPinned = 1 AND isDeleted = 0
             ORDER BY pinOrder ASC, lastCopiedAt DESC
         """)
 
         let now = Date()
-        for (index, id) in pinnedIds.enumerated() {
+        for (index, row) in rows.enumerated() {
+            let id: Int64 = row["id"]
+            let currentPinOrder: Int? = row["pinOrder"]
+            if currentPinOrder == index { continue }
             try db.execute(
                 sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, id]
+            )
+        }
+    }
+
+    /// pinned 클립 전체를 새 순서로 일괄 재배열하되, `newOrderIds` 의 i 번째 위치가
+    /// 현재 pinOrder 와 동일한 row 는 update 하지 않는다.
+    /// 사용자가 drag 한 row 와 그 사이를 메꾸는 row 들만 실제 update → SyncChangeCapture
+    /// enqueue 비용 최소화. (D-C5 sparse reorder)
+    private static func sparseRewritePinOrder(_ db: Database, newOrderIds: [Int64]) throws {
+        let rows = try Row.fetchAll(db, sql: """
+            SELECT id, pinOrder FROM clips
+            WHERE isPinned = 1 AND isDeleted = 0
+        """)
+        var currentOrderById: [Int64: Int?] = [:]
+        for row in rows {
+            let id: Int64 = row["id"]
+            currentOrderById[id] = row["pinOrder"]
+        }
+        let now = Date()
+        for (index, id) in newOrderIds.enumerated() {
+            if currentOrderById[id] == .some(index) { continue }
+            try db.execute(
+                sql: "UPDATE clips SET pinOrder = ?, updatedAt = ? WHERE id = ?",
+                arguments: [index, now, id]
+            )
+        }
+    }
+
+    /// normal (non-pinned) 클립의 manualOrder 를 sparse update.
+    /// pinOrder 와 같은 이유 — drag 1회에 실제 이동한 row 만 ckLastSyncedAt
+    /// NULL 처리해 CloudKit 비용 최소화. (D-C5)
+    private static func sparseRewriteManualOrder(_ db: Database, newOrderIds: [Int64]) throws {
+        let rows = try Row.fetchAll(db, sql: """
+            SELECT id, manualOrder FROM clips
+            WHERE isPinned = 0 AND isDeleted = 0
+        """)
+        var currentOrderById: [Int64: Int?] = [:]
+        for row in rows {
+            let id: Int64 = row["id"]
+            currentOrderById[id] = row["manualOrder"]
+        }
+        let now = Date()
+        for (index, id) in newOrderIds.enumerated() {
+            if currentOrderById[id] == .some(index) { continue }
+            try db.execute(
+                sql: "UPDATE clips SET manualOrder = ?, updatedAt = ? WHERE id = ?",
                 arguments: [index, now, id]
             )
         }
