@@ -1,891 +1,915 @@
 {
-  "sourceLanguage": "ko",
-  "strings": {
-    "10 MB 이하만": {
-      "comment": "Image size cap option",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Up to 10 MB"
+  "sourceLanguage" : "ko",
+  "strings" : {
+    "10 MB 이하만" : {
+      "comment" : "Image size cap option",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis 10 MB"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 MB以下のみ"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to 10 MB"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 MB 以下"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta 10 MB"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bis 10 MB"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu'à 10 Mo"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jusqu'à 10 Mo"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fino a 10 MB"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hasta 10 MB"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 MB以下のみ"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "10 MB 以下"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até 10 MB"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino a 10 MB"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 MB 以下"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Até 10 MB"
-          }
-        }
-      }
-    },
-    "25 MB 이하만": {
-      "comment": "Image size cap option",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Up to 25 MB"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "25 MB以下のみ"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "25 MB 以下"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bis 25 MB"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jusqu'à 25 Mo"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hasta 25 MB"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "25 MB 以下"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino a 25 MB"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Até 25 MB"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 MB 以下"
           }
         }
       }
     },
-    "50 MB 이하만": {
-      "comment": "Image size cap option",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Up to 50 MB"
+    "25 MB 이하만" : {
+      "comment" : "Image size cap option",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis 25 MB"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "50 MB以下のみ"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to 25 MB"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "50 MB 以下"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta 25 MB"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bis 50 MB"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu'à 25 Mo"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jusqu'à 50 Mo"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fino a 25 MB"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hasta 50 MB"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "25 MB以下のみ"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "50 MB 以下"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até 25 MB"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino a 50 MB"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "25 MB 以下"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Até 50 MB"
-          }
-        }
-      }
-    },
-    "끄기 (텍스트만)": {
-      "comment": "ImageSyncMode .off display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Off (text only)"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "オフ (テキストのみ)"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "关闭 (仅文本)"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aus (nur Text)"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Désactivé (texte seul)"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desactivado (solo texto)"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "關閉 (僅文字)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Off (solo testo)"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desligado (apenas texto)"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "25 MB 以下"
           }
         }
       }
     },
-    "썸네일만 (작게)": {
-      "comment": "ImageSyncMode .thumbnailOnly display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Thumbnails only (small)"
+    "50 MB 이하만" : {
+      "comment" : "Image size cap option",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis 50 MB"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "サムネイルのみ (小)"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Up to 50 MB"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "仅缩略图 (小)"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta 50 MB"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nur Vorschauen (klein)"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu'à 50 Mo"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Miniatures uniquement (petit)"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fino a 50 MB"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solo miniaturas (pequeño)"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 MB以下のみ"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "僅縮圖 (小)"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até 50 MB"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solo miniature (piccole)"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 MB 以下"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apenas miniaturas (pequeno)"
-          }
-        }
-      }
-    },
-    "원본 paste 가능, iCloud 저장공간 사용": {
-      "comment": "ImageSyncMode .full summary",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originals available for paste, uses iCloud storage"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "オリジナルを貼り付け可、iCloudストレージを使用"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可粘贴原图，使用 iCloud 存储"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originale zum Einfügen, nutzt iCloud-Speicher"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originaux disponibles pour coller, utilise le stockage iCloud"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originales disponibles para pegar, usa almacenamiento iCloud"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "可貼上原檔，使用 iCloud 儲存空間"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originali disponibili per incollare, usa spazio iCloud"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originais disponíveis para colar, usa armazenamento iCloud"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 MB 以下"
           }
         }
       }
     },
-    "원본 포함": {
-      "comment": "ImageSyncMode .full display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Include originals"
+    "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요." : {
+
+    },
+    "결제 대기 중입니다. 승인 후 자동으로 잠금이 해제됩니다." : {
+
+    },
+    "구매 검증에 실패했습니다." : {
+
+    },
+    "구매 중 오류가 발생했습니다: %@" : {
+
+    },
+    "끄기 (텍스트만)" : {
+      "comment" : "ImageSyncMode .off display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus (nur Text)"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "オリジナルを含む"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off (text only)"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "包含原图"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado (solo texto)"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Originale einschließen"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé (texte seul)"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inclure les originaux"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off (solo testo)"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Incluir originales"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフ (テキストのみ)"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "包含原檔"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligado (apenas texto)"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Includi originali"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭 (仅文本)"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Incluir originais"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "關閉 (僅文字)"
           }
         }
       }
     },
-    "이미지": {
-      "comment": "ContentType .image display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Image"
+    "복원 중 오류가 발생했습니다: %@" : {
+
+    },
+    "복원할 구매 내역이 없습니다." : {
+
+    },
+    "상품 정보 로드에 실패했습니다: %@" : {
+
+    },
+    "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요." : {
+
+    },
+    "썸네일만 (작게)" : {
+      "comment" : "ImageSyncMode .thumbnailOnly display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Vorschauen (klein)"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thumbnails only (small)"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "图片"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo miniaturas (pequeño)"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bild"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatures uniquement (petit)"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Image"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo miniature (piccole)"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imagen"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルのみ (小)"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "圖片"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apenas miniaturas (pequeno)"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Immagine"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅缩略图 (小)"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imagem"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅縮圖 (小)"
           }
         }
       }
     },
-    "이미지는 다른 기기에 보이지 않음": {
-      "comment": "ImageSyncMode .off summary",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Images are not visible on other devices"
+    "원본 paste 가능, iCloud 저장공간 사용" : {
+      "comment" : "ImageSyncMode .full summary",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originale zum Einfügen, nutzt iCloud-Speicher"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像は他のデバイスには表示されません"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originals available for paste, uses iCloud storage"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "图片不会显示在其他设备"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originales disponibles para pegar, usa almacenamiento iCloud"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bilder erscheinen nicht auf anderen Geräten"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originaux disponibles pour coller, utilise le stockage iCloud"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les images n'apparaîtront pas sur d'autres appareils"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originali disponibili per incollare, usa spazio iCloud"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las imágenes no aparecerán en otros dispositivos"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリジナルを貼り付け可、iCloudストレージを使用"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "圖片不會顯示在其他裝置上"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originais disponíveis para colar, usa armazenamento iCloud"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le immagini non appariranno su altri dispositivi"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可粘贴原图，使用 iCloud 存储"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imagens não aparecerão em outros dispositivos"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可貼上原檔，使用 iCloud 儲存空間"
           }
         }
       }
     },
-    "제한 없음": {
-      "comment": "ImageSyncSizeCap .unlimited display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No limit"
+    "원본 포함" : {
+      "comment" : "ImageSyncMode .full display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originale einschließen"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "制限なし"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Include originals"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无限制"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluir originales"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein Limit"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclure les originaux"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sans limite"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Includi originali"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin límite"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリジナルを含む"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無限制"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluir originais"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Senza limite"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包含原图"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem limite"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "包含原檔"
           }
         }
       }
     },
-    "추천 — 이미지 미리보기만, 데이터 절약": {
-      "comment": "ImageSyncMode .thumbnailOnly summary",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recommended — preview only, saves data"
+    "이미지" : {
+      "comment" : "ContentType .image display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "推奨 — プレビューのみ、データ節約"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "推荐 — 仅预览，节省流量"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagen"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Empfohlen — nur Vorschau, datensparend"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recommandé — aperçu uniquement, économe en données"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immagine"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recomendado — solo vista previa, ahorra datos"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "推薦 — 僅預覽，節省流量"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagem"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consigliato — solo anteprima, risparmia dati"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Recomendado — apenas pré-visualização, economiza dados"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片"
           }
         }
       }
     },
-    "컬러": {
-      "comment": "ContentType .color display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Color"
+    "이미지는 다른 기기에 보이지 않음" : {
+      "comment" : "ImageSyncMode .off summary",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder erscheinen nicht auf anderen Geräten"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "カラー"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Images are not visible on other devices"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "颜色"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las imágenes no aparecerán en otros dispositivos"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Farbe"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les images n'apparaîtront pas sur d'autres appareils"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Couleur"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le immagini non appariranno su altri dispositivi"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Color"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像は他のデバイスには表示されません"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "顏色"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagens não aparecerão em outros dispositivos"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Colore"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片不会显示在其他设备"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cor"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片不會顯示在其他裝置上"
           }
         }
       }
     },
-    "코드": {
-      "comment": "ContentType .code display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Code"
+    "제한 없음" : {
+      "comment" : "ImageSyncSizeCap .unlimited display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Limit"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コード"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No limit"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "代码"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin límite"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Code"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans limite"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Code"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senza limite"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Código"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "制限なし"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "程式碼"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem limite"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Codice"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限制"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Código"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無限制"
           }
         }
       }
     },
-    "텍스트": {
-      "comment": "ContentType .text display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Text"
+    "추천 — 이미지 미리보기만, 데이터 절약" : {
+      "comment" : "ImageSyncMode .thumbnailOnly summary",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empfohlen — nur Vorschau, datensparend"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "テキスト"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommended — preview only, saves data"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "文本"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomendado — solo vista previa, ahorra datos"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Text"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommandé — aperçu uniquement, économe en données"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Texte"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consigliato — solo anteprima, risparmia dati"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Texto"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推奨 — プレビューのみ、データ節約"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "文字"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomendado — apenas pré-visualização, economiza dados"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Testo"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推荐 — 仅预览，节省流量"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Texto"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "推薦 — 僅預覽，節省流量"
           }
         }
       }
     },
-    "파일": {
-      "comment": "ContentType .file display name",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "File"
+    "컬러" : {
+      "comment" : "ContentType .color display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ファイル"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "文件"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Datei"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fichier"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colore"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Archivo"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カラー"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "檔案"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cor"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "File"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Arquivo"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顏色"
+          }
+        }
+      }
+    },
+    "코드" : {
+      "comment" : "ContentType .code display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codice"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コード"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代码"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "程式碼"
+          }
+        }
+      }
+    },
+    "텍스트" : {
+      "comment" : "ContentType .text display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキスト"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字"
+          }
+        }
+      }
+    },
+    "파일" : {
+      "comment" : "ContentType .file display name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datei"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichier"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "檔案"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

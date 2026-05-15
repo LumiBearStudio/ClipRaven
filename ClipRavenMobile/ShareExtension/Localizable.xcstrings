@@ -1,360 +1,366 @@
 {
-  "sourceLanguage": "ko",
-  "strings": {
-    "ClipRaven에 저장 중…": {
-      "comment": "Loading status while saving",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saving to ClipRaven…"
+  "sourceLanguage" : "ko",
+  "strings" : {
+    "✅ 저장됨" : {
+      "comment" : "Success status after saving shared content",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Gespeichert"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ClipRavenに保存中…"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Saved"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在保存到 ClipRaven…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Guardado"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Speichere in ClipRaven …"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Enregistré"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistrement dans ClipRaven…"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Salvato"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardando en ClipRaven…"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ 保存済み"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在儲存到 ClipRaven…"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ Salvo"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvataggio in ClipRaven…"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ 已保存"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvando no ClipRaven…"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "✅ 已儲存"
           }
         }
       }
     },
-    "✅ 저장됨": {
-      "comment": "Success status after saving shared content",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ Saved"
+    "ClipRaven에 저장 중…" : {
+      "comment" : "Loading status while saving",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichere in ClipRaven …"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ 保存済み"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving to ClipRaven…"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ 已保存"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardando en ClipRaven…"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ Gespeichert"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement dans ClipRaven…"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ Enregistré"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvataggio in ClipRaven…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ Guardado"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRavenに保存中…"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ 已儲存"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvando no ClipRaven…"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ Salvato"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在保存到 ClipRaven…"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "✅ Salvo"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在儲存到 ClipRaven…"
           }
         }
       }
     },
-    "공유 가능한 텍스트 없음": {
-      "comment": "Error when shared item has no text content",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No shareable text"
+    "공유 가능한 텍스트 없음" : {
+      "comment" : "Error when shared item has no text content",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein freigebbarer Text"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "共有可能なテキストがありません"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No shareable text"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无可分享文本"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay texto compartible"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein freigebbarer Text"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun texte partageable"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun texte partageable"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun testo condivisibile"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No hay texto compartible"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共有可能なテキストがありません"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無可分享文字"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum texto compartilhável"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun testo condivisibile"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无可分享文本"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nenhum texto compartilhável"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無可分享文字"
           }
         }
       }
     },
-    "공유할 콘텐츠를 찾을 수 없음": {
-      "comment": "Error when no item provider available",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No content to share"
+    "공유할 콘텐츠를 찾을 수 없음" : {
+      "comment" : "Error when no item provider available",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Inhalt zum Teilen gefunden"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "共有するコンテンツが見つかりません"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No content to share"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未找到要分享的内容"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró contenido para compartir"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein Inhalt zum Teilen gefunden"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun contenu à partager"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun contenu à partager"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun contenuto da condividere"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se encontró contenido para compartir"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共有するコンテンツが見つかりません"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "找不到要分享的內容"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conteúdo para compartilhar"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun contenuto da condividere"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未找到要分享的内容"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem conteúdo para compartilhar"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找不到要分享的內容"
           }
         }
       }
     },
-    "데이터베이스 접근 실패 (App Group 미설정)": {
-      "comment": "Error when DB cannot be opened due to entitlement issue",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Database access failed (App Group not configured)"
+    "데이터베이스 접근 실패 (App Group 미설정)" : {
+      "comment" : "Error when DB cannot be opened due to entitlement issue",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenbank-Zugriff fehlgeschlagen (App Group nicht konfiguriert)"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "データベースアクセス失敗 (App Group未設定)"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database access failed (App Group not configured)"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "数据库访问失败 (未配置 App Group)"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de acceso a la base de datos (App Group no configurado)"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Datenbank-Zugriff fehlgeschlagen (App Group nicht konfiguriert)"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec d'accès à la base de données (App Group non configuré)"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Échec d'accès à la base de données (App Group non configuré)"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesso al database fallito (App Group non configurato)"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error de acceso a la base de datos (App Group no configurado)"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データベースアクセス失敗 (App Group未設定)"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "資料庫存取失敗 (App Group 未設定)"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao acessar banco de dados (App Group não configurado)"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesso al database fallito (App Group non configurato)"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据库访问失败 (未配置 App Group)"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Falha ao acessar banco de dados (App Group não configurado)"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "資料庫存取失敗 (App Group 未設定)"
           }
         }
       }
     },
-    "저장 실패: %@": {
-      "comment": "Generic save failure with error description",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save failed: %@"
+    "민감 데이터로 감지되어 저장하지 않았습니다" : {
+
+    },
+    "이미지를 불러올 수 없습니다" : {
+
+    },
+    "저장 실패: %@" : {
+      "comment" : "Generic save failure with error description",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern fehlgeschlagen: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失敗: %@"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save failed: %@"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失败: %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al guardar: %@"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Speichern fehlgeschlagen: %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de l'enregistrement : %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Échec de l'enregistrement : %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvataggio fallito: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al guardar: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存失敗: %@"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "儲存失敗: %@"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao salvar: %@"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvataggio fallito: %@"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存失败: %@"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Falha ao salvar: %@"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "儲存失敗: %@"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
