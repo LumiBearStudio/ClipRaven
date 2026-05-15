@@ -126,6 +126,23 @@ struct ClipRepository {
         }
     }
 
+    /// 최근 N 초 이내에 생성된 이미지 클립 중 동일한 dHash 를 가진 클립을 찾는다.
+    /// Chrome 등 브라우저가 같은 이미지를 클립보드에 multi-stage 로 쓰면서 metadata 차이로
+    /// SHA-256 이 달라지는 경우의 회귀 방지. dHash 는 perceptual hash 라 시각적 동일
+    /// 이미지면 byte 가 달라도 일치한다.
+    func fetchRecentImageClip(withDhash dhash: Int64, withinSeconds seconds: TimeInterval) throws -> Clip? {
+        try dbPool.read { db in
+            let cutoff = Date().addingTimeInterval(-seconds)
+            return try Clip
+                .filter(Column("contentType") == ContentType.image.rawValue)
+                .filter(Column("imageDhash") == dhash)
+                .filter(Column("createdAt") > cutoff)
+                .filter(Column("isDeleted") == false)
+                .order(Column("createdAt").desc)
+                .fetchOne(db)
+        }
+    }
+
     func count(contentType: ContentType? = nil) throws -> Int {
         try dbPool.read { db in
             var request = Clip.filter(Column("isDeleted") == false)

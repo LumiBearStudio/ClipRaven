@@ -173,35 +173,41 @@ actor ClipProcessor {
 
     // MARK: - Image Processing
 
-    /// 이미지 캡처 진입점. 품질 감사 B-CS6 권고에 따라 dedup 4단계 + save 분해.
+    /// 이미지 캡처 진입점. 품질 감사 B-CS6 권고에 따라 dedup 단계 + save 분해.
     /// 각 단계가 "이미 dedup 됐다 (skip)" 이면 true 반환, false 면 다음 단계 진행.
     private func processImage(_ imageData: Data, sourceApp: SourceAppInfo) async {
         let imageHash = SHA256Hash.compute(imageData)
+        // dHash 는 시각적 perceptual hash (64-bit). 같은 visual 이미지면 byte 가
+        // 달라도 일치. Chrome 등 브라우저의 multi-stage clipboard write 회귀
+        // (SHA-256 다른 캡처 2건) 방어용. dedup 단계에서 사용하려고 일찍 계산.
+        let dHash = DHash.compute(from: imageData)
 
         cleanExpiredHashes()
 
-        // 1. In-memory 2초 윈도우 dedup
+        // 1. In-memory 2초 윈도우 dedup (SHA-256)
         if dedupInMemoryImage(imageHash: imageHash) { return }
-        // 2. DB 해시 dedup
+        // 2. DB 해시 dedup (SHA-256)
         if dedupByImageHashDB(imageHash: imageHash) { return }
-        // 3. Cross-device sync race dedup (30초 윈도우)
+        // 3. dHash 기반 perceptual dedup (5초 윈도우) — 같은 visual 이미지의 multi-stage
+        //    pasteboard write 또는 미세한 byte 차이 (compression metadata 등) 방어.
+        if dedupByPerceptualHash(imageHash: imageHash, dHash: dHash) { return }
+        // 4. Cross-device sync race dedup (30초 윈도우)
         if dedupCrossDeviceImage(imageHash: imageHash) { return }
-        // 4. UC Stage-2 dedup (Stage-1 marker 60초 이내)
+        // 5. UC Stage-2 dedup (Stage-1 marker 60초 이내)
         if dedupUCStage2(imageHash: imageHash) { return }
 
         recentHashes[imageHash] = Date()
 
         let thumbnail = ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
         let imagePath = ImageStorageService.saveImage(imageData)
-        let dHash = DHash.compute(from: imageData)
 
-        // 5. UC 2-stage upgrade — 직전 file clip 이 같은 이미지 파일 경로면 in-place 업그레이드
+        // 6. UC 2-stage upgrade — 직전 file clip 이 같은 이미지 파일 경로면 in-place 업그레이드
         if upgradeRecentFileClipToImage(
             imageHash: imageHash, imageDhash: dHash,
             imagePath: imagePath, thumbnail: thumbnail, imageData: imageData
         ) { return }
 
-        // 6. 새 image clip 저장 + smart rule + OCR
+        // 7. 새 image clip 저장 + smart rule + OCR
         await saveNewImageClip(
             imageHash: imageHash, dHash: dHash, imagePath: imagePath,
             thumbnail: thumbnail, imageData: imageData, sourceApp: sourceApp
@@ -226,6 +232,25 @@ actor ClipProcessor {
               let existingId = existing.id else {
             return false
         }
+        try? clipRepository.incrementCopyCount(id: existingId)
+        recentHashes[imageHash] = Date()
+        return true
+    }
+
+    /// dHash (perceptual hash) 기반 dedup — 같은 visual 이미지가 byte 차이로 SHA-256
+    /// 다른 결과를 낼 때 회귀 방지.
+    /// 시나리오: Chrome 등 브라우저가 이미지를 클립보드에 multi-stage 로 쓰면서
+    /// 두 번째 stage 의 metadata 가 살짝 달라져 SHA-256 이 다름 → 시각적으로 동일한
+    /// 이미지가 2개 row 생성되던 버그.
+    /// 5초 윈도우 + 같은 dHash → 사용자가 의도한 다른 이미지일 가능성이 무시할
+    /// 만큼 낮으므로 (64-bit dHash 충돌 확률 + 시간 제약) dedup 안전.
+    private func dedupByPerceptualHash(imageHash: String, dHash: Int64?) -> Bool {
+        guard let dHash else { return false }
+        guard let existing = try? clipRepository.fetchRecentImageClip(
+            withDhash: dHash,
+            withinSeconds: 5
+        ), let existingId = existing.id else { return false }
+        ClipRavenLog.write(.processor, "[ClipProc] DEDUP: perceptual hash match (dHash=\(dHash)), existing=\(existingId)")
         try? clipRepository.incrementCopyCount(id: existingId)
         recentHashes[imageHash] = Date()
         return true
