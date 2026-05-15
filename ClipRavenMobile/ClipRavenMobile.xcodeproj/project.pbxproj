@@ -937,7 +937,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven;
 				PRODUCT_NAME = ClipRavenMobile;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -973,7 +973,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1010,7 +1010,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1040,7 +1040,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven;
 				PRODUCT_NAME = ClipRavenMobile;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -1067,7 +1067,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.ClipRavenMobileUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.ClipRavenMobileUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -1097,7 +1097,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.ClipRavenMobileUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.ClipRavenMobileUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -1130,7 +1130,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.ClipRavenMobileTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.ClipRavenMobileTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -1158,7 +1158,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.ClipRavenMobileTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.ClipRavenMobileTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -1199,7 +1199,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1236,7 +1236,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1277,7 +1277,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.KeyboardExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.KeyboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -1314,7 +1314,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRavenMobile.KeyboardExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumibear.ClipRaven.KeyboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
