@@ -39,6 +39,13 @@ public protocol KeychainStorage: Sendable {
 ///   default access group (`$(AppIdentifierPrefix)$(CFBundleIdentifier)`) 사용 →
 ///   같은 개발자 ID 의 다른 ClipRaven 빌드 (sandbox / dev / beta) 가 같은 슬롯
 ///   공유 가능.
+///
+/// **macOS 사용 시 주의**: macOS sandbox 앱은 `keychain-access-groups` entitlement
+/// 가 없으면 매 실행마다 TCC 검증을 다시 거쳐 사용자에게 keychain 접근 컨펌
+/// 다이얼로그가 반복 노출되는 회귀가 알려져 있다. 또한 sandbox 앱 삭제 시
+/// keychain item 도 함께 삭제되므로 "앱 삭제 후 데이터 잔존" 보안 이점이
+/// 없다. 따라서 macOS 에서는 `AppGroupStorage` 를 권장. iOS 는 keychain 이
+/// 앱 삭제 후에도 살아남아 트라이얼 우회를 막는 이점이 있으므로 그대로 유지.
 public struct SystemKeychain: KeychainStorage {
     private let service: String
     private let account: String
@@ -95,12 +102,61 @@ public struct SystemKeychain: KeychainStorage {
     }
 }
 
+/// App Group container 의 UserDefaults 를 쓰는 구현.
+///
+/// macOS sandbox 앱이 매 실행마다 keychain TCC 컨펌 다이얼로그를 띄우는
+/// 회귀를 회피하기 위해 도입. App Group container 는 sandbox 안에서
+/// 프롬프트 없이 자유 접근 가능하며, sandbox 앱이 삭제되면 어차피
+/// container 도 함께 삭제되므로 keychain 대비 보안 손실 없음 (macOS 한정).
+///
+/// iOS 에서는 keychain 이 앱 삭제 후에도 잔존하는 이점이 있으니
+/// `SystemKeychain` 을 그대로 유지하는 게 좋다.
+public struct AppGroupStorage: KeychainStorage {  // 이름은 historical (프로토콜 이름이 KeychainStorage)
+    private let suiteName: String
+    private let key: String
+
+    public init(suiteName: String, key: String = "firstLaunchDate") {
+        self.suiteName = suiteName
+        self.key = key
+    }
+
+    private var defaults: UserDefaults? {
+        UserDefaults(suiteName: suiteName)
+    }
+
+    public func saveFirstLaunchDate(_ date: Date) throws {
+        guard let defaults else {
+            throw NSError(
+                domain: "ClipRavenSync.AppGroupStorage", code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Failed to open App Group suite \(suiteName)"]
+            )
+        }
+        defaults.set(date.timeIntervalSince1970, forKey: key)
+    }
+
+    public func loadFirstLaunchDate() -> Date? {
+        guard let defaults else { return nil }
+        // `object(forKey:)` 가 nil 이면 "키 없음", `double(forKey:)` 는
+        // 키 없을 때 0.0 을 반환해 1970-01-01 로 오인될 수 있어 분리.
+        guard defaults.object(forKey: key) != nil else { return nil }
+        let interval = defaults.double(forKey: key)
+        return Date(timeIntervalSince1970: interval)
+    }
+}
+
 // MARK: - TrialManager
 
-/// 첫 실행일을 영구 저장 (기본: Keychain) 하고 체험 잔여 일수를 계산한다.
+/// 첫 실행일을 영구 저장하고 체험 잔여 일수를 계산한다.
 ///
-/// Keychain 은 앱 삭제 후에도 데이터가 남아(iOS) 체험 기간 재사용을 막는다.
-/// Mac 샌드박스 환경에서도 동일하게 동작한다.
+/// 저장소는 플랫폼별로 다르다:
+/// - **iOS**: Keychain (앱 삭제 후에도 잔존 → 트라이얼 재사용 차단)
+/// - **macOS**: App Group container UserDefaults (sandbox keychain TCC 회귀 회피).
+///   macOS sandbox 앱은 어차피 keychain 도 앱 삭제 시 함께 제거되므로
+///   App Group 으로 변경해도 보안 손실 없음.
+///
+/// macOS 의 경우 `TrialManager.shared` 첫 init 시 기존 SystemKeychain 에 저장된
+/// firstLaunchDate 가 있으면 App Group 으로 한 번 마이그레이션해 기존 사용자의
+/// 트라이얼 일수가 0 으로 리셋되는 회귀를 막는다.
 ///
 /// 테스트에서는 `init(clock:storage:trialDays:)` 로 `MockClock`/`InMemoryKeychain`
 /// 을 주입해 시간 흐름과 영구 저장을 격리한다.
@@ -110,8 +166,15 @@ public final class TrialManager {
 
     public static let trialDays = 15
 
-    /// 프로덕션 기본 인스턴스. SystemClock + SystemKeychain.
-    public static let shared = TrialManager()
+    /// 프로덕션 기본 인스턴스. macOS = AppGroupStorage(+ keychain migration),
+    /// iOS = SystemKeychain.
+    public static let shared: TrialManager = makeShared()
+
+    /// macOS sandbox keychain TCC 회귀 회피를 위한 App Group 이름. App
+    /// entitlement (`com.apple.security.application-groups`) 에 등록된 값과 일치
+    /// 해야 한다. 변경 시 ClipRaven.entitlements / ClipRavenMobile entitlement 도
+    /// 동기화.
+    public static let trialAppGroup = "group.com.lumibear.clipraven"
 
     private let clock: any AppClock
     private let storage: any KeychainStorage
@@ -125,6 +188,38 @@ public final class TrialManager {
         self.clock = clock
         self.storage = storage
         self.trialDays = trialDays
+    }
+
+    /// 플랫폼별 default storage 를 선택하고, macOS 의 경우 legacy keychain →
+    /// App Group 마이그레이션을 정확히 1회 수행해 기존 사용자 트라이얼 일수를
+    /// 보존한다.
+    ///
+    /// **flag 로 한 번만 시도하는 이유**: `SystemKeychain.loadFirstLaunchDate()`
+    /// 가 `SecItemCopyMatching` 을 호출하는데, 슬롯이 비어있지 않다면 sandbox
+    /// 환경에서 매 실행마다 TCC 컨펌 다이얼로그를 띄울 수 있다. 마이그레이션을
+    /// flag 로 한 번만 시도하면 그 한 번 외엔 keychain 을 영영 touch 하지 않아
+    /// prompt 가 영구히 사라진다.
+    private static func makeShared() -> TrialManager {
+        #if os(macOS)
+        let primary = AppGroupStorage(suiteName: trialAppGroup)
+        let defaults = UserDefaults(suiteName: trialAppGroup)
+        let migrationKey = "trialKeychainMigrationCompleted"
+
+        if defaults?.bool(forKey: migrationKey) != true {
+            // 최초 1회: legacy keychain 확인. App Group 이 이미 채워져 있으면
+            // 마이그레이션 skip 하고 flag 만 세움.
+            if primary.loadFirstLaunchDate() == nil {
+                let legacy = SystemKeychain()
+                if let legacyDate = legacy.loadFirstLaunchDate() {
+                    try? primary.saveFirstLaunchDate(legacyDate)
+                }
+            }
+            defaults?.set(true, forKey: migrationKey)
+        }
+        return TrialManager(storage: primary)
+        #else
+        return TrialManager(storage: SystemKeychain())
+        #endif
     }
 
     // MARK: - Instance API
