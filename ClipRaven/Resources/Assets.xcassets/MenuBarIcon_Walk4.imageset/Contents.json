@@ -9,6 +9,11 @@
       "filename" : "MenuBarIcon_Walk4@2x.png",
       "idiom" : "mac",
       "scale" : "2x"
+    },
+    {
+      "filename" : "MenuBarIcon_Walk4@3x.png",
+      "idiom" : "mac",
+      "scale" : "3x"
     }
   ],
   "info" : {
