@@ -22,29 +22,41 @@ enum CRSentry {
     // MARK: - Error capture
 
     /// 에러를 Sentry 로 전송한다. 최근 120초 os.log 를 extra 에 첨부.
+    ///
+    /// **App Hang 회귀 방어**: `recentLogLines()` 가 내부적으로
+    /// `OSLogStore.getEntries()` 를 호출하는데, 이는 logd 와의 XPC 동기 통신을
+    /// 일으켜 메인 스레드에서 호출 시 2초+ block 으로 Sentry App Hang 보고가
+    /// 트리거된 사례가 있었다 (APNs 등록 실패 콜백 등). Sentry SDK 자체는
+    /// thread-safe 하므로 capture 본체를 background queue 로 옮겨 메인을
+    /// 차단하지 않는다.
     static func capture(_ error: Error, context: String? = nil) {
-        SentrySDK.capture(error: error) { scope in
-            if let context {
-                scope.setExtra(value: context, key: "context")
-            }
-            if #available(macOS 12.0, iOS 15.0, *) {
-                if let logs = recentLogLines() {
-                    scope.setExtra(value: logs, key: "recent_oslog")
+        Task.detached(priority: .utility) {
+            SentrySDK.capture(error: error) { scope in
+                if let context {
+                    scope.setExtra(value: context, key: "context")
+                }
+                if #available(macOS 12.0, iOS 15.0, *) {
+                    if let logs = recentLogLines() {
+                        scope.setExtra(value: logs, key: "recent_oslog")
+                    }
                 }
             }
         }
     }
 
     /// 메시지를 에러로 전송한다. 로그 첨부 포함.
+    /// `capture(_:context:)` 와 동일한 사유로 background queue 에서 실행.
     static func captureMessage(_ message: String, level: SentryLevel = .error, context: String? = nil) {
-        SentrySDK.capture(message: message) { scope in
-            scope.setLevel(level)
-            if let context {
-                scope.setExtra(value: context, key: "context")
-            }
-            if #available(macOS 12.0, iOS 15.0, *) {
-                if let logs = recentLogLines() {
-                    scope.setExtra(value: logs, key: "recent_oslog")
+        Task.detached(priority: .utility) {
+            SentrySDK.capture(message: message) { scope in
+                scope.setLevel(level)
+                if let context {
+                    scope.setExtra(value: context, key: "context")
+                }
+                if #available(macOS 12.0, iOS 15.0, *) {
+                    if let logs = recentLogLines() {
+                        scope.setExtra(value: logs, key: "recent_oslog")
+                    }
                 }
             }
         }
