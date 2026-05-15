@@ -39,7 +39,7 @@ public final class PurchaseManager: ObservableObject {
     /// 구매 진행.
     public func purchase() async {
         guard let product else {
-            errorMessage = "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요."
+            errorMessage = String(localized: "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.", bundle: .module)
             return
         }
         // macOS LSUIElement(메뉴바) 앱은 StoreKit 시트 표시 전에 앱을 activate해야 함
@@ -60,17 +60,18 @@ public final class PurchaseManager: ObservableObject {
                     await updateLockState()
                     log.info("purchase verified — productID=\(transaction.productID, privacy: .public)")
                 } else {
-                    errorMessage = "구매 검증에 실패했습니다."
+                    errorMessage = String(localized: "구매 검증에 실패했습니다.", bundle: .module)
                 }
             case .userCancelled:
                 break
             case .pending:
-                errorMessage = "결제 대기 중입니다. 승인 후 자동으로 잠금이 해제됩니다."
+                errorMessage = String(localized: "결제 대기 중입니다. 승인 후 자동으로 잠금이 해제됩니다.", bundle: .module)
             @unknown default:
                 break
             }
         } catch {
-            errorMessage = "구매 중 오류가 발생했습니다: \(error.localizedDescription)"
+            let fmt = String(localized: "구매 중 오류가 발생했습니다: %@", bundle: .module)
+            errorMessage = String(format: fmt, error.localizedDescription)
             log.error("purchase failed: \(String(describing: error), privacy: .public)")
         }
     }
@@ -85,10 +86,11 @@ public final class PurchaseManager: ObservableObject {
             try await AppStore.sync()
             await updateLockState()
             if lockState != .paid {
-                errorMessage = "복원할 구매 내역이 없습니다."
+                errorMessage = String(localized: "복원할 구매 내역이 없습니다.", bundle: .module)
             }
         } catch {
-            errorMessage = "복원 중 오류가 발생했습니다: \(error.localizedDescription)"
+            let fmt = String(localized: "복원 중 오류가 발생했습니다: %@", bundle: .module)
+            errorMessage = String(format: fmt, error.localizedDescription)
             log.error("restore failed: \(String(describing: error), privacy: .public)")
         }
     }
@@ -103,7 +105,7 @@ public final class PurchaseManager: ObservableObject {
             guard let first = products.first else {
                 // 빈 배열 — product를 nil로 두어 다음 refresh에서 재시도 가능하게 유지
                 log.error("Product.products returned empty — check App Store Connect / Sandbox account / scheme StoreKit config")
-                errorMessage = "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요."
+                errorMessage = String(localized: "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요.", bundle: .module)
                 return
             }
             self.product = first
@@ -111,7 +113,8 @@ public final class PurchaseManager: ObservableObject {
             log.info("product loaded: \(first.displayPrice, privacy: .public)")
         } catch {
             log.error("product load failed: \(String(describing: error), privacy: .public)")
-            errorMessage = "상품 정보 로드에 실패했습니다: \(error.localizedDescription)"
+            let fmt = String(localized: "상품 정보 로드에 실패했습니다: %@", bundle: .module)
+            errorMessage = String(format: fmt, error.localizedDescription)
         }
     }
 
