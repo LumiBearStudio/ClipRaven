@@ -230,10 +230,13 @@ final class ClipListViewModel: ObservableObject {
             var clip = try repository.insert(text: text)
             if let nickname, !nickname.isEmpty {
                 clip.nickname = nickname
+                // v14 LWW: nicknameUpdatedAt 도 함께 갱신해 다른 device 의
+                // stale nickname 이 이걸 덮어쓰지 않게.
+                let now = Date()
                 try await AppDatabase.shared.dbPool.write { db in
                     try db.execute(
-                        sql: "UPDATE clips SET nickname = ?, updatedAt = ? WHERE uuid = ?",
-                        arguments: [nickname, Date(), clip.uuid ?? ""]
+                        sql: "UPDATE clips SET nickname = ?, nicknameUpdatedAt = ?, updatedAt = ? WHERE uuid = ?",
+                        arguments: [nickname, now, now, clip.uuid ?? ""]
                     )
                 }
             }

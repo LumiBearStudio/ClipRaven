@@ -31,7 +31,13 @@ final class AppDatabase {
     /// 등록되어 있어야 한다.
     static let appGroupID = "group.com.lumibear.ClipRavenMobile"
 
+    /// UserDefaults flag — corruption recovery 발생 시 다음 launch 에서
+    /// 사용자에게 알림 띄울 수 있게 marker. UI 가 읽고 표시 후 클리어.
+    static let corruptionRecoveryFlagKey = "clipraven.db.corruptionRecoveredAt"
+
     private static func makeShared() -> AppDatabase {
+        let fileManager = FileManager.default
+        let dbDir: URL
         do {
             // App Group 컨테이너 경로. 메인 앱 + Share Extension + Keyboard
             // Extension이 모두 동일 SQLite 파일에 접근하려면 sandbox-local
@@ -42,8 +48,6 @@ final class AppDatabase {
             // 안 되지만 dev 빌드 (App Group 미설정 상태)에서는 sandbox-local
             // 경로로 fallback 해서 메인 앱은 정상 동작하게 한다. Extension
             // 들은 DB 접근 불가이므로 "전체 접근 허용 안 됨" 같은 UX로 빠짐.
-            let fileManager = FileManager.default
-            let dbDir: URL
             if let groupURL = fileManager.containerURL(
                 forSecurityApplicationGroupIdentifier: appGroupID
             ) {
@@ -59,46 +63,93 @@ final class AppDatabase {
                 NSLog("⚠️ ClipRaven: App Group '\(appGroupID)' unavailable — falling back to sandbox-local DB. Extensions won't see this data.")
             }
             try fileManager.createDirectory(at: dbDir, withIntermediateDirectories: true)
+        } catch {
+            // 컨테이너 디렉토리 생성 실패는 진짜 unrecoverable.
+            fatalError("Application Support / App Group directory unavailable: \(error)")
+        }
 
-            let dbURL = dbDir.appendingPathComponent("clipraven.sqlite")
+        let dbURL = dbDir.appendingPathComponent("clipraven.sqlite")
 
-            var config = Configuration()
-            config.foreignKeysEnabled = true
-            // 다른 프로세스가 lock 잡고 있을 때 즉시 BUSY 에러 내지 않고 최대
-            // 5초까지 대기 — keyboard/widget extension 과 SQLite 공유 시 안전.
-            config.busyMode = .timeout(5.0)
+        // First attempt — 정상 경로.
+        do {
+            return try makeAppDatabase(at: dbURL)
+        } catch {
+            NSLog("⚠️ ClipRaven: first DB init attempt failed: \(error)")
+            // Recovery: 손상된 sqlite + WAL/SHM 을 `.corrupted-{timestamp}`
+            // 로 백업 이동 (best-effort). 빈 DB 로 재시도 → 앱이 적어도
+            // 사용 가능 상태. 사용자 데이터 영구 손실은 막음.
+            quarantineCorruptedDB(at: dbURL, error: error)
+            UserDefaults.standard.set(
+                Date(), forKey: corruptionRecoveryFlagKey
+            )
+        }
 
-            config.prepareDatabase { db in
-                try db.execute(sql: "PRAGMA synchronous = NORMAL")
+        // Second attempt — fresh DB.
+        do {
+            return try makeAppDatabase(at: dbURL)
+        } catch {
+            // 백업 + fresh init 도 실패하면 진짜 unrecoverable.
+            fatalError("Database initialization failed after recovery attempt: \(error)")
+        }
+    }
 
-                // ⚠️ Persistent WAL — `-wal` / `-shm` 파일이 connection close
-                // 시 자동 삭제되지 않도록 함. 키보드/위젯 extension 같은
-                // readonly reader 가 메인 앱 종료 후에도 정상 동작하기 위해
-                // 필수. 이 설정 없으면 키보드가 stale snapshot 만 보거나
-                // DB 를 못 여는 케이스 발생 (사용자 보고 2026-05-04).
-                //
-                // 참고: 이 옵션은 SQL PRAGMA 가 아닌 sqlite3_file_control 로
-                // 만 설정 가능. read-write connection 에서만 의미 있음.
-                if !db.configuration.readonly {
-                    var flag: CInt = 1
-                    let code = sqlite3_file_control(
-                        db.sqliteConnection,
-                        nil,
-                        SQLITE_FCNTL_PERSIST_WAL,
-                        &flag
-                    )
-                    if code != SQLITE_OK {
-                        // 치명적이지 않음 — log 만 하고 진행
-                        NSLog("⚠️ ClipRaven: SQLITE_FCNTL_PERSIST_WAL failed (code \(code))")
-                    }
+    /// 손상된 DB 파일 (sqlite + wal + shm) 을 timestamp suffix 붙여 백업 이동.
+    /// 실패해도 best-effort — 백업 못 살리면 그냥 새 DB 로 진행.
+    private static func quarantineCorruptedDB(at dbURL: URL, error: Error) {
+        let ts = ISO8601DateFormatter().string(from: Date())
+            .replacingOccurrences(of: ":", with: "-")
+        let suffix = ".corrupted-\(ts)"
+        let fm = FileManager.default
+        for ext in ["", "-wal", "-shm"] {
+            let src = URL(fileURLWithPath: dbURL.path + ext)
+            guard fm.fileExists(atPath: src.path) else { continue }
+            let dst = URL(fileURLWithPath: dbURL.path + ext + suffix)
+            do {
+                try fm.moveItem(at: src, to: dst)
+                NSLog("📦 ClipRaven: quarantined \(src.lastPathComponent) → \(dst.lastPathComponent)")
+            } catch {
+                NSLog("⚠️ ClipRaven: quarantine failed for \(src.lastPathComponent): \(error)")
+            }
+        }
+    }
+
+    /// 단일 DB pool 생성 + migrator 실행. 두 번 호출되므로 (정상 + recovery 후)
+    /// 별도 함수로 분리.
+    private static func makeAppDatabase(at dbURL: URL) throws -> AppDatabase {
+        var config = Configuration()
+        config.foreignKeysEnabled = true
+        // 다른 프로세스가 lock 잡고 있을 때 즉시 BUSY 에러 내지 않고 최대
+        // 5초까지 대기 — keyboard/widget extension 과 SQLite 공유 시 안전.
+        config.busyMode = .timeout(5.0)
+
+        config.prepareDatabase { db in
+            try db.execute(sql: "PRAGMA synchronous = NORMAL")
+
+            // ⚠️ Persistent WAL — `-wal` / `-shm` 파일이 connection close
+            // 시 자동 삭제되지 않도록 함. 키보드/위젯 extension 같은
+            // readonly reader 가 메인 앱 종료 후에도 정상 동작하기 위해
+            // 필수. 이 설정 없으면 키보드가 stale snapshot 만 보거나
+            // DB 를 못 여는 케이스 발생 (사용자 보고 2026-05-04).
+            //
+            // 참고: 이 옵션은 SQL PRAGMA 가 아닌 sqlite3_file_control 로
+            // 만 설정 가능. read-write connection 에서만 의미 있음.
+            if !db.configuration.readonly {
+                var flag: CInt = 1
+                let code = sqlite3_file_control(
+                    db.sqliteConnection,
+                    nil,
+                    SQLITE_FCNTL_PERSIST_WAL,
+                    &flag
+                )
+                if code != SQLITE_OK {
+                    // 치명적이지 않음 — log 만 하고 진행
+                    NSLog("⚠️ ClipRaven: SQLITE_FCNTL_PERSIST_WAL failed (code \(code))")
                 }
             }
-
-            let dbPool = try DatabasePool(path: dbURL.path, configuration: config)
-            return try AppDatabase(dbPool)
-        } catch {
-            fatalError("Database initialization failed: \(error)")
         }
+
+        let dbPool = try DatabasePool(path: dbURL.path, configuration: config)
+        return try AppDatabase(dbPool)
     }
 
     private var migrator: DatabaseMigrator {
