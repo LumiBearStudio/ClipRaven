@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "ClipRavenSync",
-    defaultLocalization: "ko",
+    defaultLocalization: "en",
     platforms: [
         // Mac app deployment target is 13.0; CKSyncEngine code inside the package
         // is gated with @available(macOS 14.0, iOS 17.0, *) so older callers can

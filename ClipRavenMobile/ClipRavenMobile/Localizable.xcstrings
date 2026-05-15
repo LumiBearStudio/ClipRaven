@@ -61,7 +61,14 @@
       }
     },
     "%@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "%@개" : {
       "localizations" : {
@@ -122,7 +129,14 @@
       }
     },
     "%@자" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ chars"
+          }
+        }
+      }
     },
     "%lld개" : {
       "comment" : "Count suffix, e.g. '12 items'",
@@ -304,7 +318,14 @@
       }
     },
     "© 2026 LumiBear Studio. All rights reserved." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© 2026 LumiBear Studio. All rights reserved."
+          }
+        }
+      }
     },
     "1시간 전" : {
       "extractionState" : "stale",
@@ -660,7 +681,14 @@
       }
     },
     "ClipRaven" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven"
+          }
+        }
+      }
     },
     "ClipRaven → 전체 접근 허용" : {
       "extractionState" : "stale",
@@ -956,7 +984,14 @@
       }
     },
     "Deutsch" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deutsch"
+          }
+        }
+      }
     },
     "English" : {
       "localizations" : {
@@ -1017,13 +1052,34 @@
       }
     },
     "Español" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Español"
+          }
+        }
+      }
     },
     "Français" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Français"
+          }
+        }
+      }
     },
     "HD" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HD"
+          }
+        }
+      }
     },
     "iCloud 계정" : {
       "extractionState" : "stale",
@@ -1321,7 +1377,14 @@
       }
     },
     "Italiano" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Italiano"
+          }
+        }
+      }
     },
     "Mac + iPhone/iPad 영구 무제한 사용" : {
       "comment" : "Feature row — emphasizes unlimited cross-platform use.",
@@ -1969,7 +2032,14 @@
       }
     },
     "Português (Brasil)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Português (Brasil)"
+          }
+        }
+      }
     },
     "URL 트래킹 파라미터 자동 제거" : {
       "extractionState" : "stale",
@@ -12177,13 +12247,34 @@
       }
     },
     "日本語" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日本語"
+          }
+        }
+      }
     },
     "简体中文" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "简体中文"
+          }
+        }
+      }
     },
     "繁體中文" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繁體中文"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

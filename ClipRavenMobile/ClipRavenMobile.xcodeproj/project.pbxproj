@@ -603,7 +603,7 @@
 				};
 			};
 			buildConfigurationList = 91BFE4D1EFA299474884F74A /* Build configuration list for PBXProject "ClipRavenMobile" */;
-			developmentRegion = ko;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,

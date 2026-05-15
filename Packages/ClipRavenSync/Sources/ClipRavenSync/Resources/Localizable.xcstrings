@@ -179,16 +179,44 @@
       }
     },
     "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't find product information on the App Store. Please check your internet connection."
+          }
+        }
+      }
     },
     "결제 대기 중입니다. 승인 후 자동으로 잠금이 해제됩니다." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payment pending. The lock will be released automatically after approval."
+          }
+        }
+      }
     },
     "구매 검증에 실패했습니다." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase verification failed."
+          }
+        }
+      }
     },
     "구매 중 오류가 발생했습니다: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An error occurred during purchase: %@"
+          }
+        }
+      }
     },
     "끄기 (텍스트만)" : {
       "comment" : "ImageSyncMode .off display name",
@@ -250,16 +278,44 @@
       }
     },
     "복원 중 오류가 발생했습니다: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An error occurred while restoring: %@"
+          }
+        }
+      }
     },
     "복원할 구매 내역이 없습니다." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No purchases to restore."
+          }
+        }
+      }
     },
     "상품 정보 로드에 실패했습니다: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to load product information: %@"
+          }
+        }
+      }
     },
     "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading product information. Please try again in a moment."
+          }
+        }
+      }
     },
     "썸네일만 (작게)" : {
       "comment" : "ImageSyncMode .thumbnailOnly display name",

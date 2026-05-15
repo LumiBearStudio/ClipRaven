@@ -11,21 +11,25 @@ import FoundationModels
 // MARK: - Apple Intelligence status helper
 
 func appleIntelligenceStatusText() -> String {
+    // 회귀 방어: String(localized:) 를 통과시켜야 영문 locale 에서 영문 번역이
+    // 표시된다. 단순 `return "사용 가능"` 은 호출자 `Text(string)` 가
+    // LocalizedStringKey 추론을 못해 영문 환경에서 한국어 그대로 노출됨.
     #if canImport(FoundationModels)
     if #available(macOS 26, *) {
         let model = SystemLanguageModel.default
         switch model.availability {
         case .available:
-            return "사용 가능"
+            return String(localized: "사용 가능")
         case .unavailable(let reason):
-            return "사용 불가: \(String(describing: reason))"
+            let format = String(localized: "사용 불가: %@")
+            return String(format: format, String(describing: reason))
         @unknown default:
-            return "알 수 없음"
+            return String(localized: "알 수 없음")
         }
     }
-    return "macOS 26 이상 필요"
+    return String(localized: "macOS 26 이상 필요")
     #else
-    return "FoundationModels 프레임워크 미포함 (Xcode 26+ SDK 필요)"
+    return String(localized: "FoundationModels 프레임워크 미포함 (Xcode 26+ SDK 필요)")
     #endif
 }
 

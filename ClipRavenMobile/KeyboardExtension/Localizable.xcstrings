@@ -957,7 +957,14 @@
       }
     },
     "위험할 수 있는 URL — 붙여넣기 차단" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potentially dangerous URL — paste blocked"
+          }
+        }
+      }
     },
     "이메일" : {
       "comment" : "AI category: email",

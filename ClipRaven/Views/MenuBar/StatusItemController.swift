@@ -127,8 +127,12 @@ final class StatusItemController {
         let lockState = PurchaseManager.shared.lockState
         if case .trial(let days) = lockState {
             let trialItem = NSMenuItem()
+            // 회귀 방어: 직접 한국어 보간은 영문 locale 에서 한국어 그대로 노출됨.
+            // NSLocalizedString + String(format:) 으로 xcstrings 번역 룩업 보장.
+            let template = NSLocalizedString("⏱  무료 체험 %lld일 남음",
+                                             comment: "Trial days left menu bar item")
             trialItem.attributedTitle = NSAttributedString(
-                string: "⏱  무료 체험 \(days)일 남음",
+                string: String(format: template, days),
                 attributes: [
                     .foregroundColor: NSColor.secondaryLabelColor,
                     .font: NSFont.systemFont(ofSize: 12)
@@ -148,7 +152,8 @@ final class StatusItemController {
         } else if lockState == .expired {
             let expiredItem = NSMenuItem()
             expiredItem.attributedTitle = NSAttributedString(
-                string: "🔒  무료 체험 만료",
+                string: NSLocalizedString("🔒  무료 체험 만료",
+                                          comment: "Trial expired menu bar item"),
                 attributes: [
                     .foregroundColor: NSColor.systemRed,
                     .font: NSFont.systemFont(ofSize: 12)

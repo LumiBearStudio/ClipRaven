@@ -297,10 +297,24 @@
       }
     },
     "민감 데이터로 감지되어 저장하지 않았습니다" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not saved — detected as sensitive data"
+          }
+        }
+      }
     },
     "이미지를 불러올 수 없습니다" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't load image"
+          }
+        }
+      }
     },
     "저장 실패: %@" : {
       "comment" : "Generic save failure with error description",

@@ -2,13 +2,34 @@
   "sourceLanguage" : "ko",
   "strings" : {
     "·" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "·"
+          }
+        }
+      }
     },
     "%lld" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "ClipRaven" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven"
+          }
+        }
+      }
     },
     "ClipRaven 잠금 화면" : {
       "comment" : "Lockscreen widget display name",
