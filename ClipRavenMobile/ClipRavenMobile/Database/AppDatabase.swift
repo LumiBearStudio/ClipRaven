@@ -29,7 +29,7 @@ final class AppDatabase {
     /// App Group ID — Share/Keyboard Extensions와 메인 앱이 같은 SQLite
     /// 파일을 공유. 모든 entitlements (.entitlements) 파일에 동일 ID가
     /// 등록되어 있어야 한다.
-    static let appGroupID = "group.com.lumibear.ClipRavenMobile"
+    static let appGroupID = "group.com.lumibear.ClipRaven"
 
     /// UserDefaults flag — corruption recovery 발생 시 다음 launch 에서
     /// 사용자에게 알림 띄울 수 있게 marker. UI 가 읽고 표시 후 클리어.
