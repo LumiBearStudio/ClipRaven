@@ -224,13 +224,11 @@ final class StatusItemController {
     }
 
     @objc @MainActor private func openPaywall(_ sender: NSMenuItem) {
-        panelController?.show()
-        // StoreKit 시트가 뜨려면 앱이 활성화 상태여야 함 (LSUIElement 앱은 기본 비활성)
-        if #available(macOS 14.0, *) { NSApp.activate() }
-        else { NSApp.activate(ignoringOtherApps: true) }
-        // 체험 중이어도 바로 구매 시트를 띄움.
-        // 만료 상태면 PaywallView overlay 가 이미 표시되므로 중복 호출은 무해함.
-        Task { await PurchaseManager.shared.purchase() }
+        // 트라이얼 중 (사용자가 "지금 구매하기..." 메뉴 클릭) / 만료 후 (자동 표시)
+        // 둘 다 별도 standalone NSWindow 로 표시. 이전엔 main panel 의 overlay
+        // 였는데 panel 크기 안에 결제 시트가 sheet anchor 되면서 잘리는 회귀가
+        // 있었음 (사용자 보고 2026-05-15).
+        PaywallWindowController.shared.show()
     }
 
     @objc private func togglePause(_ sender: NSMenuItem) {

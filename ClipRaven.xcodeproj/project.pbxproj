@@ -97,6 +97,7 @@
 		DFKEY00000000000111A /* DefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFKEY00000000000001A /* DefaultsKey.swift */; };
 		2D3F814ADFB743B68E81A362 /* CRSentry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0959F9CAC0214603AE0D2B51 /* CRSentry.swift */; };
 		PWMAC000200000000000001BB /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PWMAC000100000000000001AA /* PaywallView.swift */; };
+		PWMAC000400000000000001BB /* PaywallWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = PWMAC000300000000000001AA /* PaywallWindowController.swift */; };
 		AF00A87915661867A9A1597A /* ChosungConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2409875641531339471722 /* ChosungConverter.swift */; };
 		AI00000100000000000001AA /* AICategoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI00000100000000000001BB /* AICategoryService.swift */; };
 		AI00000200000000000001AA /* AISummaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI00000200000000000001BB /* AISummaryService.swift */; };
@@ -254,6 +255,7 @@
 		DFKEY00000000000001A /* DefaultsKey.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DefaultsKey.swift; sourceTree = "<group>"; };
 		0959F9CAC0214603AE0D2B51 /* CRSentry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRSentry.swift; sourceTree = "<group>"; };
 		PWMAC000100000000000001AA /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		PWMAC000300000000000001AA /* PaywallWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallWindowController.swift; sourceTree = "<group>"; };
 		828A1F21D476080DED80ED49 /* PreviewPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPanelView.swift; sourceTree = "<group>"; };
 		83F32D416CA3185F16083195 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		8568D6756B72E4BB0FDE72D4 /* DHash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DHash.swift; sourceTree = "<group>"; };
@@ -600,6 +602,7 @@
 			isa = PBXGroup;
 			children = (
 				PWMAC000100000000000001AA /* PaywallView.swift */,
+				PWMAC000300000000000001AA /* PaywallWindowController.swift */,
 			);
 			path = Paywall;
 			sourceTree = "<group>";
@@ -1108,6 +1111,7 @@
 				BKUP000200000000000001AA /* BackupSettingsView.swift in Sources */,
 				FB105E5B339FEC0CF88CB3B2 /* IcloudSyncSettingsView.swift in Sources */,
 				PWMAC000200000000000001BB /* PaywallView.swift in Sources */,
+				PWMAC000400000000000001BB /* PaywallWindowController.swift in Sources */,
 				A4F9B10501DF91A7B333212E /* SmartRule.swift in Sources */,
 				F3FB89E43AAE399EDBFC5DD2 /* SmartRuleEngine.swift in Sources */,
 				C14C2D0FA906FCDDE03C8A78 /* SmartRuleRepository.swift in Sources */,

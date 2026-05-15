@@ -166,8 +166,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        // 구매 상태 로드 — trial 카운트다운 + 기존 구매자 자동 잠금 해제
-        Task { await PurchaseManager.shared.refresh() }
+        // 구매 상태 로드 — trial 카운트다운 + 기존 구매자 자동 잠금 해제.
+        // refresh 후 .expired 면 PaywallWindowController 가 표시.
+        // (MainPanelView 의 .onChange(of: lockState) 가 trigger — main panel 이
+        // 한 번이라도 attach 되어 있으면 SwiftUI observer 가 작동.)
+        Task {
+            await PurchaseManager.shared.refresh()
+            // refresh 가 잠시 후 lockState 갱신해도 panel 이 안 떠있을 수 있음.
+            // startup 시점에 이미 expired 면 명시적으로 window 표시.
+            if PurchaseManager.shared.lockState == .expired {
+                PaywallWindowController.shared.show()
+            }
+        }
 
         // Start clipboard monitoring
         clipboardMonitor.start()

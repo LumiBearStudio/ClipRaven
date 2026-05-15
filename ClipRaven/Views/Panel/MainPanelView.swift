@@ -176,14 +176,16 @@ struct MainPanelView: View {
             BottomBarView()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Paywall overlay — 체험 만료 시 전체 덮기
-        .overlay {
-            if pm.lockState == .expired {
-                PaywallView()
-                    .transition(.opacity)
+        // Paywall overlay 제거 — 별도 NSWindow modal 로 분리됨 (PaywallWindowController).
+        // 이전엔 panel ZStack 안에 PaywallView 덮어 panel 크기에 종속됐는데, LSUIElement
+        // 메뉴바 앱이라 panel 이 작아 StoreKit 결제 시트가 sheet anchor 시 화면 밖으로
+        // 잘리는 회귀 (사용자 보고 2026-05-15). 이제 expired 전환 시 AppDelegate 의
+        // lockState observer 가 PaywallWindowController.show() 호출.
+        .onChange(of: pm.lockState) { newState in
+            if newState == .expired {
+                PaywallWindowController.shared.show()
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: pm.lockState == .expired)
         .tint(theme.colorPreset.accentColor)
         .preferredColorScheme(theme.themePreference == "dark" ? .dark : theme.themePreference == "light" ? .light : nil)
         .overlay(alignment: .top) {

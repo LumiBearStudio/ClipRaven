@@ -85,6 +85,16 @@ struct PaywallView: View {
             .frame(maxWidth: 280)
         }
         .task { await pm.refresh() }
+        // .paid 전환 시 PaywallWindowController 가 자동 close.
+        // (구매 또는 restore 양쪽 다 .paid → 사용자가 다음 동작 안 해도 패널 사라짐)
+        // Legacy 단일-파라미터 onChange (macOS 13 호환).
+        .onChange(of: pm.lockState) { newState in
+            if newState == .paid {
+                NotificationCenter.default.post(
+                    name: .clipRavenPaywallShouldClose, object: nil
+                )
+            }
+        }
     }
 }
 
