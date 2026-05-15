@@ -177,17 +177,21 @@ actor ClipProcessor {
     /// 각 단계가 "이미 dedup 됐다 (skip)" 이면 true 반환, false 면 다음 단계 진행.
     private func processImage(_ imageData: Data, sourceApp: SourceAppInfo) async {
         let imageHash = SHA256Hash.compute(imageData)
-        // dHash 는 시각적 perceptual hash (64-bit). 같은 visual 이미지면 byte 가
-        // 달라도 일치. Chrome 등 브라우저의 multi-stage clipboard write 회귀
-        // (SHA-256 다른 캡처 2건) 방어용. dedup 단계에서 사용하려고 일찍 계산.
-        let dHash = DHash.compute(from: imageData)
 
         cleanExpiredHashes()
 
         // 1. In-memory 2초 윈도우 dedup (SHA-256)
         if dedupInMemoryImage(imageHash: imageHash) { return }
-        // 2. DB 해시 dedup (SHA-256)
+        // 2. DB 해시 dedup (SHA-256) — 같은 byte 의 재복사는 여기서 끝남.
+        //    dHash 계산 (~3-10ms DCT) 을 SHA-256 dedup 뒤로 미뤄 hot path 단축
+        //    (성능 감사 D-O3 lazy compute).
         if dedupByImageHashDB(imageHash: imageHash) { return }
+
+        // dHash 는 시각적 perceptual hash (64-bit). 같은 visual 이미지면 byte 가
+        // 달라도 일치. Chrome 등 브라우저의 multi-stage clipboard write 회귀
+        // (SHA-256 다른 캡처 2건) 방어용. SHA-256 dedup 통과 시점에만 계산.
+        let dHash = DHash.compute(from: imageData)
+
         // 3. dHash 기반 perceptual dedup (5초 윈도우) — 같은 visual 이미지의 multi-stage
         //    pasteboard write 또는 미세한 byte 차이 (compression metadata 등) 방어.
         if dedupByPerceptualHash(imageHash: imageHash, dHash: dHash) { return }
@@ -198,16 +202,25 @@ actor ClipProcessor {
 
         recentHashes[imageHash] = Date()
 
-        let thumbnail = ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
-        let imagePath = ImageStorageService.saveImage(imageData)
+        // 6. thumbnail 생성 + 원본 저장 — 둘 다 imageData 만 읽고 결과가 독립이라
+        //    Task.detached 로 병렬 실행. 4K 스크린샷 기준 thumbnail 5~15ms,
+        //    disk write 5~20ms → 직렬 25ms → 병렬 ~max(15,20)=20ms.
+        //    성능 감사 D-O3 image pipeline parallelization.
+        async let thumbnailTask = Task.detached(priority: .userInitiated) {
+            ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
+        }.value
+        async let imagePathTask = Task.detached(priority: .userInitiated) {
+            ImageStorageService.saveImage(imageData)
+        }.value
+        let (thumbnail, imagePath) = await (thumbnailTask, imagePathTask)
 
-        // 6. UC 2-stage upgrade — 직전 file clip 이 같은 이미지 파일 경로면 in-place 업그레이드
+        // 7. UC 2-stage upgrade — 직전 file clip 이 같은 이미지 파일 경로면 in-place 업그레이드
         if upgradeRecentFileClipToImage(
             imageHash: imageHash, imageDhash: dHash,
             imagePath: imagePath, thumbnail: thumbnail, imageData: imageData
         ) { return }
 
-        // 7. 새 image clip 저장 + smart rule + OCR
+        // 8. 새 image clip 저장 + smart rule + OCR
         await saveNewImageClip(
             imageHash: imageHash, dHash: dHash, imagePath: imagePath,
             thumbnail: thumbnail, imageData: imageData, sourceApp: sourceApp
@@ -461,9 +474,17 @@ actor ClipProcessor {
             return
         }
 
-        let thumbnail = ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
-        let imagePath = ImageStorageService.saveImage(imageData)
-        let dHash = DHash.compute(from: imageData)
+        // thumbnail + 원본 저장 + dHash 모두 독립 — 병렬 실행 (D-O3).
+        async let thumbnailTask = Task.detached(priority: .userInitiated) {
+            ImageStorageService.createThumbnail(from: imageData, maxDimension: 150)
+        }.value
+        async let imagePathTask = Task.detached(priority: .userInitiated) {
+            ImageStorageService.saveImage(imageData)
+        }.value
+        async let dHashTask = Task.detached(priority: .userInitiated) {
+            DHash.compute(from: imageData)
+        }.value
+        let (thumbnail, imagePath, dHash) = await (thumbnailTask, imagePathTask, dHashTask)
 
         var clip = Clip(
             contentType: .image,
