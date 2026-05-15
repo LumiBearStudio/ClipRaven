@@ -15,6 +15,16 @@ final class StatusItemController {
     private var themeObserver: Any?
     private var settingsWindow: NSWindow?
 
+    // MARK: - Bird animation state
+    /// 천천히 걸어가는 idle 애니메이션의 frame 진행을 구동하는 타이머.
+    /// frame asset 이 2개 이상 있으면 frame swap, 없으면 transform-only
+    /// fallback (subtle sway/tilt) 로 동작.
+    private var walkTimer: Timer?
+    private var walkFrameIndex: Int = 0
+    /// 클립 capture 시 잠시 재생되는 flap 애니메이션의 타이머. 한 사이클 끝나면
+    /// walking 으로 자동 복귀.
+    private var flapTimer: Timer?
+
     weak var panelController: MainPanelController?
 
     deinit {
@@ -23,6 +33,8 @@ final class StatusItemController {
         if let o = selectiveModeObserver { NotificationCenter.default.removeObserver(o) }
         if let o = pauseStateObserver { NotificationCenter.default.removeObserver(o) }
         if let o = themeObserver { NotificationCenter.default.removeObserver(o) }
+        walkTimer?.invalidate()
+        flapTimer?.invalidate()
     }
 
     func setup() {
@@ -34,17 +46,21 @@ final class StatusItemController {
         // on transparent) — macOS handles the light/dark inversion for us.
         button.image = StatusItemController.brandedMenuBarImage()
 
+        // 까마귀 애니메이션 layer 활성화. CAAnimation 기반 fallback (transform
+        // walking sway / flap bounce) 가 작동하려면 wantsLayer = true 필요.
+        button.wantsLayer = true
+
         button.action = #selector(statusItemClicked(_:))
         button.target = self
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
-        // Listen for new clip capture → flash icon
+        // Listen for new clip capture → flap (1회 재생 후 walking 으로 복귀)
         newClipObserver = NotificationCenter.default.addObserver(
             forName: .clipRavenNewClipCaptured,
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.flashIcon()
+            self?.playFlapAnimation()
         }
 
         // Listen for settings open request
@@ -94,6 +110,11 @@ final class StatusItemController {
             queue: .main
         ) { [weak self] _ in
             self?.settingsWindow?.appearance = NSApp.appearance
+        }
+
+        // Idle walking animation 시작. paused 면 updateIcon() 가 정지시킴.
+        if !isPaused {
+            startWalkingAnimation()
         }
     }
 
@@ -300,30 +321,197 @@ final class StatusItemController {
     private func updateIcon() {
         guard let button = statusItem?.button else { return }
         if isPaused {
+            // paused 면 모든 까마귀 애니메이션 정지하고 pause symbol 로 교체.
+            stopWalkingAnimation()
+            stopFlapAnimation()
             if let image = NSImage(systemSymbolName: "pause.circle.fill", accessibilityDescription: "ClipRaven paused") {
                 image.isTemplate = true
                 button.image = image
             }
         } else {
             button.image = StatusItemController.brandedMenuBarImage()
+            // unpause 시 walking 재개 (이미 돌고 있으면 idempotent).
+            startWalkingAnimation()
         }
         // Dim the button when paused so it's visually obvious in the menu bar
         button.appearsDisabled = isPaused
     }
 
-    /// Flash the menu bar icon briefly (called when a new clip is captured).
-    /// The brand asset does not ship a "filled" variant, so the flash is
-    /// conveyed via a temporary accent tint instead of an icon swap.
-    func flashIcon() {
+    // MARK: - Bird animations
+    //
+    // 두 가지 모드:
+    // 1) idle "walking" — 까마귀가 천천히 걸어가는 무한 loop. setup() 끝에서
+    //    시작, paused 시 정지.
+    // 2) "flapping" — 새 클립 capture 시 1회 재생 후 walking 으로 자동 복귀.
+    //
+    // 각 모드는 frame asset 이 있으면 frame swap 으로 작동, 없으면 transform
+    // 기반 fallback (CAAnimation) 으로 흉내낸다. 향후 까마귀 frame asset 을
+    // `MenuBarIcon_Walk{1..}` / `MenuBarIcon_Flap{1..}` imageset 으로 추가하면
+    // 자동 frame animation 으로 승격된다.
+
+    /// 천천히 걷는 walking 사이클 frame 간격 (초). 0.45~0.55 가 자연스럽다.
+    private static let walkFrameInterval: TimeInterval = 0.5
+    /// 퍼득이는 flap 사이클 frame 간격 (초). 더 빠르게 보이도록 짧게.
+    private static let flapFrameInterval: TimeInterval = 0.08
+
+    /// idle 모드 frame asset. 없으면 빈 배열 → transform fallback.
+    private static let walkFrames: [NSImage] = loadFrames(prefix: "MenuBarIcon_Walk", maxCount: 6)
+    /// flap 모드 frame asset. 없으면 빈 배열 → transform fallback.
+    private static let flapFrames: [NSImage] = loadFrames(prefix: "MenuBarIcon_Flap", maxCount: 6)
+
+    /// 연속된 번호 (1..maxCount) 의 imageset 을 순서대로 로드한다. 누락된 번호가
+    /// 나오면 거기서 종료 (gap 허용 안 함). 모두 template 처리.
+    private static func loadFrames(prefix: String, maxCount: Int) -> [NSImage] {
+        var frames: [NSImage] = []
+        for i in 1...maxCount {
+            guard let img = NSImage(named: "\(prefix)\(i)") else { break }
+            img.isTemplate = true
+            frames.append(img)
+        }
+        return frames
+    }
+
+    /// idle walking animation 을 시작한다. 이미 돌고 있으면 no-op (idempotent).
+    /// frame asset 이 2개 이상 있으면 frame swap, 없으면 transform sway/tilt.
+    private func startWalkingAnimation() {
+        guard !isPaused else { return }
+        guard walkTimer == nil else { return }   // idempotent
+        guard let button = statusItem?.button else { return }
+
+        let frames = Self.walkFrames
+        if frames.count >= 2 {
+            // Real frame animation
+            walkFrameIndex = 0
+            walkTimer = Timer.scheduledTimer(
+                withTimeInterval: Self.walkFrameInterval, repeats: true
+            ) { [weak self] _ in
+                guard let self = self,
+                      let button = self.statusItem?.button else { return }
+                button.image = frames[self.walkFrameIndex % frames.count]
+                self.walkFrameIndex += 1
+            }
+        } else {
+            // Transform fallback: subtle horizontal sway + tiny tilt.
+            // 메뉴바 inside 에 머무는 작은 진폭만 사용 — 인접 menubar item 과
+            // 시각적 충돌 방지.
+            button.wantsLayer = true
+
+            // Pivot 을 layer 중앙으로 (회전이 모서리에서 일어나지 않게).
+            if let layer = button.layer {
+                layer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+                layer.position = CGPoint(
+                    x: button.bounds.midX,
+                    y: button.bounds.midY
+                )
+            }
+
+            let sway = CABasicAnimation(keyPath: "transform.translation.x")
+            sway.fromValue = -1.0
+            sway.toValue = 1.0
+            sway.duration = Self.walkFrameInterval
+            sway.autoreverses = true
+            sway.repeatCount = .infinity
+            sway.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+
+            let tilt = CABasicAnimation(keyPath: "transform.rotation.z")
+            tilt.fromValue = -0.04  // ~-2.3°
+            tilt.toValue = 0.04
+            tilt.duration = Self.walkFrameInterval
+            tilt.autoreverses = true
+            tilt.repeatCount = .infinity
+            tilt.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+
+            button.layer?.add(sway, forKey: "walk.sway")
+            button.layer?.add(tilt, forKey: "walk.tilt")
+
+            // Sentinel timer 로 walkTimer != nil 상태 유지 (idempotency 체크용).
+            // 실제 frame 업데이트는 layer animation 이 담당.
+            walkTimer = Timer.scheduledTimer(
+                withTimeInterval: 60, repeats: true
+            ) { _ in /* keepalive */ }
+        }
+    }
+
+    private func stopWalkingAnimation() {
+        walkTimer?.invalidate()
+        walkTimer = nil
+        walkFrameIndex = 0
+
+        if let layer = statusItem?.button?.layer {
+            layer.removeAnimation(forKey: "walk.sway")
+            layer.removeAnimation(forKey: "walk.tilt")
+        }
+    }
+
+    /// 새 클립 capture 시 호출되는 일회성 flap animation. frame asset 이 있으면
+    /// frame swap 시퀀스, 없으면 transform bounce + scale pulse 로 흉내.
+    /// 완료 후 walking 으로 복귀.
+    func playFlapAnimation() {
         guard !isPaused else { return }
         guard let button = statusItem?.button else { return }
 
-        let previousTint = button.contentTintColor
-        button.contentTintColor = NSColor.controlAccentColor
+        // 진행 중이던 flap 이 있으면 cancel (overlap 방지).
+        stopFlapAnimation()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            button.contentTintColor = previousTint
-            self?.updateIcon()  // belt + suspenders: restore the correct image too
+        let frames = Self.flapFrames
+        if frames.count >= 2 {
+            // Real frame animation: walking 정지, flap 시퀀스 1회 재생, 끝나면
+            // walking 자동 재개.
+            stopWalkingAnimation()
+            var idx = 0
+            flapTimer = Timer.scheduledTimer(
+                withTimeInterval: Self.flapFrameInterval, repeats: true
+            ) { [weak self] timer in
+                guard let self = self,
+                      let button = self.statusItem?.button else {
+                    timer.invalidate(); return
+                }
+                if idx < frames.count {
+                    button.image = frames[idx]
+                    idx += 1
+                } else {
+                    timer.invalidate()
+                    self.flapTimer = nil
+                    self.startWalkingAnimation()
+                }
+            }
+        } else {
+            // Transform fallback: bounce + scale pulse + 짧은 accent tint.
+            // 기존 flashIcon() 의 tint 효과를 보존하면서 motion 추가.
+            button.wantsLayer = true
+
+            let previousTint = button.contentTintColor
+            button.contentTintColor = NSColor.controlAccentColor
+
+            let bounce = CAKeyframeAnimation(keyPath: "transform.translation.y")
+            bounce.values = [0.0, 2.0, -2.0, 0.0]
+            bounce.keyTimes = [0, 0.3, 0.7, 1.0]
+            bounce.duration = 0.3
+            bounce.timingFunction = CAMediaTimingFunction(name: .easeOut)
+
+            let scale = CAKeyframeAnimation(keyPath: "transform.scale")
+            scale.values = [1.0, 1.12, 1.0]
+            scale.keyTimes = [0, 0.5, 1.0]
+            scale.duration = 0.3
+            scale.timingFunction = CAMediaTimingFunction(name: .easeOut)
+
+            button.layer?.add(bounce, forKey: "flap.bounce")
+            button.layer?.add(scale, forKey: "flap.scale")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                button.contentTintColor = previousTint
+                self?.updateIcon()
+            }
+        }
+    }
+
+    private func stopFlapAnimation() {
+        flapTimer?.invalidate()
+        flapTimer = nil
+
+        if let layer = statusItem?.button?.layer {
+            layer.removeAnimation(forKey: "flap.bounce")
+            layer.removeAnimation(forKey: "flap.scale")
         }
     }
 
