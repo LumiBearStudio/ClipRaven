@@ -352,9 +352,9 @@ final class StatusItemController {
     /// 천천히 걷는 walking 사이클 frame 간격 (초). 0.20~0.30 이 12 frame 기준
     /// 자연스럽다. 너무 길면 frame 간 자세 차이가 도드라져 딱딱하게 끊겨 보임.
     private static let walkFrameInterval: TimeInterval = 0.25
-    /// 퍼득이는 flap 사이클 frame 간격 (초). 5 frame 기준 총 0.5초 — 클립
-    /// capture 시 짧고 강한 시각 피드백.
-    private static let flapFrameInterval: TimeInterval = 0.10
+    /// 퍼득이는 flap 사이클 frame 간격 (초). 8 frame 기준 총 1.0초 — 클립
+    /// capture 시 자연스러운 단일 wing flap up→peak→down cycle.
+    private static let flapFrameInterval: TimeInterval = 0.125
 
     /// idle 모드 frame asset. 없으면 빈 배열 → transform fallback.
     /// maxCount 를 16 으로 두면 향후 frame 더 추가해도 코드 수정 없이 인식.
