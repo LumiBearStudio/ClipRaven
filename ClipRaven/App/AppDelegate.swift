@@ -37,7 +37,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if UserDefaults.standard.bool(forKey: "crashReportsEnabled") {
             SentrySDK.start { options in
                 options.dsn = "https://c5f56450b1edd3c00bbe4efb757a3bc1@o4510949994266624.ingest.de.sentry.io/4511348541489232"
+                // Sentry dashboard 의 environment 필터로 dev / prod 구분.
+                // Debug 빌드 (Xcode Run) 에서 발생한 crash 가 production 의
+                // 진짜 사용자 crash 와 섞이지 않게.
+                #if DEBUG
+                options.environment = "development"
+                #else
                 options.environment = "production"
+                #endif
                 options.sendDefaultPii = false
                 options.maxBreadcrumbs = 200
                 // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
