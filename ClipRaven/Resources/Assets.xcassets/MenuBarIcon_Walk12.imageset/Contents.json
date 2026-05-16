@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "MenuBarIcon_Walk1.png",
+      "filename" : "MenuBarIcon_Walk12.png",
       "idiom" : "mac",
       "scale" : "1x"
     },
     {
-      "filename" : "MenuBarIcon_Walk1@2x.png",
+      "filename" : "MenuBarIcon_Walk12@2x.png",
       "idiom" : "mac",
       "scale" : "2x"
     },
     {
-      "filename" : "MenuBarIcon_Walk1@3x.png",
+      "filename" : "MenuBarIcon_Walk12@3x.png",
       "idiom" : "mac",
       "scale" : "3x"
     }

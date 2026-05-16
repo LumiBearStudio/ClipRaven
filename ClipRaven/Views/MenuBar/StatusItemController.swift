@@ -349,23 +349,30 @@ final class StatusItemController {
     // `MenuBarIcon_Walk{1..}` / `MenuBarIcon_Flap{1..}` imageset 으로 추가하면
     // 자동 frame animation 으로 승격된다.
 
-    /// 천천히 걷는 walking 사이클 frame 간격 (초). 0.45~0.55 가 자연스럽다.
-    private static let walkFrameInterval: TimeInterval = 0.5
+    /// 천천히 걷는 walking 사이클 frame 간격 (초). 0.20~0.30 이 12 frame 기준
+    /// 자연스럽다. 너무 길면 frame 간 자세 차이가 도드라져 딱딱하게 끊겨 보임.
+    private static let walkFrameInterval: TimeInterval = 0.25
     /// 퍼득이는 flap 사이클 frame 간격 (초). 더 빠르게 보이도록 짧게.
     private static let flapFrameInterval: TimeInterval = 0.08
 
     /// idle 모드 frame asset. 없으면 빈 배열 → transform fallback.
-    private static let walkFrames: [NSImage] = loadFrames(prefix: "MenuBarIcon_Walk", maxCount: 6)
+    /// maxCount 를 16 으로 두면 향후 frame 더 추가해도 코드 수정 없이 인식.
+    private static let walkFrames: [NSImage] = loadFrames(prefix: "MenuBarIcon_Walk", maxCount: 16)
     /// flap 모드 frame asset. 없으면 빈 배열 → transform fallback.
-    private static let flapFrames: [NSImage] = loadFrames(prefix: "MenuBarIcon_Flap", maxCount: 6)
+    private static let flapFrames: [NSImage] = loadFrames(prefix: "MenuBarIcon_Flap", maxCount: 16)
 
     /// 연속된 번호 (1..maxCount) 의 imageset 을 순서대로 로드한다. 누락된 번호가
-    /// 나오면 거기서 종료 (gap 허용 안 함). 모두 template 처리.
+    /// 나오면 거기서 종료 (gap 허용 안 함).
+    ///
+    /// **isTemplate 설정 안 함**: imageset 의 Contents.json 의
+    /// `template-rendering-intent` (`template` 또는 `original`) 가 자동으로
+    /// 적용된다. 코드에서 강제로 `isTemplate = true` 로 override 하면 RGBA
+    /// 디테일이 단색 silhouette 으로 평탄화되어 손실됨. walking frame 들은
+    /// `original` 로 설정되어 있어 흰색 까마귀 + 디테일이 그대로 표시된다.
     private static func loadFrames(prefix: String, maxCount: Int) -> [NSImage] {
         var frames: [NSImage] = []
         for i in 1...maxCount {
             guard let img = NSImage(named: "\(prefix)\(i)") else { break }
-            img.isTemplate = true
             frames.append(img)
         }
         return frames
