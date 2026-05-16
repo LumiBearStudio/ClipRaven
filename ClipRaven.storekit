@@ -2,8 +2,8 @@
   "identifier" : "177578BD-C543-43BF-860B-A5BDC20D3EC0",
   "nonConsumableProducts" : [
     {
-      "displayPrice" : "9.99",
-      "familySharable" : false,
+      "displayPrice" : "8.99",
+      "familySharable" : true,
       "internalID" : "9F62BAFA-CDD8-4FEC-BA6D-361407BE347A",
       "introductoryOffer" : null,
       "localizations" : [
