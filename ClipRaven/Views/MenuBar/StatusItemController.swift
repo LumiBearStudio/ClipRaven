@@ -387,14 +387,20 @@ final class StatusItemController {
 
         let frames = Self.walkFrames
         if frames.count >= 2 {
-            // Real frame animation
+            // Ping-pong loop: 1→2→…→N→N-1→…→2→1 으로 reverse 구간 추가.
+            // 이유: 영상에서 균등 추출한 N 개 frame 은 마지막 → 첫 frame 사이가
+            // 자연 motion 으로 연결되지 않아 cycle loop 점에서 까마귀 자세가
+            // 점프하는 듯한 회귀가 보였다. forward + reverse 합치면 마지막
+            // frame 의 다음이 그 직전 frame 이 되어 seamless 로 흐른다.
+            // 예: 12 frame → 22 frame sequence (1..12, 11..2)
+            let pingPong: [NSImage] = frames + frames.dropFirst().dropLast().reversed()
             walkFrameIndex = 0
             walkTimer = Timer.scheduledTimer(
                 withTimeInterval: Self.walkFrameInterval, repeats: true
             ) { [weak self] _ in
                 guard let self = self,
                       let button = self.statusItem?.button else { return }
-                button.image = frames[self.walkFrameIndex % frames.count]
+                button.image = pingPong[self.walkFrameIndex % pingPong.count]
                 self.walkFrameIndex += 1
             }
         } else {
