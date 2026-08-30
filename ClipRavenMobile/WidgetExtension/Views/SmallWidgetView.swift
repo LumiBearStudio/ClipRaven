@@ -73,6 +73,8 @@ struct SmallWidgetView: View {
     }
 
     private func textBody(_ clip: ClipSnapshot) -> some View {
+        // 잠금 상태(StandBy·오늘 보기 포함)에서는 본문을 가린다 — 잠금화면
+        // 위젯과 동일 정책 (보안 감사 P5).
         Text(clip.displayText)
             .font(clip.isCode
                   ? .system(size: 12, design: .monospaced)
@@ -80,6 +82,7 @@ struct SmallWidgetView: View {
             .lineLimit(clip.hasNickname ? 2 : 4)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .foregroundStyle(.primary)
+            .privacySensitive()
     }
 
     private func imageBody(_ img: UIImage, clip: ClipSnapshot) -> some View {

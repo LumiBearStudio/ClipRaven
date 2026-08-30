@@ -143,35 +143,21 @@ final class URLCardViewModel: ObservableObject {
 
 // MARK: - Favicon View
 
+/// URL 클립의 도메인 아이콘.
+///
+/// **의도적으로 네트워크를 쓰지 않는다.** 이전에는
+/// `google.com/s2/favicons?domain=…` 에서 파비콘을 받아왔는데, 그러면 패널을
+/// 열 때마다 사용자가 복사한 URL 의 도메인 목록과 IP 가 Google 로 전달된다.
+/// "추적 없음 · 데이터는 본인 기기에만" 이라는 제품 약속과 PrivacyInfo /
+/// README 의 "no network calls" 문구를 정면으로 위반하는 경로였다
+/// (보안 감사 P3). 대상 사이트에 직접 `/favicon.ico` 를 요청하는 대안도
+/// "그 URL 을 복사했다" 는 사실을 사이트에 알리므로 채택하지 않았다.
 private struct FaviconView: View {
     let domain: String
-    @State private var image: NSImage?
-
-    private var faviconURL: URL? {
-        URL(string: "https://www.google.com/s2/favicons?domain=\(domain)&sz=32")
-    }
 
     var body: some View {
-        Group {
-            if let image {
-                Image(nsImage: image)
-                    .resizable()
-                    .clipShape(RoundedRectangle(cornerRadius: 2))
-            } else {
-                Image(systemName: "globe")
-                    .font(.system(size: 10))
-                    .foregroundColor(.blue)
-            }
-        }
-        .onAppear { loadFavicon() }
-    }
-
-    private func loadFavicon() {
-        guard let url = faviconURL else { return }
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            if let data, let nsImage = NSImage(data: data) {
-                DispatchQueue.main.async { self.image = nsImage }
-            }
-        }.resume()
+        Image(systemName: "globe")
+            .font(.system(size: 10))
+            .foregroundColor(.blue)
     }
 }

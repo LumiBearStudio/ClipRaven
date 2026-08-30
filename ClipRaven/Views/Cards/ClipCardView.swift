@@ -663,18 +663,15 @@ struct ClipCardView: View {
     private var urlBottomOverlay: some View {
         let urlText = clip.contentText ?? ""
         let domain = Self.extractDomain(from: urlText)
-        let faviconURL = URL(string: "https://www.google.com/s2/favicons?domain=\(domain)&sz=32")
 
         return HStack(spacing: 5) {
-            AsyncImage(url: faviconURL) { image in
-                image.resizable()
-                    .clipShape(RoundedRectangle(cornerRadius: 2))
-            } placeholder: {
-                Image(systemName: "globe")
-                    .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.7))
-            }
-            .frame(width: 14, height: 14)
+            // 파비콘 원격 fetch 제거 — 복사한 URL 의 도메인이 Google 로
+            // 전송되던 경로였다 (보안 감사 P3). 도메인 텍스트가 바로 옆에
+            // 있어 식별 정보는 그대로 유지된다.
+            Image(systemName: "globe")
+                .font(.system(size: 10))
+                .foregroundColor(.white.opacity(0.7))
+                .frame(width: 14, height: 14)
 
             Text(domain)
                 .font(.system(size: 11, weight: .medium))

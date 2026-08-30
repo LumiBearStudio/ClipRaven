@@ -229,19 +229,12 @@ struct ClipCard: View {
                 VStack(spacing: 0) {
                     Color.clear.frame(height: 38)
                     VStack(spacing: 6) {
-                        if let url = URL(string: raw), let urlHost = url.host,
-                           let faviconURL = URL(string: "https://www.google.com/s2/favicons?sz=64&domain=\(urlHost)") {
-                            AsyncImage(url: faviconURL) { phase in
-                                if case .success(let img) = phase {
-                                    img.resizable()
-                                        .frame(width: 28, height: 28)
-                                        .clipShape(RoundedRectangle(cornerRadius: 4))
-                                } else {
-                                    Image(systemName: "globe")
-                                        .font(.system(size: 22))
-                                        .foregroundColor(.secondary.opacity(0.3))
-                                }
-                            }
+                        // 파비콘 원격 fetch 제거 — 복사한 URL 의 도메인이 Google 로
+                        // 전송되던 경로였다 (보안 감사 P3, macOS 동일 조치).
+                        if URL(string: raw)?.host != nil {
+                            Image(systemName: "globe")
+                                .font(.system(size: 22))
+                                .foregroundColor(.secondary.opacity(0.3))
                         } else {
                             Image(systemName: "globe")
                                 .font(.system(size: 22))
@@ -418,17 +411,11 @@ struct ClipCard: View {
         }()
 
         return HStack(spacing: 5) {
-            AsyncImage(url: URL(string: "https://www.google.com/s2/favicons?domain=\(domain)&sz=32")) { phase in
-                if case .success(let img) = phase {
-                    img.resizable()
-                        .clipShape(RoundedRectangle(cornerRadius: 2))
-                } else {
-                    Image(systemName: "globe")
-                        .font(.system(size: 10))
-                        .foregroundColor(.white.opacity(0.7))
-                }
-            }
-            .frame(width: 14, height: 14)
+            // 파비콘 원격 fetch 제거 (보안 감사 P3).
+            Image(systemName: "globe")
+                .font(.system(size: 10))
+                .foregroundColor(.white.opacity(0.7))
+                .frame(width: 14, height: 14)
 
             Text(domain)
                 .font(.system(size: 11, weight: .medium))

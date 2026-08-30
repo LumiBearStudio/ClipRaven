@@ -75,12 +75,14 @@ struct MediumWidgetView: View {
                             .font(.system(size: 9))
                             .foregroundStyle(.orange)
                     }
+                    // 잠금 상태에서는 본문을 가린다 (보안 감사 P5).
                     Text(clip.displayText)
                         .font(clip.isCode
                               ? .system(size: 12, design: .monospaced)
                               : .system(size: 13, weight: clip.hasNickname ? .medium : .regular))
                         .lineLimit(1)
                         .foregroundStyle(.primary)
+                        .privacySensitive()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 

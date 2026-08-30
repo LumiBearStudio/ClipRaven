@@ -94,6 +94,37 @@ final class PasteboardCaptureService {
             return
         }
 
+        // 민감 데이터 차단 (보안 감사 P4).
+        //
+        // 이 게이트는 키보드·공유 확장에만 있었고 **본체 앱 캡처 경로에는
+        // 없었다.** 그래서 1Password 로 복사한 비밀번호가 iOS 본체에서는
+        // 그대로 저장되고, 저장 직후 위젯 타임라인까지 갱신됐다. macOS 는
+        // ClipboardMonitor 에서 같은 가드를 이미 통과시킨다.
+        //
+        // 키 이름과 fallback(`?? true`) 은 두 확장과 동일하게 App Group
+        // 도메인의 `blockSensitive` / `filter2FA` 를 쓴다 — 세 경로가 같은
+        // 설정을 보도록.
+        let sharedDefaults = UserDefaults(suiteName: AppGroupDatabase.appGroupID) ?? .standard
+        let blockSensitiveOn = sharedDefaults.object(forKey: "blockSensitive") as? Bool ?? true
+        if blockSensitiveOn {
+            // concealed 마커(1Password 등)는 텍스트·이미지 구분 없이 먼저 차단.
+            if SensitiveDataFilter.isSensitivePasteboardType(pasteboard.types) {
+                log.info("skip capture — sensitive pasteboard type (concealed)")
+                return
+            }
+            if pasteboard.hasStrings, let preview = pasteboard.string {
+                let filter2FA = sharedDefaults.object(forKey: "filter2FA") as? Bool ?? true
+                if SensitiveDataFilter.isSensitiveWithContext(
+                    preview,
+                    sourceAppBundleId: nil, // iOS 는 복사 원본 앱을 알 수 없다
+                    filter2FAEnabled: filter2FA
+                ) {
+                    log.info("skip capture — sensitive pattern detected")
+                    return
+                }
+            }
+        }
+
         // Text takes priority (matches Mac ClipProcessor behavior).
         if pasteboard.hasStrings, let text = pasteboard.string {
             await captureText(text)
