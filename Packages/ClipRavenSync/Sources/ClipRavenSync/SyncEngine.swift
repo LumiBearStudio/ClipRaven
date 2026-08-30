@@ -477,6 +477,37 @@ public final class SyncEngine: NSObject {
         requestSyncCycle(reason: "enqueue.delete")
     }
 
+    /// 계정 전환/로그아웃 처리 (감사 S2).
+    ///
+    /// - `signIn`: 아무것도 지우지 않는다. 재인증 후 큐에 남은 업로드를
+    ///   그대로 이어가는 게 맞다.
+    /// - `signOut` / `switchAccounts`: 엔진을 내리고 저장된 sync 상태
+    ///   (change token·pending queue)와 클립의 CloudKit 메타데이터를 모두
+    ///   초기화한다. 로컬 클립 본문은 보존한다.
+    ///
+    /// 초기화 후에는 앱이 엔진을 다시 세워야 한다 — 알림으로 알린다.
+    func handleAccountChange(_ changeType: CKSyncEngine.Event.AccountChange.ChangeType) async {
+        switch changeType {
+        case .signIn:
+            Self.log.info("accountChange: signIn — keeping pending changes")
+
+        case .signOut, .switchAccounts:
+            Self.log.info("accountChange: \(String(describing: changeType), privacy: .public) — resetting local sync state")
+            let token = shutdown()
+            await stateStore.clearAll(afterShutdown: token)
+            do {
+                let reset = try await clipRepository.resetAllSyncMetadata()
+                Self.log.info("accountChange: cleared CloudKit metadata on \(reset, privacy: .public) clip(s)")
+            } catch {
+                Self.log.error("accountChange: metadata reset failed: \(error.localizedDescription, privacy: .public)")
+            }
+            NotificationCenter.default.post(name: .clipRavenSyncAccountChanged, object: nil)
+
+        @unknown default:
+            Self.log.info("accountChange: unknown type \(String(describing: changeType), privacy: .public)")
+        }
+    }
+
     /// Tear down the engine. Returns a token required by
     /// `SyncStateStore.clearAll(afterShutdown:)` — callers that want to
     /// wipe stored state must invoke this first so the engine can't
@@ -531,12 +562,18 @@ extension SyncEngine: CKSyncEngineDelegate {
             await persistState(update.stateSerialization)
 
         case .accountChange(let change):
-            // Account flip (sign-in/out, different iCloud user). Logged
-            // for visibility; actual state-wipe on sign-out is deferred
-            // until `SyncStateStore.clearAll(afterShutdown:)` gets wired
-            // in here. We intentionally preserve pending changes across
-            // sign-in so a re-auth doesn't drop queued uploads.
-            Self.log.info("accountChange: \(String(describing: change.changeType), privacy: .public)")
+            // 계정이 바뀌면(로그아웃 / 다른 iCloud 사용자) 이전 계정의 상태를
+            // 그대로 들고 있으면 안 된다 (감사 S2).
+            //
+            // 방치했을 때의 실패: A 계정으로 쓰다 B 로 로그인하면 A 의 pending
+            // change 와 A 의 zone 에서 받은 `ckSystemFields`(etag) 가 복원되어
+            // **A 의 데이터가 B 의 private DB 로 업로드**를 시도한다. 성공하면
+            // 계정 간 데이터 유출이고, 실패하면 그 클립은 영구히 못 올린다.
+            //
+            // 로컬 클립 자체는 지우지 않는다 — 사용자의 데이터이고 기기에
+            // 남는 게 맞다. 다만 "어느 계정과도 동기화된 적 없는" 상태로
+            // 되돌려, 새 계정에 로그인하면 처음부터 깨끗하게 올라가게 한다.
+            await handleAccountChange(change.changeType)
 
         case .sentRecordZoneChanges(let event):
             // Persist system fields and ack bookkeeping for each successfully
@@ -734,4 +771,13 @@ extension SyncEngine: CKSyncEngineDelegate {
 
         return batch
     }
+}
+
+// MARK: - Notifications
+
+public extension Notification.Name {
+    /// iCloud 계정이 바뀌어(로그아웃 또는 다른 계정 로그인) 로컬 sync 상태를
+    /// 초기화했음을 알린다. 앱은 이 시점에 엔진을 다시 세우거나, 새 계정으로
+    /// 로그인할 때까지 동기화가 멈춘 상태임을 UI 에 반영하면 된다 (감사 S2).
+    static let clipRavenSyncAccountChanged = Notification.Name("clipRavenSyncAccountChanged")
 }

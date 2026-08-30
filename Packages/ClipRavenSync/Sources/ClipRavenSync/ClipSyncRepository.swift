@@ -80,6 +80,36 @@ public struct ClipSyncRepository {
         }
     }
 
+    /// 모든 클립의 CloudKit 메타데이터를 초기화한다 — "iCloud에서 모두 지우기"
+    /// 처럼 서버 zone 을 통째로 버린 뒤 호출한다.
+    ///
+    /// ## 왜 필요한가 (감사 S3)
+    /// zone 만 지우고 로컬 `ckSystemFields` / `ckLastSyncedAt` 를 남겨 두면:
+    ///
+    /// 1. **아무것도 다시 올라가지 않는다.** 재업로드 대상 쿼리
+    ///    (`fetchUnsyncedClipUUIDs`)는 `ckLastSyncedAt IS NULL` 만 보는데,
+    ///    이미 동기화됐던 클립은 값이 남아 있어 후보에서 빠진다. 사용자의
+    ///    iCloud 데이터는 영구 소실되고 새 기기는 빈 상태가 된다.
+    /// 2. **올라가더라도 실패한다.** `ckSystemFields` 는 삭제된 zone 의 stale
+    ///    etag 라 서버가 `.unknownItem` / `.zoneNotFound` 로 거부한다.
+    ///
+    /// 초기화하면 모든 live 클립이 "한 번도 동기화 안 된 상태" 로 돌아가
+    /// 다음 `startIfEligible()` 의 backfill 이 전부 다시 올린다.
+    ///
+    /// - Returns: 초기화된 행 수.
+    @discardableResult
+    public func resetAllSyncMetadata() async throws -> Int {
+        try await dbPool.write { db in
+            try db.execute(sql: """
+                UPDATE clips
+                SET ckSystemFields = NULL,
+                    ckLastSyncedAt = NULL,
+                    ckSyncState = 0
+            """)
+            return db.changesCount
+        }
+    }
+
     /// Mark a batch of successfully-deleted CloudKit records as ack'd.
     /// Sets `ckLastSyncedAt = now` on each soft-deleted row so:
     /// 1. `SyncChangeCapture`'s `ckLastSyncedAt > updatedAt` guard prevents

@@ -363,6 +363,15 @@ struct IcloudSyncSettingsView: View {
             // a fresh one here.
             await stateStore.clearAll(afterShutdown: SyncEngineShutdownToken())
 
+            // 클립의 CloudKit 메타데이터도 함께 초기화한다 (감사 S3).
+            //
+            // zone 만 지우고 `ckSystemFields`/`ckLastSyncedAt` 를 남기면
+            // 재업로드 대상 쿼리가 아무것도 못 잡아 **다시는 동기화되지
+            // 않고**, 어쩌다 올라가도 삭제된 zone 의 stale etag 라 실패한다.
+            // 초기화해 두면 다음 시작 시 backfill 이 전부 다시 올린다.
+            let syncRepo = ClipSyncRepository(dbPool: AppDatabase.shared.dbPool)
+            try? await syncRepo.resetAllSyncMetadata()
+
             // Server-side zone delete (best effort).
             do {
                 let db = CKContainer(identifier: containerIdentifier)
