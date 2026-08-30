@@ -160,9 +160,8 @@ final class ClipboardMonitor: ObservableObject {
         }
 
         let clipboardData = readPasteboardData()
-        let textPreview = String(clipboardData.text?.prefix(80) ?? "nil")
         let hasImage = clipboardData.imageData != nil
-        ClipRavenLog.write(.clipboard, "[ClipMon] READ text=\"\(textPreview)\" hasImage=\(hasImage) source=\(sourceApp.name ?? "?")")
+        ClipRavenLog.write(.clipboard, "[ClipMon] READ text=\(ClipRavenLog.redacted(clipboardData.text)) hasImage=\(hasImage) source=\(sourceApp.name ?? "?")")
 
         let contentHash = computeContentHash(clipboardData)
         guard handleContentDedup(data: clipboardData, hash: contentHash) else {
@@ -230,7 +229,10 @@ final class ClipboardMonitor: ObservableObject {
                 let is2FA = SensitiveDataFilter.isLikelyTwoFactorCode(text)
                 let hasPhrase = SensitiveDataFilter.containsTwoFactorPhrase(text)
                 let filter2FAOn = UserDefaults.standard.object(forKey: "filter2FA") as? Bool ?? true
-                ClipRavenLog.write(.clipboard, "[ClipMon] text=\"\(text.prefix(50))\" is2FACandidate=\(is2FA) hasPhrase=\(hasPhrase) filter2FAOn=\(filter2FAOn)")
+                // 이 줄은 "저장하지 않겠다" 고 판정하기 직전에 찍힌다. 본문을
+                // 그대로 남기면 차단하려던 2FA 코드·비밀번호가 로그로 새어나가
+                // 필터 자체가 무의미해진다 (보안 감사 P1).
+                ClipRavenLog.write(.clipboard, "[ClipMon] text=\(ClipRavenLog.redacted(text)) is2FACandidate=\(is2FA) hasPhrase=\(hasPhrase) filter2FAOn=\(filter2FAOn)")
                 if SensitiveDataFilter.isSensitiveWithContext(text, sourceApp: sourceApp) {
                     ClipRavenLog.write(.clipboard, "[ClipMon] SKIP: sensitive/2FA pattern detected (source=\(sourceApp.bundleId ?? "?"))")
                     return true

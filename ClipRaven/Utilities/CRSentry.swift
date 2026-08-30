@@ -1,11 +1,21 @@
 import Foundation
-import OSLog
 import Sentry
 
-/// Sentry helper — breadcrumb 추가 및 에러 캡처 시 최근 os.log 자동 첨부.
+/// Sentry helper — breadcrumb 추가 및 에러 캡처.
 ///
 /// `crashReportsEnabled` 가 off 이면 SentrySDK 는 미초기화 상태이므로
 /// 모든 호출은 no-op 이 된다 (Sentry-cocoa 내부 guard 처리).
+///
+/// **진단 정보는 breadcrumb 으로만 보낸다.** 이전에는 이벤트마다
+/// `OSLogStore` 로 최근 120초 os.log 200줄을 긁어 `recent_oslog` extra 에
+/// 첨부했는데, 두 가지가 문제였다 (보안 감사 P2):
+///
+/// 1. 개인정보처리방침은 크래시 리포트가 클립보드 내용을 포함하지 않는다고
+///    약속하는데, 그 로그에는 클립 본문·파일 경로가 섞여 있었다.
+/// 2. `OSLogStore.getEntries()` 는 logd 와 XPC 동기 통신이라 호출 스레드를
+///    2초+ 막는다. 실제로 App Hang 이 보고된 이력이 있다.
+///
+/// breadcrumb 은 우리가 직접 문면을 정하는 채널이라 두 문제가 모두 없다.
 enum CRSentry {
 
     // MARK: - Breadcrumb
@@ -21,30 +31,22 @@ enum CRSentry {
 
     // MARK: - Error capture
 
-    /// 에러를 Sentry 로 전송한다. 최근 120초 os.log 를 extra 에 첨부.
+    /// 에러를 Sentry 로 전송한다. context 문자열은 호출자가 정하므로
+    /// 사용자 콘텐츠를 넣지 말 것.
     ///
-    /// **App Hang 회귀 방어**: `recentLogLines()` 가 내부적으로
-    /// `OSLogStore.getEntries()` 를 호출하는데, 이는 logd 와의 XPC 동기 통신을
-    /// 일으켜 메인 스레드에서 호출 시 2초+ block 으로 Sentry App Hang 보고가
-    /// 트리거된 사례가 있었다 (APNs 등록 실패 콜백 등). Sentry SDK 자체는
-    /// thread-safe 하므로 capture 본체를 background queue 로 옮겨 메인을
-    /// 차단하지 않는다.
+    /// SDK 는 thread-safe 하지만 전송 준비 과정이 호출 스레드에서 일어나므로
+    /// background queue 에서 실행해 메인을 차단하지 않는다.
     static func capture(_ error: Error, context: String? = nil) {
         Task.detached(priority: .utility) {
             SentrySDK.capture(error: error) { scope in
                 if let context {
                     scope.setExtra(value: context, key: "context")
                 }
-                if #available(macOS 12.0, iOS 15.0, *) {
-                    if let logs = recentLogLines() {
-                        scope.setExtra(value: logs, key: "recent_oslog")
-                    }
-                }
             }
         }
     }
 
-    /// 메시지를 에러로 전송한다. 로그 첨부 포함.
+    /// 메시지를 에러로 전송한다.
     /// `capture(_:context:)` 와 동일한 사유로 background queue 에서 실행.
     static func captureMessage(_ message: String, level: SentryLevel = .error, context: String? = nil) {
         Task.detached(priority: .utility) {
@@ -53,29 +55,7 @@ enum CRSentry {
                 if let context {
                     scope.setExtra(value: context, key: "context")
                 }
-                if #available(macOS 12.0, iOS 15.0, *) {
-                    if let logs = recentLogLines() {
-                        scope.setExtra(value: logs, key: "recent_oslog")
-                    }
-                }
             }
         }
-    }
-
-    // MARK: - OS log reader
-
-    /// 현재 프로세스의 최근 `seconds` 초 os.log 항목을 최대 200행 반환.
-    /// macOS 12+ / iOS 15+ 미만에서는 nil.
-    @available(macOS 12.0, iOS 15.0, *)
-    static func recentLogLines(seconds: Double = 120) -> String? {
-        guard let store = try? OSLogStore(scope: .currentProcessIdentifier) else { return nil }
-        let since = store.position(date: Date().addingTimeInterval(-seconds))
-        let subsystem = Bundle.main.bundleIdentifier ?? ""
-        let lines = (try? store.getEntries(at: since)
-            .compactMap { $0 as? OSLogEntryLog }
-            .filter { $0.subsystem == subsystem }
-            .map { "[\($0.category)] \($0.composedMessage)" }) ?? []
-        guard !lines.isEmpty else { return nil }
-        return lines.suffix(200).joined(separator: "\n")
     }
 }

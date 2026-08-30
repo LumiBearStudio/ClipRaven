@@ -1275,7 +1275,9 @@ class KeyboardViewController: UIInputViewController {
         // `file:`) 일 때 paste 차단. 호스트 앱이 Safari 주소창 / WebView 같은
         // URL 입력칸이면 paste 직후 Enter 로 클립보드 XSS 가능.
         if clip.contentType == .url, Self.isDangerousURLScheme(text) {
-            log.info("INSERT skip — dangerous URL scheme: \(text.prefix(40), privacy: .public)")
+            // 차단 대상 URL 자체는 사용자 콘텐츠다 — scheme 만 남긴다 (보안 감사 P1).
+            let scheme = text.prefix(while: { $0 != ":" })
+            log.info("INSERT skip — dangerous URL scheme: \(scheme, privacy: .public) len=\(text.count, privacy: .public)")
             showToast(String(localized: "위험할 수 있는 URL — 붙여넣기 차단"))
             return
         }

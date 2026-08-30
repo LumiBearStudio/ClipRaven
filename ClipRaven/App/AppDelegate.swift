@@ -47,20 +47,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 #endif
                 options.sendDefaultPii = false
                 options.maxBreadcrumbs = 200
-                // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
-                if #available(macOS 12.0, *) {
-                    options.beforeSend = { event in
-                        if let logs = CRSentry.recentLogLines() {
-                            var extra = event.extra ?? [:]
-                            extra["recent_oslog"] = logs
-                            event.extra = extra
-                        }
-                        return event
-                    }
-                }
+                // 진단 정보는 breadcrumb 으로만 보낸다. 이전엔 beforeSend 에서
+                // 최근 os.log 200줄을 첨부했는데 (a) 그 안에 클립 본문이 섞여
+                // 개인정보처리방침을 위반했고 (b) OSLogStore 동기 호출이 호출
+                // 스레드를 막아 App Hang 을 유발했다 (보안 감사 P2).
             }
+            // 실행 자체는 크래시가 아니다. 여기서 이벤트를 보내면 크래시
+            // 리포트 토글이 사실상 사용량 텔레메트리로 동작해 "앱이 충돌할 때만"
+            // 이라는 고지와 어긋난다. breadcrumb 만 남긴다.
             CRSentry.breadcrumb("app launched", category: "app")
-            SentrySDK.capture(message: "ClipRaven Mac launched")
         }
 
         // Register default UserDefaults values

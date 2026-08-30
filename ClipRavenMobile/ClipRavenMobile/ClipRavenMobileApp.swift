@@ -123,20 +123,10 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                 #endif
                 options.sendDefaultPii = false
                 options.maxBreadcrumbs = 200
-                // 모든 이벤트(크래시 포함)에 최근 120초 os.log 첨부
-                if #available(iOS 15.0, *) {
-                    options.beforeSend = { event in
-                        if let logs = CRSentry.recentLogLines() {
-                            var extra = event.extra ?? [:]
-                            extra["recent_oslog"] = logs
-                            event.extra = extra
-                        }
-                        return event
-                    }
-                }
+                // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2 — macOS 동일).
             }
+            // 실행 이벤트 전송 제거 — 크래시가 아닌 사용량 신호였다.
             CRSentry.breadcrumb("app launched", category: "app")
-            SentrySDK.capture(message: "ClipRaven iOS launched")
         }
 
         // Force AppDatabase initialization so migrations run before any

@@ -79,7 +79,7 @@ actor ClipProcessor {
         let normalized = TextNormalizer.normalize(cleanedText)
         let hash = XXHash64Wrapper.hash(normalized)
 
-        ClipRavenLog.write(.processor, "[ClipProc] processText type=\(contentType.rawValue) hash=\(hash.prefix(12)) text=\"\(cleanedText.prefix(60))\"")
+        ClipRavenLog.write(.processor, "[ClipProc] processText type=\(contentType.rawValue) hash=\(hash.prefix(12)) text=\(ClipRavenLog.redacted(cleanedText))")
 
         // In-memory dedupe check (prevents race condition)
         cleanExpiredHashes()
@@ -123,7 +123,7 @@ actor ClipProcessor {
             otherThanDeviceId: DeviceIdentity.deviceId,
             window: 30
         ) {
-            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: cross-device sync race for \"\(cleanedText.prefix(40))\", existing=\(recent.id ?? -1)")
+            ClipRavenLog.write(.processor, "[ClipProc] DEDUP: cross-device sync race for \(ClipRavenLog.redacted(cleanedText)), existing=\(recent.id ?? -1)")
             recentHashes[hash] = Date()
             return
         }
@@ -418,7 +418,8 @@ actor ClipProcessor {
 
         // Store first file path (for single file) or paths joined by newline (multi)
         let contentText = sortedPaths.joined(separator: "\n")
-        ClipRavenLog.write(.processor, "[ClipProc] fileURLs contentText=\(contentText)")
+        // 파일 경로는 사용자명·프로젝트명·문서명을 그대로 담는다 — 개수만 남긴다.
+        ClipRavenLog.write(.processor, "[ClipProc] fileURLs count=\(sortedPaths.count) paths=\(ClipRavenLog.redacted(contentText))")
 
         // Generate thumbnail from file icon of first file
         let thumbnail: Data? = await MainActor.run {
@@ -445,7 +446,7 @@ actor ClipProcessor {
 
         do {
             try clipRepository.save(&clip)
-            ClipRavenLog.write(.processor, "[ClipProc] fileURLs SAVED id=\(clip.id ?? -1) contentText=\(contentText)")
+            ClipRavenLog.write(.processor, "[ClipProc] fileURLs SAVED id=\(clip.id ?? -1) paths=\(ClipRavenLog.redacted(contentText))")
         } catch {
             ClipRavenLog.write(.processor, "[ClipProc] fileURLs SAVE ERROR: \(error)")
         }
