@@ -42,7 +42,14 @@ struct PrivacySettingsView: View {
                         .foregroundStyle(.secondary)
 
                     Toggle("화면 공유 시 패널 숨기기", isOn: $hideOnScreenSharing)
-                    Text("화면 공유 또는 녹화 중에 패널이 표시되지 않습니다.")
+                        .onChange(of: hideOnScreenSharing) { _ in
+                            // 살아 있는 패널의 sharingType 을 즉시 갱신.
+                            NotificationCenter.default.post(
+                                name: .clipRavenScreenSharingPolicyChanged,
+                                object: nil
+                            )
+                        }
+                    Text("화면 공유 또는 녹화 중에 패널이 표시되지 않습니다. 스크린샷에도 찍히지 않으므로, 패널을 촬영해야 할 때는 잠시 꺼 주세요.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
 

@@ -30,6 +30,9 @@ enum DefaultsKey {
     /// 링크 미리보기(OG 메타데이터) 자동 fetch. **기본 false** — 켜면 복사한
     /// URL 로 앱이 직접 HTTP 요청을 보낸다 (보안 감사 P3-b).
     static let linkPreviewEnabled   = "linkPreviewEnabled"
+    /// 화면 공유·녹화 시 패널을 숨긴다 (`NSWindow.sharingType`). 기본 true.
+    /// 끄면 App Store 스크린샷 촬영 등에서 패널이 정상적으로 캡처된다.
+    static let hideOnScreenSharing  = "hideOnScreenSharing"
 
     // MARK: - 캡처 / 저장
     static let selectiveMode        = "selectiveMode"

@@ -39,6 +39,10 @@ extension Notification.Name {
     static let clipRavenClipShortcutChanged = Notification.Name("clipRavenClipShortcutChanged")
     /// Posted when the user changes theme or color preset. AppKit windows observe this to update visual effect materials.
     static let clipRavenThemeChanged = Notification.Name("clipRavenThemeChanged")
+
+    /// 화면 공유 시 패널 숨기기 정책이 바뀌었을 때. MainPanelController 가
+    /// 살아 있는 패널의 `sharingType` 을 즉시 갱신한다.
+    static let clipRavenScreenSharingPolicyChanged = Notification.Name("clipRavenScreenSharingPolicyChanged")
     /// Posted when a drag session ends without completing a drop (cancelled or released outside drop zone).
     static let clipRavenDragSessionEnded = Notification.Name("clipRavenDragSessionEnded")
     /// 우리 코드가 직접 NSPasteboard에 write 한 직후 fire — AppDelegate가 listen해서

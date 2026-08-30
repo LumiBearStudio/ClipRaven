@@ -25,6 +25,15 @@ final class MainPanelController {
     private var resizeStartHeight: CGFloat = 0
     private weak var glassView: NSVisualEffectView?
 
+    /// 패널의 화면 공유 노출 정책을 설정값에 맞춘다.
+    ///
+    /// - `.none`: 화면 공유·녹화·스크린샷에서 패널이 제외된다 (기본값).
+    /// - `.readOnly`: 다른 창과 동일하게 캡처된다.
+    private func applySharingType(to panel: NSPanel) {
+        let hide = UserDefaults.standard.object(forKey: DefaultsKey.hideOnScreenSharing) as? Bool ?? true
+        panel.sharingType = hide ? .none : .readOnly
+    }
+
     func setup() {
         // Suppress auto-hide while user is dragging a clip to an external app
         externalDragObserver = NotificationCenter.default.addObserver(
@@ -77,8 +86,28 @@ final class MainPanelController {
         panel.hasShadow = true
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
 
-        // 개발 중 캡처 허용 — 배포 전 .none으로 복구
-        panel.sharingType = .readOnly
+        // 화면 공유/녹화 시 패널 숨기기 — 설정(개인정보 탭) 토글에 실제로
+        // 바인딩한다. 이전에는 "개발 중 캡처 허용 — 배포 전 .none으로 복구"
+        // 주석과 함께 `.readOnly` 로 고정돼 있어, 설정에는 "표시되지 않습니다"
+        // 라고 적혀 있는데 화면 녹화에 그대로 찍혔다 (감사 R1 — 심사 2.1
+        // 미구현 기능 + 잘못된 프라이버시 주장).
+        //
+        // 페이스트 동작에는 영향이 없다: 붙여넣기는 `CGEvent.postToPid` 이벤트
+        // 합성이고 `sharingType` 은 창 픽셀의 캡처 가능 여부만 정한다. 앱이
+        // 자기 창을 캡처하는 코드도 없다(ScreenCaptureKit/CGWindowList 미사용).
+        //
+        // 다만 `.none` 이면 스크린샷 도구에도 안 잡히므로, App Store 스크린샷을
+        // 찍을 때는 이 토글을 잠시 꺼야 한다 — 토글이 있는 이유이기도 하다.
+        applySharingType(to: panel)
+
+        screenSharingObserver = NotificationCenter.default.addObserver(
+            forName: .clipRavenScreenSharingPolicyChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self, let panel = self.panel else { return }
+            self.applySharingType(to: panel)
+        }
 
         // Liquid Glass background (appearance-aware)
         let gv = NSVisualEffectView(frame: panel.contentView!.bounds)
@@ -121,7 +150,6 @@ final class MainPanelController {
 
         self.panel = panel
 
-        // sharingType은 setup()에서 고정 — observer로 덮어쓰지 않음
     }
 
     func toggle() {

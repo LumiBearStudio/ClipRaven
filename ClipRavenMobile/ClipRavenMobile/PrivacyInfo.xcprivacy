@@ -8,17 +8,30 @@
 	     flows only to the user's own private CloudKit container. There is
 	     no analytics SDK, no advertising identifier, and no tracking.
 
-	     Crash reporting: the Sentry SDK is linked (shared with the macOS
-	     target) but iOS ships no UI to turn it on, so the initialization
-	     is gated behind a flag that never becomes true and no crash data
-	     leaves the device. Collected-data types below stay empty for that
-	     reason. If a crash-reporting toggle is added to iOS Settings, this
-	     file must declare CrashData like the macOS manifest does. -->
+	     Crash reporting is opt-in from Settings › Privacy and off by
+	     default; the Sentry SDK is not initialized until the user turns it
+	     on, and turning it off stops it immediately. Declared as Crash Data
+	     below. -->
 	<key>NSPrivacyTracking</key>
 	<false/>
 
 	<key>NSPrivacyCollectedDataTypes</key>
-	<array/>
+	<array>
+		<!-- Opt-in only (Settings › Privacy › 크래시 리포트 보내기).
+		     Not linked to the user's identity, never used for tracking. -->
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeCrashData</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+	</array>
 
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>

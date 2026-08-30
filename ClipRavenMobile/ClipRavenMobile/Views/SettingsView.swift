@@ -46,6 +46,10 @@ struct SettingsView: View {
     @AppStorage(SharedDefaultsKey.filter2FA, store: .appGroup)
     private var filter2FA = true
 
+    /// 크래시 리포트 동의. 기본 OFF — 켜기 전에는 SDK 가 초기화되지 않는다.
+    /// 앱 본체만 읽으므로 `standard` (확장은 Sentry 를 쓰지 않는다).
+    @AppStorage(CRSentry.enabledKey) private var crashReportsEnabled = false
+
     // Haptic — 앱 본체(복사)와 키보드 확장(붙여넣기)이 함께 읽는다.
     @AppStorage(SharedDefaultsKey.hapticOnCopy, store: .appGroup)
     private var hapticOnCopy = true
@@ -346,10 +350,18 @@ struct SettingsView: View {
             // 제거했다 — iOS 에는 해당 구현이 없어(macOS 전용) 켜고 꺼도 아무
             // 일도 일어나지 않는 UI 였다 (감사 R2). 기능을 iOS 에 구현하면 그때
             // 다시 노출한다.
+
+            Toggle(isOn: $crashReportsEnabled) {
+                Label("크래시 리포트 보내기", systemImage: "ladybug")
+            }
+            .onChange(of: crashReportsEnabled) { newValue in
+                // 재시작 없이 즉시 반영 (감사 R5).
+                if newValue { CRSentry.start() } else { CRSentry.stop() }
+            }
         } header: {
             Text("개인정보")
         } footer: {
-            Text("비밀번호, 신용카드, API 키 등 민감한 데이터는 자동으로 동기화에서 제외됩니다.")
+            Text("비밀번호, 신용카드, API 키 등 민감한 데이터는 자동으로 동기화에서 제외됩니다. 크래시 리포트는 익명이며 클립보드 내용을 포함하지 않습니다.")
         }
     }
 

@@ -5516,64 +5516,6 @@
         }
       }
     },
-    "비밀번호, 신용카드, API 키 등 민감한 데이터는 자동으로 동기화에서 제외됩니다." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sensible Daten (Passwörter, Karten, API-Schlüssel) werden automatisch vom Sync ausgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passwords, credit cards, API keys, and other sensitive data are automatically excluded from sync."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Los datos sensibles (contraseñas, tarjetas, claves API) se excluyen automáticamente del sync."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les données sensibles (mots de passe, cartes, clés API) sont auto-exclues de la sync."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I dati sensibili (password, carte, chiavi API) vengono auto-esclusi dal sync."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスワードやカード、APIキーなどの機密データは同期から自動的に除外されます。"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dados sensíveis (senhas, cartões, chaves API) são auto-excluídos do sync."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "密码、信用卡、API 密钥等敏感数据会自动从同步中排除。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "敏感資料 (密碼、卡號、API 金鑰) 會自動從同步中排除。"
-          }
-        }
-      }
-    },
     "빠른 검색" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12272,6 +12214,124 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "繁體中文"
+          }
+        }
+      }
+    },
+    "크래시 리포트 보내기" : {
+      "comment" : "iOS Settings — opt-in crash reporting toggle",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send crash reports"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラッシュレポートを送信"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absturzberichte senden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer les rapports de plantage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar informes de fallos"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia rapporti di arresto anomalo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar relatórios de falha"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送崩溃报告"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送當機報告"
+          }
+        }
+      }
+    },
+    "비밀번호, 신용카드, API 키 등 민감한 데이터는 자동으로 동기화에서 제외됩니다. 크래시 리포트는 익명이며 클립보드 내용을 포함하지 않습니다." : {
+      "comment" : "iOS Settings privacy footer — sensitive data exclusion + anonymous crash reports",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwords, credit cards, API keys and similar sensitive data are automatically excluded from sync. Crash reports are anonymous and never include clipboard contents."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスワード、クレジットカード、APIキーなどの機密データは自動的に同期から除外されます。クラッシュレポートは匿名で、クリップボードの内容は含まれません。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passwörter, Kreditkarten, API-Schlüssel und ähnliche sensible Daten werden automatisch von der Synchronisierung ausgenommen. Absturzberichte sind anonym und enthalten niemals Zwischenablage-Inhalte."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots de passe, cartes bancaires, clés d’API et autres données sensibles sont automatiquement exclus de la synchronisation. Les rapports de plantage sont anonymes et ne contiennent jamais le contenu du presse-papiers."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las contraseñas, tarjetas de crédito, claves de API y datos sensibles similares se excluyen automáticamente de la sincronización. Los informes de fallos son anónimos y nunca incluyen el contenido del portapapeles."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password, carte di credito, chiavi API e dati sensibili simili sono esclusi automaticamente dalla sincronizzazione. I rapporti di arresto anomalo sono anonimi e non includono mai il contenuto degli appunti."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senhas, cartões de crédito, chaves de API e outros dados sensíveis são excluídos automaticamente da sincronização. Os relatórios de falha são anônimos e nunca incluem o conteúdo da área de transferência."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码、信用卡、API 密钥等敏感数据会自动排除在同步之外。崩溃报告是匿名的，绝不包含剪贴板内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密碼、信用卡、API 金鑰等敏感資料會自動排除在同步之外。當機報告為匿名，絕不包含剪貼簿內容。"
           }
         }
       }

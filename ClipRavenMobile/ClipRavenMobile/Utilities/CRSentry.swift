@@ -12,6 +12,40 @@ import Sentry
 /// (보안 감사 P2, macOS 쪽과 동일 조치).
 enum CRSentry {
 
+    /// 크래시 리포트 동의 여부를 저장하는 키. 앱 본체만 읽으므로
+    /// `UserDefaults.standard` 에 둔다 (확장은 Sentry 를 쓰지 않는다).
+    static let enabledKey = "crashReportsEnabled"
+
+    /// 사용자가 동의한 경우에만 SDK 를 초기화한다. 동의 전에는 SDK 가 아예
+    /// 시작되지 않으므로 네트워크도 발생하지 않는다.
+    static func startIfEnabled() {
+        guard UserDefaults.standard.bool(forKey: enabledKey) else { return }
+        start()
+    }
+
+    /// 설정에서 켠 즉시 반영하기 위해 런타임에도 호출할 수 있다.
+    /// (앱 재시작을 요구하지 않기 위한 것 — 재시작 안내는 나쁜 UX 다.)
+    static func start() {
+        SentrySDK.start { options in
+            options.dsn = "https://2e87dafa4228a756923fbb0e0d914949@o4510949994266624.ingest.de.sentry.io/4511348636778576"
+            // Sentry dashboard 의 environment 필터로 dev / prod 구분.
+            #if DEBUG
+            options.environment = "development"
+            #else
+            options.environment = "production"
+            #endif
+            options.sendDefaultPii = false
+            options.maxBreadcrumbs = 200
+            // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
+        }
+        breadcrumb("crash reporting enabled", category: "app")
+    }
+
+    /// 설정에서 끄면 즉시 전송을 멈춘다.
+    static func stop() {
+        SentrySDK.close()
+    }
+
     // MARK: - Breadcrumb
 
     /// 앱 생명주기 이벤트 등을 Sentry breadcrumb 링버퍼에 쌓는다.
