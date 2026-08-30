@@ -34,17 +34,23 @@ struct SettingsView: View {
     @AppStorage("clipraven.preferredColorScheme") private var preferredColorScheme = "system"
     @AppStorage(AppAnimations.key) private var animationsEnabled = true
 
-    // 민감 데이터 자동 차단 (캡처 전 검사)
-    @AppStorage("clipraven.privacy.filterSensitive") private var filterSensitive = true
-    @AppStorage("clipraven.privacy.filter2FA")       private var filter2FA       = true
-    @AppStorage("clipraven.privacy.stripUrlTracking") private var stripUrlTracking = true
-    @AppStorage("clipraven.privacy.stripInvisibles") private var stripInvisibles = true
+    // 민감 데이터 자동 차단 (캡처 전 검사).
+    //
+    // **App Group suite** 에 쓴다 — 이 값을 읽는 쪽이 앱 본체 캡처뿐 아니라
+    // 키보드·공유 확장이고, 확장은 앱의 `standard` 를 볼 수 없기 때문이다.
+    // 이전에는 설정이 `standard` 의 `clipraven.privacy.*` 에 쓰고 확장은 App
+    // Group 의 `blockSensitive` 를 읽어서, 토글을 움직여도 아무 일도 일어나지
+    // 않았다 (감사 R2).
+    @AppStorage(SharedDefaultsKey.blockSensitive, store: .appGroup)
+    private var filterSensitive = true
+    @AppStorage(SharedDefaultsKey.filter2FA, store: .appGroup)
+    private var filter2FA = true
 
-    // Sound / Haptic
-    @AppStorage("clipraven.feedback.soundOnCopy")  private var soundOnCopy  = false
-    @AppStorage("clipraven.feedback.soundOnPaste") private var soundOnPaste = false
-    @AppStorage("clipraven.feedback.hapticOnCopy") private var hapticOnCopy = true
-    @AppStorage("clipraven.feedback.hapticOnPaste") private var hapticOnPaste = true
+    // Haptic — 앱 본체(복사)와 키보드 확장(붙여넣기)이 함께 읽는다.
+    @AppStorage(SharedDefaultsKey.hapticOnCopy, store: .appGroup)
+    private var hapticOnCopy = true
+    @AppStorage(SharedDefaultsKey.hapticOnPaste, store: .appGroup)
+    private var hapticOnPaste = true
 
     // Onboarding 다시 보기
     @AppStorage("onboarding.completed") private var onboardingCompleted = false
@@ -336,12 +342,10 @@ struct SettingsView: View {
             Toggle(isOn: $filter2FA) {
                 Label("2단계 인증 코드 자동 필터", systemImage: "number.square")
             }
-            Toggle(isOn: $stripUrlTracking) {
-                Label("URL 트래킹 파라미터 자동 제거", systemImage: "link.badge.plus")
-            }
-            Toggle(isOn: $stripInvisibles) {
-                Label("보이지 않는 제어 문자 자동 제거", systemImage: "wand.and.stars")
-            }
+            // "URL 트래킹 파라미터 제거" / "보이지 않는 제어 문자 제거" 토글은
+            // 제거했다 — iOS 에는 해당 구현이 없어(macOS 전용) 켜고 꺼도 아무
+            // 일도 일어나지 않는 UI 였다 (감사 R2). 기능을 iOS 에 구현하면 그때
+            // 다시 노출한다.
         } header: {
             Text("개인정보")
         } footer: {
@@ -351,12 +355,12 @@ struct SettingsView: View {
 
     private var feedbackSection: some View {
         Section {
-            Toggle("복사 시 사운드", isOn: $soundOnCopy)
-            Toggle("붙여넣기 시 사운드", isOn: $soundOnPaste)
+            // 사운드 토글 2개는 제거했다 — iOS 에 재생 구현 자체가 없었다
+            // (감사 R2). 햅틱만 실제로 동작한다.
             Toggle("복사 시 햅틱", isOn: $hapticOnCopy)
             Toggle("붙여넣기 시 햅틱", isOn: $hapticOnPaste)
         } header: {
-            Text("사운드 / 햅틱")
+            Text("햅틱")
         }
     }
 

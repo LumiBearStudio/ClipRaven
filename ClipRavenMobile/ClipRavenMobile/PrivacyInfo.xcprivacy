@@ -2,13 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- ClipRaven does not collect, transmit, or track any user data.
-	     Clipboard contents live only in the local GRDB SQLite database
+	<!-- Clipboard contents live only in the local GRDB SQLite database
 	     inside the app sandbox (or the shared App Group container for
 	     keyboard/share extensions). iCloud sync is strictly opt-in and
-	     flows only to the user's own private CloudKit container.
-	     There is no analytics SDK, no remote logging, no third-party
-	     tracking library, and no device-ID beacon. -->
+	     flows only to the user's own private CloudKit container. There is
+	     no analytics SDK, no advertising identifier, and no tracking.
+
+	     Crash reporting: the Sentry SDK is linked (shared with the macOS
+	     target) but iOS ships no UI to turn it on, so the initialization
+	     is gated behind a flag that never becomes true and no crash data
+	     leaves the device. Collected-data types below stay empty for that
+	     reason. If a crash-reporting toggle is added to iOS Settings, this
+	     file must declare CrashData like the macOS manifest does. -->
 	<key>NSPrivacyTracking</key>
 	<false/>
 
@@ -36,13 +41,16 @@
 		     자기 App Group 컨테이너 안 staging 디렉토리의 오래된 이미지
 		     파일을 contentModificationDate 기준으로 정리. attributesOfItem
 		     호출도 같은 API surface 라 함께 선언.
-		     3B52.1 — 앱이 생성한 파일/디렉토리의 timestamp 접근. -->
+		     C617.1 — **앱 컨테이너 안** 파일의 timestamp 접근. iOS 에는
+		     사용자가 직접 고른 파일을 다루는 경로가 없으므로 3B52.1(문서
+		     선택기 등으로 접근 권한을 받은 파일) 은 해당하지 않는다.
+		     이전에는 3B52.1 로 잘못 선언돼 있었다 (감사 R5). -->
 		<dict>
 			<key>NSPrivacyAccessedAPIType</key>
 			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>3B52.1</string>
+				<string>C617.1</string>
 			</array>
 		</dict>
 	</array>

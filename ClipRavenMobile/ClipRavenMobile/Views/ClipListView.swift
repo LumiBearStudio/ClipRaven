@@ -156,7 +156,11 @@ struct ClipListView: View {
     private func copyWithFeedback(_ clip: Clip) {
         ClipboardWriter.write(clip: clip)
         viewModel.bumpCopyCount(clip)
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        // 설정의 '복사 시 햅틱' 을 존중한다 — 이전엔 토글과 무관하게 항상
+        // 울렸다 (감사 R2).
+        if UserDefaults.appGroup.sharedBool(SharedDefaultsKey.hapticOnCopy) {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }
         guard !copyToast else { return }
         AppAnimations.withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) { copyToast = true }
         Task {

@@ -104,8 +104,8 @@ final class PasteboardCaptureService {
         // 키 이름과 fallback(`?? true`) 은 두 확장과 동일하게 App Group
         // 도메인의 `blockSensitive` / `filter2FA` 를 쓴다 — 세 경로가 같은
         // 설정을 보도록.
-        let sharedDefaults = UserDefaults(suiteName: AppGroupDatabase.appGroupID) ?? .standard
-        let blockSensitiveOn = sharedDefaults.object(forKey: "blockSensitive") as? Bool ?? true
+        let sharedDefaults = UserDefaults.appGroup
+        let blockSensitiveOn = sharedDefaults.sharedBool(SharedDefaultsKey.blockSensitive)
         if blockSensitiveOn {
             // concealed 마커(1Password 등)는 텍스트·이미지 구분 없이 먼저 차단.
             if SensitiveDataFilter.isSensitivePasteboardType(pasteboard.types) {
@@ -113,7 +113,7 @@ final class PasteboardCaptureService {
                 return
             }
             if pasteboard.hasStrings, let preview = pasteboard.string {
-                let filter2FA = sharedDefaults.object(forKey: "filter2FA") as? Bool ?? true
+                let filter2FA = sharedDefaults.sharedBool(SharedDefaultsKey.filter2FA)
                 if SensitiveDataFilter.isSensitiveWithContext(
                     preview,
                     sourceAppBundleId: nil, // iOS 는 복사 원본 앱을 알 수 없다

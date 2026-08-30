@@ -231,7 +231,9 @@ struct ClipDetailView: View {
 
         Button {
             ClipboardWriter.write(clip: clip)
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            if UserDefaults.appGroup.sharedBool(SharedDefaultsKey.hapticOnCopy) {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            }
             copiedHint = true
             Task {
                 try? await Task.sleep(nanoseconds: 1_500_000_000)

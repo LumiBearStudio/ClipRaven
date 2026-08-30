@@ -1053,8 +1053,8 @@ class KeyboardViewController: UIInputViewController {
         // UserDefaults `blockSensitive` 토글이 ON 이면:
         // - pasteboard type 이 concealed (1Password 등) → 차단
         // - 텍스트가 API key / 2FA / JWT / 신용카드 / SSN 등 패턴 매치 → 차단
-        let defaults = UserDefaults(suiteName: AppGroupDatabase.appGroupID) ?? .standard
-        let blockSensitiveOn = defaults.object(forKey: "blockSensitive") as? Bool ?? true
+        let defaults = UserDefaults.appGroup
+        let blockSensitiveOn = defaults.sharedBool(SharedDefaultsKey.blockSensitive)
         if blockSensitiveOn {
             let typeIdentifiers = pasteboard.types
             if SensitiveDataFilter.isSensitivePasteboardType(typeIdentifiers) {
@@ -1062,7 +1062,7 @@ class KeyboardViewController: UIInputViewController {
                 return
             }
             if pasteboard.hasStrings, let preview = pasteboard.string {
-                let filter2FA = defaults.object(forKey: "filter2FA") as? Bool ?? true
+                let filter2FA = defaults.sharedBool(SharedDefaultsKey.filter2FA)
                 if SensitiveDataFilter.isSensitiveWithContext(
                     preview,
                     sourceAppBundleId: nil, // 키보드 익스텐션은 호스트 앱 bundle ID 추출 불가
@@ -1290,21 +1290,21 @@ class KeyboardViewController: UIInputViewController {
                let (data, type) = Self.imageBytesFromAppGroup(relativePath: relPath) {
                 if data.count <= Self.maxPasteImageBytes {
                     UIPasteboard.general.setData(data, forPasteboardType: type)
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    Self.pasteHaptic()
                     showToast(String(localized: "이미지 복사됨 — 입력란을 길게 눌러 붙여넣기"))
                     return
                 }
                 // 원본이 너무 크면 썸네일로 대체하되 **조용히 바꾸지 않고** 알린다.
                 if let thumb = clip.thumbnail, !thumb.isEmpty {
                     UIPasteboard.general.setData(thumb, forPasteboardType: Self.pasteboardType(for: thumb))
-                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    Self.pasteHaptic()
                     showToast(String(localized: "원본이 너무 커서 미리보기 크기로 복사했습니다"))
                     return
                 }
             }
             if let thumb = clip.thumbnail, !thumb.isEmpty {
                 UIPasteboard.general.setData(thumb, forPasteboardType: Self.pasteboardType(for: thumb))
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                Self.pasteHaptic()
                 showToast(String(localized: "이미지 복사됨 — 입력란을 길게 눌러 붙여넣기"))
                 return
             }
@@ -1368,6 +1368,13 @@ class KeyboardViewController: UIInputViewController {
             .appendingPathComponent(relativePath)
         guard let data = try? Data(contentsOf: fileURL, options: .mappedIfSafe) else { return nil }
         return (data, pasteboardType(for: data))
+    }
+
+    /// 붙여넣기 햅틱 — 설정의 '붙여넣기 시 햅틱' 을 존중한다 (감사 R2).
+    /// 키 입력(⌫/space/return) 햅틱은 키보드 고유 UX 라 이 설정과 무관하게 유지.
+    private static func pasteHaptic() {
+        guard UserDefaults.appGroup.sharedBool(SharedDefaultsKey.hapticOnPaste) else { return }
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     /// 이미지 바이트의 pasteboard UTI. 저장 확장자가 상황마다 다르므로

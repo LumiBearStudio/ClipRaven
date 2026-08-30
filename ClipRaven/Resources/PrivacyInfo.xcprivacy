@@ -2,18 +2,40 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- ClipRaven does not collect, transmit, or track any user data.
-	     Clipboard contents, tags, and rules live only in the local GRDB
-	     SQLite database inside the app sandbox. There is no analytics SDK,
-	     no remote logging, no device ID beacon. OG-metadata and favicon
-	     fetches send only the URL that the user already copied, and the
-	     response is cached locally — nothing flows back to us or a
-	     third party. -->
+	<!-- Clipboard contents, tags, and rules live only in the local GRDB
+	     SQLite database inside the app sandbox. There is no analytics SDK
+	     and no advertising identifier, and the app never tracks users.
+
+	     Two features send data off the device, both off by default and both
+	     under explicit user control:
+	       * Crash reporting (opt-in during onboarding) — sends crash reports
+	         through Sentry. Declared as Crash Data below.
+	       * Link previews (opt-in in Privacy settings) — requests the URL the
+	         user copied so the card can show its title and image.
+	     iCloud sync, when enabled, moves clips through the user's own iCloud
+	     account; we have no server and never see that data. -->
 	<key>NSPrivacyTracking</key>
 	<false/>
 
 	<key>NSPrivacyCollectedDataTypes</key>
-	<array/>
+	<array>
+		<!-- Crash reports are collected only when the user opts in on the
+		     final onboarding page; the SDK is not initialized otherwise.
+		     Reports are not linked to the user's identity and are never
+		     used for tracking. -->
+		<dict>
+			<key>NSPrivacyCollectedDataType</key>
+			<string>NSPrivacyCollectedDataTypeCrashData</string>
+			<key>NSPrivacyCollectedDataTypeLinked</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypeTracking</key>
+			<false/>
+			<key>NSPrivacyCollectedDataTypePurposes</key>
+			<array>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
+			</array>
+		</dict>
+	</array>
 
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>
@@ -33,16 +55,19 @@
 			</array>
 		</dict>
 
-		<!-- FileTimestamp: AssetStaging 이 자기 sandbox 안 staging 디렉토리의
-		     오래된 이미지 파일을 contentModificationDate 기준으로 정리.
-		     ImageBinaryCleanup / FileCardBody 의 attributesOfItem(.size) 호출도
-		     같은 API surface 에 속해 보수적으로 함께 선언.
-		     3B52.1 — 앱이 생성한 파일/디렉토리의 timestamp 접근. -->
+		<!-- FileTimestamp — 두 가지 사유가 모두 해당한다:
+		     C617.1: AssetStaging / ImageBinaryCleanup 이 **앱 컨테이너 안**의
+		             staging·이미지 파일을 contentModificationDate 기준으로 정리.
+		     3B52.1: FileCardBody 가 사용자가 직접 드롭한 파일의 속성을 읽어
+		             카드에 크기·날짜를 표시.
+		     이전에는 3B52.1 만 선언했는데, 실제 호출의 대부분은 컨테이너 파일
+		     이라 사유가 부정확했다 (감사 R5). -->
 		<dict>
 			<key>NSPrivacyAccessedAPIType</key>
 			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
+				<string>C617.1</string>
 				<string>3B52.1</string>
 			</array>
 		</dict>

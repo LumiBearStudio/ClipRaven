@@ -82,10 +82,10 @@ class ShareViewController: UIViewController {
         }
 
         // 민감 데이터 차단 (보안 감사 A-C1) — Share Extension 도 매크OS 와 같은 가드.
-        let defaults = UserDefaults(suiteName: AppGroupDatabase.appGroupID) ?? .standard
-        let blockSensitiveOn = defaults.object(forKey: "blockSensitive") as? Bool ?? true
+        let defaults = UserDefaults.appGroup
+        let blockSensitiveOn = defaults.sharedBool(SharedDefaultsKey.blockSensitive)
         if blockSensitiveOn {
-            let filter2FA = defaults.object(forKey: "filter2FA") as? Bool ?? true
+            let filter2FA = defaults.sharedBool(SharedDefaultsKey.filter2FA)
             if SensitiveDataFilter.isSensitiveWithContext(
                 trimmed,
                 sourceAppBundleId: nil,
