@@ -404,5 +404,51 @@ enum DatabaseMigrations {
                 SyncSchema.addClipUserIntentTimestamps(t)
             }
         }
+
+        // MARK: - v15: pasteStack.clipId 에 ON DELETE CASCADE 부여
+        //
+        // v1 은 `pasteStack.clipId` 를 `ON DELETE` 절 없이 (= NO ACTION) 선언했다.
+        // `clipTags` 는 cascade 였는데 이 테이블만 빠졌고, production 은
+        // `foreignKeysEnabled = true` 로 돈다. 결과적으로 페이스트 스택에 한 번
+        // 담겼던 클립을 hard-delete 하려는 **모든** 경로가
+        // `FOREIGN KEY constraint failed` 로 throw 했다:
+        //
+        //   - CleanupService 의 정리 4단계 (정리가 통째로 멈춰 DB 무한 증가)
+        //   - 백업 .overwrite 복원의 DELETE FROM clips
+        //   - iCloud 삭제 적용 (트랜잭션 롤백 → 그 배치의 수정·삽입까지 유실)
+        //
+        // markPasted 는 isPasted 플래그만 세우고 행을 남기며 삭제 경로 어디에도
+        // 스택 정리 코드가 없어서, 한 번 담긴 클립은 영구히 "지울 수 없는" 상태가
+        // 됐다 (감사 D1).
+        //
+        // SQLite 는 외래키 제약을 ALTER 로 바꿀 수 없어 v9 와 같은 재생성 패턴을
+        // 쓴다. 재생성 중에는 FK 강제를 끈다 — 켜진 상태로 DROP 하면 이미
+        // 존재하는 참조 때문에 실패할 수 있다. GRDB 는 마이그레이션을 트랜잭션
+        // 안에서 실행하므로 `PRAGMA foreign_keys` 대신
+        // `defer_foreign_keys` (트랜잭션 커밋 시점까지 검사 유예) 를 쓴다.
+        migrator.registerMigration("v15_pasteStackCascade") { db in
+            try db.execute(sql: "PRAGMA defer_foreign_keys = ON")
+
+            try db.execute(sql: """
+                CREATE TABLE pasteStack_temp (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    clipId INTEGER NOT NULL REFERENCES clips(id) ON DELETE CASCADE,
+                    sortOrder INTEGER NOT NULL,
+                    isPasted BOOLEAN NOT NULL DEFAULT 0,
+                    addedAt DATETIME NOT NULL
+                )
+            """)
+            // 이미 삭제된 클립을 가리키는 고아 행이 남아 있을 수 있다 (FK 가
+            // 막기 전에 들어갔거나, 다른 경로로 정리된 경우) — JOIN 으로 걸러
+            // 옮겨야 새 테이블의 제약을 만족한다.
+            try db.execute(sql: """
+                INSERT INTO pasteStack_temp (id, clipId, sortOrder, isPasted, addedAt)
+                SELECT ps.id, ps.clipId, ps.sortOrder, ps.isPasted, ps.addedAt
+                FROM pasteStack ps
+                JOIN clips c ON c.id = ps.clipId
+            """)
+            try db.execute(sql: "DROP TABLE pasteStack")
+            try db.execute(sql: "ALTER TABLE pasteStack_temp RENAME TO pasteStack")
+        }
     }
 }
