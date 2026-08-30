@@ -84,9 +84,19 @@ final class ClipboardMonitor: ObservableObject {
         lastContentHash = computeContentHash(initialData)
         ClipRavenLog.write(.clipboard, "[ClipMon] START changeCount=\(lastChangeCount) initialHash=\(lastContentHash.prefix(12))")
 
-        // Prevent App Nap
+        // App Nap 방지 — **유휴 절전은 막지 않는다.**
+        //
+        // 이전 값은 `[.userInitiated, .idleSystemSleepDisabled]` 였는데,
+        // `.userInitiated` 자체가 이미 `.idleSystemSleepDisabled` 를 포함한다.
+        // 이 assertion 은 stop()(= 앱 종료) 전까지 해제되지 않으므로, 앱이 떠
+        // 있는 동안 맥이 유휴 절전에 들어가지 못했다 (`pmset -g assertions` 에
+        // PreventUserIdleSystemSleep 상시 표시). 자리를 비운 사이 배터리가
+        // 소진되는 문제로 이어진다 (감사 F1).
+        //
+        // 클립보드 폴링은 화면이 꺼진 뒤까지 계속될 이유가 없다. App Nap 만
+        // 피하면 되므로 절전을 허용하는 옵션을 쓴다.
         activity = ProcessInfo.processInfo.beginActivity(
-            options: [.userInitiated, .idleSystemSleepDisabled],
+            options: [.userInitiatedAllowingIdleSystemSleep],
             reason: "Clipboard monitoring"
         )
 

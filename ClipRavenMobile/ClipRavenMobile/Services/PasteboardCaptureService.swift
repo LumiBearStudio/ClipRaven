@@ -209,10 +209,25 @@ final class PasteboardCaptureService {
     }
 
     private func captureImage(_ image: UIImage) async {
-        guard let processed = ImageThumbnailMaker.process(image) else {
+        // 무거운 이미지 작업은 메인 액터 밖에서 한 번에 처리한다.
+        //
+        // 이 클래스는 @MainActor 라, 이전에는 12MP 사진 하나에 대해
+        // 리사이즈 + PNG 인코딩(썸네일용) + SHA-256 + **원본 PNG 재인코딩**
+        // 까지 전부 메인 스레드에서 돌았다. 0.5~1.2초 화면 정지가 되고,
+        // 호출 시점이 `didBecomeActive` 라 앱 전환 직후 얼어붙는 것처럼 보인다
+        // (감사 F2). 원본 PNG 도 여기서 한 번만 만들어 재사용한다.
+        let wantsOriginal = ImageSyncSettings.current().mode == .full
+        let prepared = await Task.detached(priority: .userInitiated) {
+            () -> (processed: (thumbnail: Data, hash: String), originalPNG: Data?)? in
+            guard let processed = ImageThumbnailMaker.process(image) else { return nil }
+            return (processed, wantsOriginal ? image.pngData() : nil)
+        }.value
+
+        guard let prepared else {
             log.error("failed to process pasteboard image")
             return
         }
+        let processed = prepared.processed
 
         cleanExpiredHashes()
         if recentHashes[processed.hash] != nil { return }
@@ -240,9 +255,10 @@ final class PasteboardCaptureService {
         // 업로드 사이클에 CKAsset 으로 전송.
         // .thumbnailOnly / .off 모드면 imagePath 미설정 (썸네일만 sync).
         let savedPath: String? = {
-            guard ImageSyncSettings.current().mode == .full,
-                  let pngData = image.pngData()
-            else { return nil }
+            // 위에서 백그라운드로 이미 인코딩해 둔 원본을 재사용한다
+            // (예전에는 여기서 pngData() 를 한 번 더 호출해 메인 스레드에서
+            //  같은 사진을 두 번 인코딩했다).
+            guard let pngData = prepared.originalPNG else { return nil }
             // uuid 가 아직 결정 안 됐으므로 임시 uuid 로 저장 후 필요 시 rename.
             // 단순화: 새 uuid 생성 → 동일 uuid 를 insertImage 에 전달했으면
             // 좋겠지만 repository.insertImage 내부에서 uuid 생성 → 약간의

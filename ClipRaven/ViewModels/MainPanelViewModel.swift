@@ -158,9 +158,28 @@ final class MainPanelViewModel: ObservableObject {
     @Published var boards: [Tag] = []
     @Published var clipTags: [Int64: [Tag]] = [:]  // clipId -> assigned tags
 
-    /// 현재 클립에서 사용 가능한 소스 앱 목록
-    var availableSourceApps: [(bundleId: String, name: String)] {
-        (try? clipRepository.fetchUniqueSourceApps()) ?? []
+    /// 현재 클립에서 사용 가능한 소스 앱 목록.
+    ///
+    /// 이전에는 computed property 로 매 접근마다 `fetchUniqueSourceApps()` 를
+    /// **동기 호출**했다. SwiftUI body(MainPanelView, TitlebarFilterView)가 이걸
+    /// 읽으므로, `clips`/`selectedIndex`/`searchText`/`optionKeyHeld` 중 무엇이
+    /// 바뀌어도 body 재평가마다 인덱스 없는 clips 전체 스캔 + 정렬이 **메인
+    /// 스레드**에서 돌았다. modifier 키를 누르기만 해도 트리거된다(FilterBar 의
+    /// flagsChanged → optionKeyHeld). 5000 클립 기준 3~15ms × 초당 수 회 —
+    /// 과거 App Hang 회귀와 같은 계열이다 (감사 F2).
+    ///
+    /// 이제 `updateCounts()` 와 같은 방식으로 백그라운드에서 계산해 publish 한다.
+    @Published private(set) var availableSourceApps: [(bundleId: String, name: String)] = []
+
+    /// 소스 앱 목록을 백그라운드에서 새로 읽어 publish.
+    /// 클립 목록이 바뀌는 시점(=출처가 늘거나 줄 수 있는 시점)에만 호출한다.
+    private func refreshAvailableSourceApps() {
+        Task.detached(priority: .utility) { [clipRepository] in
+            let apps = (try? clipRepository.fetchUniqueSourceApps()) ?? []
+            await MainActor.run { [weak self] in
+                self?.availableSourceApps = apps
+            }
+        }
     }
 
     // Preview state
@@ -207,6 +226,7 @@ final class MainPanelViewModel: ObservableObject {
     func startObserving() {
         restartObservation()
         updateCounts()
+        refreshAvailableSourceApps()
         loadBoards()
         pasteStackEngine.reload()
 
@@ -1120,9 +1140,23 @@ final class MainPanelViewModel: ObservableObject {
         cancellable?.cancel()
         cancellable = nil
 
-        searchTask = Task {
+        // 필터 상태는 MainActor 소유다 — detach 하기 **전에** 값으로 읽어
+        // 넘긴다. (아래 detached 블록 안에서 self 프로퍼티를 건드리면 다시
+        // 메인 액터 hop 이 생긴다.)
+        let contentType = selectedFilter.contentType
+        let tagIds = selectedTagIds
+        let sourceApp = selectedSourceApp
+        let dateFilter = dateRangeFilter
+        let includePinned = showPinned
+
+        // 검색은 반드시 백그라운드에서. 이전에는 `Task { }` 가 @MainActor
+        // 격리를 상속해 동기 DB 호출이 메인 스레드에서 돌았다. FTS 결과가
+        // 5건 미만이면 `substringSearch` 로 폴백하는데 그 SQL 은 `%q%` LIKE 라
+        // 인덱스를 못 쓰고 전체 스캔한다. 한글 부분입력은 unicode61 토크나이저
+        // 특성상 거의 항상 이 폴백으로 빠지므로, 타이핑 중 200ms 마다 수 MB
+        // 문자열 스캔이 메인에서 일어났다 (감사 F2).
+        searchTask = Task.detached(priority: .userInitiated) { [searchRepository, tagRepository] in
             do {
-                let contentType = selectedFilter.contentType
                 let searchResults: [Clip]
 
                 if ChosungConverter.isChosungOnly(trimmed) {
@@ -1141,9 +1175,9 @@ final class MainPanelViewModel: ObservableObject {
 
                 // Apply tag filter if active
                 var filtered = searchResults
-                if !selectedTagIds.isEmpty {
+                if !tagIds.isEmpty {
                     let taggedClipIds = Set(
-                        (try? tagRepository.fetchClipIds(forTagIds: selectedTagIds)) ?? []
+                        (try? tagRepository.fetchClipIds(forTagIds: tagIds)) ?? []
                     )
                     filtered = filtered.filter { clip in
                         guard let id = clip.id else { return false }
@@ -1152,26 +1186,32 @@ final class MainPanelViewModel: ObservableObject {
                 }
 
                 // Apply source app filter
-                if let sourceApp = self.selectedSourceApp {
+                if let sourceApp {
                     filtered = filtered.filter { $0.sourceAppBundleId == sourceApp }
                 }
 
                 // Apply date range filter
-                if let dateFilter = self.dateRangeFilter {
+                if let dateFilter {
                     let range = dateFilter.dateRange
                     filtered = filtered.filter { $0.createdAt >= range.from && $0.createdAt <= range.to }
                 }
 
                 // Apply pin filter
-                if !showPinned {
+                if !includePinned {
                     filtered = filtered.filter { !$0.isPinned }
                 }
 
-                AppAnimations.withAnimation(DesignTokens.Animation.quickFade) {
-                    self.clips = filtered
-                    self.selectedIndex = filtered.isEmpty ? nil : 0
+                guard !Task.isCancelled else { return }
+
+                let results = filtered
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    AppAnimations.withAnimation(DesignTokens.Animation.quickFade) {
+                        self.clips = results
+                        self.selectedIndex = results.isEmpty ? nil : 0
+                    }
+                    self.loadClipTags()
                 }
-                self.loadClipTags()
             } catch {
                 guard !Task.isCancelled else { return }
                 ClipRavenLog.search.error("Search failed: \(String(describing: error), privacy: .public)")
@@ -1211,6 +1251,7 @@ final class MainPanelViewModel: ObservableObject {
                     }
                 }
                 self.updateCounts()
+                self.refreshAvailableSourceApps()
                 self.loadClipTags()
             }
         }

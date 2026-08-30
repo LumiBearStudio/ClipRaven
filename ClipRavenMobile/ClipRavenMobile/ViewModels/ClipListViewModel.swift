@@ -115,29 +115,41 @@ final class ClipListViewModel: ObservableObject {
     }
 
     private func performSearch(_ query: String) {
-        Task {
+        // 필터 상태를 먼저 값으로 읽어 넘긴다 (MainActor 소유).
+        let filter = selectedFilter
+        let tagIds = selectedTagIds
+        let sourceApp = selectedSourceApp
+        let dateRange = selectedDateRange
+        let aiCategory = selectedAICategory
+
+        // B-B3 와 같은 이유로 detached: 이 클래스는 @MainActor 라 `Task { }` 는
+        // 격리를 상속해 동기 DB 검색이 메인 스레드에서 돌았다. 바로 아래
+        // loadTags/updateCounts 는 이미 고쳐져 있었는데 검색 경로만 남아 있었다
+        // (감사 F2). 확장이 write 락을 쥐고 있으면 busyTimeout 5초까지 UI 가
+        // 그대로 멈춘다.
+        Task.detached(priority: .userInitiated) { [repository, log] in
             do {
                 let results: [Clip]
                 if ChosungConverter.shouldUseChosungSearch(query) {
                     results = try repository.searchChosung(
                         query: query,
-                        contentType: selectedFilter,
-                        tagIds: selectedTagIds,
-                        sourceApp: selectedSourceApp,
-                        dateRange: selectedDateRange,
-                        aiCategory: selectedAICategory
+                        contentType: filter,
+                        tagIds: tagIds,
+                        sourceApp: sourceApp,
+                        dateRange: dateRange,
+                        aiCategory: aiCategory
                     )
                 } else {
                     results = try repository.search(
                         query: query,
-                        contentType: selectedFilter,
-                        tagIds: selectedTagIds,
-                        sourceApp: selectedSourceApp,
-                        dateRange: selectedDateRange,
-                        aiCategory: selectedAICategory
+                        contentType: filter,
+                        tagIds: tagIds,
+                        sourceApp: sourceApp,
+                        dateRange: dateRange,
+                        aiCategory: aiCategory
                     )
                 }
-                await MainActor.run { self.clips = results }
+                await MainActor.run { [weak self] in self?.clips = results }
             } catch {
                 log.error("search failed: \(error.localizedDescription, privacy: .public)")
             }
