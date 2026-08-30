@@ -22,6 +22,7 @@
 		0C466A4D8D7CBDF996BB54D7 /* SourceAppTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B347B4E66C3BF6BFE46F92 /* SourceAppTracker.swift */; };
 		0C52D78581E8AD86DE4B8D04 /* PasteStackRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F6B25110632BA2B3B1A68C /* PasteStackRepositoryTests.swift */; };
 		PSCASC000000000000002BB /* PasteStackCascadeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PSCASC000000000000001AA /* PasteStackCascadeTests.swift */; };
+		CQCOL0000000000000002BB /* ClipQueryColumnsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CQCOL0000000000000001AA /* ClipQueryColumnsTests.swift */; };
 		144FE85CC2DBA73BFF10FA13 /* TagBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F849471E7F901A0B2BF5D62E /* TagBarView.swift */; };
 		16D695A6E9BD6EFEA524BF8B /* SmartRuleRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57965364D68A0FF2660FA4C9 /* SmartRuleRepositoryTests.swift */; };
 		189D3607FEA289C4DACA2D6F /* PreviewPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828A1F21D476080DED80ED49 /* PreviewPanelView.swift */; };
@@ -210,6 +211,7 @@
 		41275EA9C23CB7A755CD36B4 /* HotKeyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeyStore.swift; sourceTree = "<group>"; };
 		44F6B25110632BA2B3B1A68C /* PasteStackRepositoryTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PasteStackRepositoryTests.swift; sourceTree = "<group>"; };
 		PSCASC000000000000001AA /* PasteStackCascadeTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PasteStackCascadeTests.swift; sourceTree = "<group>"; };
+		CQCOL0000000000000001AA /* ClipQueryColumnsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipQueryColumnsTests.swift; sourceTree = "<group>"; };
 		46C2D22B56BC50852C634867 /* ClipTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipTests.swift; sourceTree = "<group>"; };
 		4B2409875641531339471722 /* ChosungConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChosungConverter.swift; sourceTree = "<group>"; };
 		4CEE3C709F96FFF57B9CF607 /* ColorCardBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCardBody.swift; sourceTree = "<group>"; };
@@ -517,6 +519,7 @@
 				402BE52D6D743E64DDE6CFF5 /* SearchRepositoryTests.swift */,
 				44F6B25110632BA2B3B1A68C /* PasteStackRepositoryTests.swift */,
 				PSCASC000000000000001AA /* PasteStackCascadeTests.swift */,
+				CQCOL0000000000000001AA /* ClipQueryColumnsTests.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -1193,6 +1196,7 @@
 				PHASEC0001000000000002CC /* PhaseCAssetTests.swift in Sources */,
 				0C52D78581E8AD86DE4B8D04 /* PasteStackRepositoryTests.swift in Sources */,
 				PSCASC000000000000002BB /* PasteStackCascadeTests.swift in Sources */,
+				CQCOL0000000000000002BB /* ClipQueryColumnsTests.swift in Sources */,
 				CBC0C62F2DAC7CD4856C611A /* RuleConditionTests.swift in Sources */,
 				95B8C8B964F86064A8B6671B /* ClipTests.swift in Sources */,
 				89F919E6A198D8A64FE7CAEC /* RuleActionTests.swift in Sources */,

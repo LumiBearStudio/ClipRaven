@@ -1850,6 +1850,65 @@
           }
         }
       }
+    },
+    "원본이 너무 커서 미리보기 크기로 복사했습니다" : {
+      "comment" : "Keyboard toast — original image too large, pasted the preview-size copy instead",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original was too large — copied at preview size"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元画像が大きすぎるため、プレビューサイズでコピーしました"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original zu groß — in Vorschaugröße kopiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original trop volumineux — copié en taille aperçu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El original era demasiado grande: copiado en tamaño de vista previa"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Originale troppo grande — copiato in dimensione anteprima"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original muito grande — copiado no tamanho da pré-visualização"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原图过大 — 已按预览尺寸复制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原圖太大 — 已依預覽尺寸複製"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

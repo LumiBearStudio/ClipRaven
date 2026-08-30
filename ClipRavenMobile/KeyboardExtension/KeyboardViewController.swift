@@ -67,6 +67,23 @@ class KeyboardViewController: UIInputViewController {
     /// (Globe 는 우리가 안 그림 — iOS 가 시스템 row 로 자동 표시.)
     private static let keyboardHeight: CGFloat = 274
 
+    // MARK: - Memory limits
+
+    /// 카드 목록에 올릴 본문 길이 상한 (문자).
+    ///
+    /// 카드가 실제로 그리는 건 200자인데(`cardPreviewText`) 쿼리는 50행의
+    /// **본문 전체**를 가져오고 있었다. 수 MB 짜리 로그·JSON 을 복사해 둔
+    /// 사용자면 목록 로딩만으로 키보드 익스텐션 메모리 한도(~60MB)를 넘겨
+    /// 강제 종료된다 (감사 X2). SQL 단계에서 잘라 온다.
+    ///
+    /// 붙여넣기는 잘린 텍스트를 쓰면 안 되므로 `insertClip` 이 탭 시점에
+    /// id 로 전체 본문을 다시 읽는다.
+    private static let listPreviewCharLimit = 300
+
+    /// 붙여넣기용 원본 이미지 크기 상한 (바이트).
+    /// 이 이상이면 원본 대신 썸네일로 붙여넣고 사용자에게 알린다 (감사 X1).
+    private static let maxPasteImageBytes = 12 * 1024 * 1024
+
     // MARK: - State
 
     private var clips: [Clip] = []
@@ -510,6 +527,20 @@ class KeyboardViewController: UIInputViewController {
 
     // MARK: - Data
 
+    /// `clips` 의 SELECT 컬럼 목록 (본문은 미리보기 길이로 절단).
+    /// 생성 로직은 `ClipRavenSync.ClipQueryColumns` 에 있다 — 공유 패키지에
+    /// 두어야 실제 프로덕션 스키마로 테스트할 수 있다.
+    ///
+    /// 프로세스 수명 동안 캐시 — 스키마는 실행 중에 바뀌지 않는다.
+    private static var cachedListColumns: String?
+
+    private static func listColumns(_ db: Database) throws -> String {
+        if let cached = cachedListColumns { return cached }
+        let columns = try ClipQueryColumns.list(db, previewLimit: listPreviewCharLimit)
+        cachedListColumns = columns
+        return columns
+    }
+
     private func loadClips(query: String = "") async {
         // B-R3: view unload 시점에 호출되면 IUO 접근 crash.
         guard await MainActor.run(body: { isViewLoaded }) else { return }
@@ -534,7 +565,9 @@ class KeyboardViewController: UIInputViewController {
                 ] db in
                     let hasTagFilter = !selectedTagIds.isEmpty
 
-                    var sql = "SELECT \(hasTagFilter ? "DISTINCT " : "")clips.* FROM clips"
+                    // 본문은 미리보기 길이로 잘라 온다 (감사 X2).
+                    let cols = try Self.listColumns(db)
+                    var sql = "SELECT \(hasTagFilter ? "DISTINCT " : "")\(cols) FROM clips"
                     var conditions: [String] = [
                         "clips.isDeleted = 0",
                         "(clips.contentText IS NOT NULL OR clips.thumbnail IS NOT NULL)"
@@ -576,8 +609,9 @@ class KeyboardViewController: UIInputViewController {
             } else if Self.shouldUseChosungSearch(trimmed) {
                 let pattern = "%\(trimmed)%"
                 rows = try await dbPool.read { db in
-                    try Clip.fetchAll(db, sql: """
-                        SELECT * FROM clips
+                    let cols = try Self.listColumns(db)
+                    return try Clip.fetchAll(db, sql: """
+                        SELECT \(cols) FROM clips
                         WHERE isDeleted = 0
                           AND contentChosung IS NOT NULL
                           AND contentChosung LIKE ?
@@ -592,8 +626,9 @@ class KeyboardViewController: UIInputViewController {
                     .map { "\($0)*" }
                     .joined(separator: " ")
                 rows = try await dbPool.read { db in
-                    try Clip.fetchAll(db, sql: """
-                        SELECT clips.*
+                    let cols = try Self.listColumns(db)
+                    return try Clip.fetchAll(db, sql: """
+                        SELECT \(cols)
                         FROM clips
                         JOIN clips_fts ON clips_fts.rowid = clips.id
                         WHERE clips_fts MATCH ?
@@ -1246,30 +1281,42 @@ class KeyboardViewController: UIInputViewController {
     private func insertClip(_ clip: Clip) {
         // 이미지 클립
         if clip.contentType == .image {
-            // 1순위: imagePath 의 원본 (Phase C)
-            // 2순위: thumbnail
-            let image: UIImage? = {
-                if let relPath = clip.imagePath,
-                   let img = Self.loadImageFromAppGroup(relativePath: relPath) {
-                    return img
+            // **디코드하지 않는다.** 이전에는 원본 파일을 UIImage 로 디코드해
+            // `UIPasteboard.image` 에 넣었는데, 12MP 사진이면 파일 20MB +
+            // 비트맵 48MB + 재인코딩 20MB ≈ 80MB 를 한 번에 잡아 키보드
+            // 익스텐션 한도(~60MB)를 넘겨 강제 종료됐다 (감사 X1).
+            // raw bytes 를 그대로 pasteboard 에 올리면 사본 하나로 끝난다.
+            if let relPath = clip.imagePath,
+               let (data, type) = Self.imageBytesFromAppGroup(relativePath: relPath) {
+                if data.count <= Self.maxPasteImageBytes {
+                    UIPasteboard.general.setData(data, forPasteboardType: type)
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    showToast(String(localized: "이미지 복사됨 — 입력란을 길게 눌러 붙여넣기"))
+                    return
                 }
-                if let data = clip.thumbnail, let img = UIImage(data: data) {
-                    return img
+                // 원본이 너무 크면 썸네일로 대체하되 **조용히 바꾸지 않고** 알린다.
+                if let thumb = clip.thumbnail, !thumb.isEmpty {
+                    UIPasteboard.general.setData(thumb, forPasteboardType: Self.pasteboardType(for: thumb))
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    showToast(String(localized: "원본이 너무 커서 미리보기 크기로 복사했습니다"))
+                    return
                 }
-                return nil
-            }()
-            guard let image else {
-                showToast(String(localized: "이미지를 불러올 수 없습니다"))
+            }
+            if let thumb = clip.thumbnail, !thumb.isEmpty {
+                UIPasteboard.general.setData(thumb, forPasteboardType: Self.pasteboardType(for: thumb))
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                showToast(String(localized: "이미지 복사됨 — 입력란을 길게 눌러 붙여넣기"))
                 return
             }
-            UIPasteboard.general.image = image
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            showToast(String(localized: "이미지 복사됨 — 입력란을 길게 눌러 붙여넣기"))
+            showToast(String(localized: "이미지를 불러올 수 없습니다"))
             return
         }
 
-        // 텍스트/URL/.file 등 — contentText 직접 insert
-        guard let text = clip.contentText, !text.isEmpty else { return }
+        // 텍스트/URL/.file 등 — contentText 직접 insert.
+        // 목록 쿼리는 본문을 미리보기 길이로 잘라 오므로(감사 X2), 붙여넣기
+        // 시점에 id 로 전체 본문을 다시 읽는다. pending capture 처럼 DB 에
+        // 없는 클립(id == nil)은 메모리 값이 이미 전체라 그대로 쓴다.
+        guard let text = fullContentText(for: clip), !text.isEmpty else { return }
 
         // 보안 감사 A-H4: URL 타입 클립이 위험 scheme (`javascript:`, `data:`,
         // `file:`) 일 때 paste 차단. 호스트 앱이 Safari 주소창 / WebView 같은
@@ -1293,18 +1340,44 @@ class KeyboardViewController: UIInputViewController {
         return dangerous.contains { trimmed.hasPrefix($0) }
     }
 
-    /// App Group `ClipRaven/images/` 디렉터리에서 PNG/JPEG 로드.
-    /// 메인 앱의 `ImageStorageService` 와 같은 경로 규약. 키보드 익스텐션은
-    /// 별도 target 이라 직접 import 못 하므로 inline.
-    private static func loadImageFromAppGroup(relativePath: String) -> UIImage? {
+    /// 붙여넣을 전체 본문. 목록 쿼리가 잘라온 미리보기 대신 DB 의 원본을 읽는다.
+    ///
+    /// 단일 행 primary-key 조회라 비용이 작고, 잘린 텍스트를 붙여넣는 기능
+    /// 회귀를 막는다. DB 에 아직 없는 pending capture(id == nil)나 조회 실패
+    /// 시에는 메모리 값으로 폴백한다.
+    private func fullContentText(for clip: Clip) -> String? {
+        guard let id = clip.id, let dbPool else { return clip.contentText }
+        let full = try? dbPool.read { db in
+            try String.fetchOne(db, sql: "SELECT contentText FROM clips WHERE id = ?", arguments: [id])
+        }
+        return full ?? clip.contentText
+    }
+
+    /// App Group `ClipRaven/images/` 에서 이미지 **raw bytes** 와 pasteboard
+    /// 타입을 읽는다. 디코드하지 않는 것이 핵심 — 키보드 익스텐션에서
+    /// `UIImage` 왕복은 비트맵 + 재인코딩으로 메모리를 몇 배로 쓴다 (감사 X1).
+    ///
+    /// 메인 앱의 `ImageStorageService` 와 같은 경로 규약. 키보드는 별도
+    /// target 이라 직접 import 못 하므로 inline.
+    private static func imageBytesFromAppGroup(relativePath: String) -> (Data, String)? {
         guard let containerURL = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
         ) else { return nil }
         let fileURL = containerURL
             .appendingPathComponent("ClipRaven/images", isDirectory: true)
             .appendingPathComponent(relativePath)
-        guard let data = try? Data(contentsOf: fileURL) else { return nil }
-        return UIImage(data: data)
+        guard let data = try? Data(contentsOf: fileURL, options: .mappedIfSafe) else { return nil }
+        return (data, pasteboardType(for: data))
+    }
+
+    /// 이미지 바이트의 pasteboard UTI. 저장 확장자가 상황마다 다르므로
+    /// (로컬 캡처는 png, sync 수신은 원격 asset 확장자) 매직바이트로 판별한다.
+    private static func pasteboardType(for data: Data) -> String {
+        let header = data.prefix(4)
+        if header.starts(with: [0x89, 0x50, 0x4E, 0x47]) { return UTType.png.identifier }
+        if header.starts(with: [0xFF, 0xD8, 0xFF])       { return UTType.jpeg.identifier }
+        if header.starts(with: [0x47, 0x49, 0x46])       { return UTType.gif.identifier }
+        return UTType.png.identifier
     }
 
     // MARK: - Toast

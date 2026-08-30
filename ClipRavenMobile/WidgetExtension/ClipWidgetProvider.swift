@@ -48,9 +48,15 @@ struct ClipWidgetProvider: TimelineProvider {
                 // 이미지 클립. Phase B 강화: 시간/썸네일/핀 함께 fetch.
                 //
                 // LIMIT 8 — Large 위젯이 최대 6-7개 표시 + 약간의 여유.
+                // 본문은 substr 로 잘라 온다 — 위젯이 실제로 그리는 건 120자인데
+                // 전체를 가져오면 수 MB 텍스트 클립 하나로 위젯 메모리 한도
+                // (~30MB, 엔트리가 아카이빙되므로 더 빨리 닿는다) 를 넘긴다
+                // (감사 X2). 버튼 탭 시 CopyClipIntent 가 id 로 전체 본문을
+                // 다시 읽으므로 복사되는 내용은 잘리지 않는다.
                 let rows = try Row.fetchAll(db, sql: """
-                    SELECT id, contentType, contentText, nickname,
-                           lastCopiedAt, thumbnail, isPinned
+                    SELECT id, contentType,
+                           substr(contentText, 1, 300) AS contentText,
+                           nickname, lastCopiedAt, thumbnail, isPinned
                     FROM clips
                     WHERE isDeleted = 0
                       AND (contentText IS NOT NULL OR thumbnail IS NOT NULL)
