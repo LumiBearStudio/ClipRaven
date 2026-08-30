@@ -15,9 +15,17 @@ actor OGMetadataService {
 
     /// 클립이 URL 타입이고 아직 미시도인 경우 fetch를 시작한다.
     ///
+    /// 사용자 동의: `DefaultsKey.linkPreviewEnabled` 가 ON 일 때만 동작하며
+    /// **기본값은 OFF** 다 (보안 감사 P3-b). 이 fetch 는 사용자가 복사한 URL 로
+    /// 앱이 직접 HTTP 요청을 보내는 것이라, 비밀번호 재설정 링크나 1회용
+    /// 매직링크를 복사했을 때 ClipRaven 이 그 토큰을 대신 소진하거나 비공개
+    /// URL 의 존재를 대상 서버에 알릴 수 있다. 게이트를 서비스 진입점에 두어
+    /// 향후 호출자가 늘어도 동의 없이는 네트워크가 발생하지 않게 한다.
+    ///
     /// 보안: SSRF 방어 — http(s) scheme 만 허용하고 private/loopback/link-local
     /// 주소 (192.168.*, 10.*, 127.*, 169.254.*, ::1 등) 는 fetch 차단.
     func fetchIfNeeded(clip: Clip) async {
+        guard UserDefaults.standard.bool(forKey: DefaultsKey.linkPreviewEnabled) else { return }
         guard clip.contentType == .url,
               let clipId = clip.id,
               clip.ogFetchedAt == nil,

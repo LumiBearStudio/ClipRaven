@@ -8,6 +8,8 @@ struct PrivacySettingsView: View {
     @AppStorage("stripInvisibleChars")  private var stripInvisibleChars = true
     @AppStorage("stripURLTracking")     private var stripURLTracking = true
     @AppStorage("hideOnScreenSharing")  private var hideOnScreenSharing = true
+    /// 기본 OFF — 켜면 복사한 URL 로 앱이 직접 HTTP 요청을 보낸다 (감사 P3-b).
+    @AppStorage("linkPreviewEnabled")   private var linkPreviewEnabled = false
     @AppStorage("excludedApps")         private var excludedAppsRaw = ""
 
     @State private var excludedList: [String] = []
@@ -41,6 +43,11 @@ struct PrivacySettingsView: View {
 
                     Toggle("화면 공유 시 패널 숨기기", isOn: $hideOnScreenSharing)
                     Text("화면 공유 또는 녹화 중에 패널이 표시되지 않습니다.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Toggle("링크 미리보기 가져오기", isOn: $linkPreviewEnabled)
+                    Text("URL 클립의 제목과 이미지를 해당 사이트에서 직접 가져옵니다. 켜면 복사한 주소로 앱이 접속하므로, 비밀번호 재설정 링크처럼 한 번만 쓸 수 있는 주소가 소진될 수 있습니다. 기본값은 꺼짐입니다.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

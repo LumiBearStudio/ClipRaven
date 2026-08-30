@@ -27,6 +27,9 @@ enum DefaultsKey {
     static let stripInvisibleChars  = "stripInvisibleChars"
     static let stripURLTracking     = "stripURLTracking"
     static let excludedApps         = "excludedApps"
+    /// 링크 미리보기(OG 메타데이터) 자동 fetch. **기본 false** — 켜면 복사한
+    /// URL 로 앱이 직접 HTTP 요청을 보낸다 (보안 감사 P3-b).
+    static let linkPreviewEnabled   = "linkPreviewEnabled"
 
     // MARK: - 캡처 / 저장
     static let selectiveMode        = "selectiveMode"

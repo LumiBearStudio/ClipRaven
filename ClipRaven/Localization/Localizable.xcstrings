@@ -18071,7 +18071,7 @@
         }
       }
     },
-    "이미 다른 클립(\\\"%@…\\\")에 할당된 단축키입니다." : {
+    "이미 다른 클립(\\\"%@…\\\")에 할당된 단축키입니다.": {
       "extractionState" : "stale",
       "localizations" : {
         "de" : {
@@ -24551,6 +24551,124 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "繁體中文"
+          }
+        }
+      }
+    },
+    "링크 미리보기 가져오기" : {
+      "comment" : "Privacy settings toggle — opt-in link preview fetch",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetch link previews"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リンクプレビューを取得"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linkvorschauen abrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Récupérer les aperçus de liens"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener vistas previas de enlaces"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recupera anteprime dei link"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar pré-visualizações de links"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取链接预览"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "擷取連結預覽"
+          }
+        }
+      }
+    },
+    "URL 클립의 제목과 이미지를 해당 사이트에서 직접 가져옵니다. 켜면 복사한 주소로 앱이 접속하므로, 비밀번호 재설정 링크처럼 한 번만 쓸 수 있는 주소가 소진될 수 있습니다. 기본값은 꺼짐입니다." : {
+      "comment" : "Privacy settings footer — explains the network cost of link previews",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loads the title and image for URL clips directly from the site. When on, the app visits the address you copied — one-time links such as password resets can be used up. Off by default."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URLクリップのタイトルと画像をサイトから直接読み込みます。オンにするとコピーしたアドレスにアプリがアクセスするため、パスワード再設定などの使い捨てリンクが消費されることがあります。初期設定はオフです。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lädt Titel und Bild für URL-Clips direkt von der Website. Wenn aktiviert, ruft die App die kopierte Adresse auf — Einmal-Links wie Passwort-Resets können dabei verbraucht werden. Standardmäßig aus."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charge le titre et l’image des clips URL directement depuis le site. Une fois activé, l’app visite l’adresse copiée — les liens à usage unique, comme les réinitialisations de mot de passe, peuvent être consommés. Désactivé par défaut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carga el título y la imagen de los clips de URL directamente desde el sitio. Al activarlo, la app visita la dirección copiada: los enlaces de un solo uso, como los de restablecimiento de contraseña, pueden consumirse. Desactivado por defecto."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carica titolo e immagine dei clip URL direttamente dal sito. Se attivo, l’app visita l’indirizzo copiato: i link monouso, come i reset della password, possono essere consumati. Disattivato per impostazione predefinita."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carrega o título e a imagem dos clipes de URL direto do site. Quando ativado, o app acessa o endereço copiado — links de uso único, como redefinição de senha, podem ser consumidos. Desativado por padrão."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接从网站加载 URL 剪贴内容的标题和图片。开启后应用会访问你复制的地址，密码重置等一次性链接可能因此失效。默认关闭。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接從網站載入 URL 剪貼內容的標題與圖片。開啟後 App 會存取你複製的網址，密碼重設等一次性連結可能因此失效。預設為關閉。"
           }
         }
       }

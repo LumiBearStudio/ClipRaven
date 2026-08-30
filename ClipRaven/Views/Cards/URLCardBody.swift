@@ -100,8 +100,11 @@ final class URLCardViewModel: ObservableObject {
         }
         ogTitle = clip.ogTitle
 
-        // 2. 아직 fetch 안 된 경우 → OGMetadataService에 요청
-        if clip.ogFetchedAt == nil {
+        // 2. 아직 fetch 안 된 경우 → OGMetadataService에 요청.
+        //    링크 미리보기는 opt-in (기본 OFF) — 꺼져 있으면 로딩 스피너도
+        //    띄우지 않는다. 실제 네트워크 차단은 서비스 진입점에서도 한 번 더.
+        if clip.ogFetchedAt == nil,
+           UserDefaults.standard.bool(forKey: DefaultsKey.linkPreviewEnabled) {
             isLoading = thumbnail == nil
             Task {
                 await OGMetadataService.shared.fetchIfNeeded(clip: clip)
