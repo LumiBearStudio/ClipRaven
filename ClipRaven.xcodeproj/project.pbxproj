@@ -128,6 +128,7 @@
 		SRCHVM0000000000001CC /* SearchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SRCHVM0000000000000CC /* SearchViewModelTests.swift */; };
 		CLPFLT000000000001CC /* ClipFilterEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLPFLT000000000000CC /* ClipFilterEngineTests.swift */; };
 		CLNSVC0000000000001CC /* CleanupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLNSVC0000000000000CC /* CleanupServiceTests.swift */; };
+		CLTOMB000000000000002BB /* CleanupTombstoneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLTOMB000000000000001AA /* CleanupTombstoneTests.swift */; };
 		BKPSVC0000000000001CC /* BackupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKPSVC0000000000000CC /* BackupServiceTests.swift */; };
 		CLPPROC000000000001CC /* ClipProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CLPPROC000000000000CC /* ClipProcessorTests.swift */; };
 		BKUP000100000000000001AA /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BKUP000100000000000001BB /* BackupService.swift */; };
@@ -231,6 +232,7 @@
 		SRCHVM0000000000000CC /* SearchViewModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SearchViewModelTests.swift; sourceTree = "<group>"; };
 		CLPFLT000000000000CC /* ClipFilterEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipFilterEngineTests.swift; sourceTree = "<group>"; };
 		CLNSVC0000000000000CC /* CleanupServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CleanupServiceTests.swift; sourceTree = "<group>"; };
+		CLTOMB000000000000001AA /* CleanupTombstoneTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CleanupTombstoneTests.swift; sourceTree = "<group>"; };
 		BKPSVC0000000000000CC /* BackupServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupServiceTests.swift; sourceTree = "<group>"; };
 		CLPPROC000000000000CC /* ClipProcessorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ClipProcessorTests.swift; sourceTree = "<group>"; };
 		6398C7E12C5AAFFE22063EC0 /* PasteStackRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteStackRepository.swift; sourceTree = "<group>"; };
@@ -639,6 +641,7 @@
 				HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */,
 				HKEYSTR00000000000000CC /* HotKeyStoreTests.swift */,
 				CLNSVC0000000000000CC /* CleanupServiceTests.swift */,
+				CLTOMB000000000000001AA /* CleanupTombstoneTests.swift */,
 				BKPSVC0000000000000CC /* BackupServiceTests.swift */,
 				CLPPROC000000000000CC /* ClipProcessorTests.swift */,
 				SYNC000500000000000001CC /* SyncRecordMapperTests.swift */,
@@ -1186,6 +1189,7 @@
 				SRCHVM0000000000001CC /* SearchViewModelTests.swift in Sources */,
 				CLPFLT000000000001CC /* ClipFilterEngineTests.swift in Sources */,
 				CLNSVC0000000000001CC /* CleanupServiceTests.swift in Sources */,
+				CLTOMB000000000000002BB /* CleanupTombstoneTests.swift in Sources */,
 				BKPSVC0000000000001CC /* BackupServiceTests.swift in Sources */,
 				CLPPROC000000000001CC /* ClipProcessorTests.swift in Sources */,
 				SYNC000500000000000002CC /* SyncRecordMapperTests.swift in Sources */,

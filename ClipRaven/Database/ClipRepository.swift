@@ -365,10 +365,31 @@ struct ClipRepository {
 
     // MARK: - Cleanup
 
-    func deleteExpired() throws -> Int {
+    /// 만료(`expiresAt < now`) 클립 정리.
+    ///
+    /// - Parameter propagateToSync: true 면 hard-delete 대신 soft-delete 로
+    ///   표시만 한다. 동기화가 켜져 있을 때 필요한 동작 — 곧바로 행을 지우면
+    ///   서버에 tombstone 이 남지 않아 iCloud 에 클립이 영구 잔존하고, 다른
+    ///   기기가 그 레코드를 건드리면 부활한다 (감사 S1). 표시된 행은 업로드
+    ///   후 ack 를 받으면 `deleteSoftDeleted()` 가 실제로 지운다.
+    ///
+    /// 핀 고정은 제외한다 — SmartRule TTL 이 찍힌 뒤 사용자가 핀을 꽂았다면
+    /// 그 핀이 사용자의 최신 의도다. (이전에는 이 경로만 `isPinned` 가드가
+    /// 없어 핀 고정 클립이 만료로 사라졌다.)
+    func deleteExpired(propagateToSync: Bool = false) throws -> Int {
         try dbPool.write { db in
-            try Clip
-                .filter(Column("expiresAt") != nil && Column("expiresAt") < Date())
+            let now = Date()
+            if propagateToSync {
+                try db.execute(sql: """
+                    UPDATE clips SET isDeleted = 1, isDeletedUpdatedAt = ?, updatedAt = ?
+                    WHERE isDeleted = 0 AND isPinned = 0
+                      AND expiresAt IS NOT NULL AND expiresAt < ?
+                """, arguments: [now, now, now])
+                return db.changesCount
+            }
+            return try Clip
+                .filter(Column("isPinned") == false)
+                .filter(Column("expiresAt") != nil && Column("expiresAt") < now)
                 .deleteAll(db)
         }
     }
@@ -377,11 +398,21 @@ struct ClipRepository {
     /// 핀 고정(`isPinned = 1`) 은 영구 보관이므로 제외.
     /// SmartRule 의 명시적 `expiresAt` 과 별개로 글로벌 retention 적용.
     /// `days <= 0` 또는 비합리적으로 큰 값(>365) 은 no-op (defensive).
-    func deleteOlderThanDays(_ days: Int) throws -> Int {
+    /// - Parameter propagateToSync: `deleteExpired(propagateToSync:)` 와 동일한
+    ///   이유로 soft-delete 를 선택한다 (감사 S1).
+    func deleteOlderThanDays(_ days: Int, propagateToSync: Bool = false) throws -> Int {
         guard days > 0, days <= 365 else { return 0 }
         let cutoff = Date().addingTimeInterval(-Double(days) * 86400)
         return try dbPool.write { db in
-            try Clip
+            if propagateToSync {
+                let now = Date()
+                try db.execute(sql: """
+                    UPDATE clips SET isDeleted = 1, isDeletedUpdatedAt = ?, updatedAt = ?
+                    WHERE isDeleted = 0 AND isPinned = 0 AND lastCopiedAt < ?
+                """, arguments: [now, now, cutoff])
+                return db.changesCount
+            }
+            return try Clip
                 .filter(Column("isDeleted") == false)
                 .filter(Column("isPinned") == false)
                 .filter(Column("lastCopiedAt") < cutoff)
@@ -399,6 +430,15 @@ struct ClipRepository {
             // Fallback: also delete clips that are older than 30 days — these
             // are either excludeFromSync=1 (never synced) or the sync engine
             // has been persistently broken for a month, both acceptable to purge.
+            // 동기화가 꺼져 있으면 ack 가 영원히 오지 않는다 — 기다릴 이유가
+            // 없으므로 즉시 회수한다. (이 조건이 없으면 sync 를 안 쓰는
+            // 사용자의 정리분이 30일 fallback 까지 DB 에 남는다. 감사 S1 수정
+            // 으로 정리 3종이 soft-delete 를 쓰게 되면서 중요해진 경로다.)
+            guard SyncFeatureFlag.isEnabled else {
+                try db.execute(sql: "DELETE FROM clips WHERE isDeleted = 1")
+                return db.changesCount
+            }
+
             let cutoff = Date().addingTimeInterval(-30 * 24 * 3600)
             try db.execute(sql: """
                 DELETE FROM clips
@@ -414,7 +454,9 @@ struct ClipRepository {
         }
     }
 
-    func deleteOldest(keepCount: Int) throws -> Int {
+    /// - Parameter propagateToSync: `deleteExpired(propagateToSync:)` 와 동일한
+    ///   이유로 soft-delete 를 선택한다 (감사 S1).
+    func deleteOldest(keepCount: Int, propagateToSync: Bool = false) throws -> Int {
         try dbPool.write { db in
             let totalCount = try Clip
                 .filter(Column("isDeleted") == false)
@@ -432,6 +474,19 @@ struct ClipRepository {
                 .select(Column("id"))
                 .asRequest(of: Int64.self)
                 .fetchAll(db)
+            guard !oldestIds.isEmpty else { return 0 }
+
+            if propagateToSync {
+                let now = Date()
+                let placeholders = oldestIds.map { _ in "?" }.joined(separator: ",")
+                var args: [DatabaseValueConvertible] = [now, now]
+                args.append(contentsOf: oldestIds)
+                try db.execute(sql: """
+                    UPDATE clips SET isDeleted = 1, isDeletedUpdatedAt = ?, updatedAt = ?
+                    WHERE id IN (\(placeholders))
+                """, arguments: StatementArguments(args))
+                return db.changesCount
+            }
 
             return try Clip
                 .filter(oldestIds.contains(Column("id")))

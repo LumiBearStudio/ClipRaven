@@ -1,16 +1,27 @@
 import Foundation
+import ClipRavenSync
 
 /// 정기 cleanup 액터 — 6시간마다 실행되어 4가지 정리 전략을 적용한다.
 ///
-/// ### 4가지 전략
-/// 1. **소프트 삭제** 확정된 클립 (`isDeleted = 1` 이고 sync 확인됨) hard-delete.
-/// 2. **만료** 클립 (`expiresAt < now`) hard-delete — SmartRule TTL.
-/// 3. **보관 기간** 초과 (`lastCopiedAt < now - maxDaysToKeep`) hard-delete.
-///    핀 고정 (`isPinned`) 은 제외 (영구 보관).
-/// 4. **개수 제한** 초과 — `maxClipCount` 를 넘는 오래된 클립부터 삭제.
+/// ### 4가지 전략 (실행 순서)
+/// 1. **만료** (`expiresAt < now`) — SmartRule TTL. 핀 고정 제외.
+/// 2. **보관 기간** 초과 (`lastCopiedAt < now - maxDaysToKeep`). 핀 고정 제외.
+/// 3. **개수 제한** 초과 — `maxClipCount` 를 넘는 오래된 클립부터.
+/// 4. **소프트 삭제 확정분 회수** — 위 세 단계와 사용자의 삭제가 표시해 둔 행
+///    중, 동기화 ack 를 받았거나 애초에 동기화 대상이 아닌 것을 실제로 지운다.
+///
+/// ### 삭제 방식은 동기화 상태에 달려 있다 (감사 S1)
+/// - 동기화 **ON**: 1~3 단계는 soft-delete 로 **표시만** 한다. 곧바로 지우면
+///   CloudKit 에 tombstone 이 남지 않아 iCloud 에 클립이 영구 잔존하고, 다른
+///   기기가 그 레코드를 건드리면 부활한다. 표시된 행은 업로드 → ack 후
+///   4단계가 회수한다.
+/// - 동기화 **OFF**: 알릴 서버가 없으므로 즉시 hard-delete.
+///
+/// 각 단계는 개별 `do/catch` 로 격리되어, 하나가 실패해도 나머지는 계속 돈다
+/// (감사 D1).
 ///
 /// 의존성: `ClipRepository` (기본 주입) + `UserDefaults` (테스트 시 격리 가능).
-/// `CleanupServiceTests` 가 격리된 환경에서 각 전략을 검증한다.
+/// `CleanupServiceTests` / `CleanupTombstoneTests` 가 격리 환경에서 검증한다.
 actor CleanupService {
     private let clipRepository: ClipRepository
     private let defaults: UserDefaults
@@ -59,31 +70,44 @@ actor CleanupService {
         let maxCount = defaults.integer(forKey: "maxClipCount")
         let limit = maxCount > 0 ? maxCount : defaultMaxClipCount
 
-        // 1. Remove soft-deleted items
+        // 동기화가 켜져 있으면 정리는 **표시만** 한다 (soft-delete).
+        //
+        // 곧바로 행을 지우면 CloudKit 에 tombstone 이 남지 않아 ① 사용자가
+        // 보관 기간을 줄여도 iCloud 에는 클립이 영구 잔존하고 ② 다른 기기가
+        // 그 레코드를 건드리면 다시 내려와 부활한다 (감사 S1). 표시된 행은
+        // 업로드 → ack 후 아래 4단계(`deleteSoftDeleted`)가 실제로 지운다.
+        //
+        // 동기화가 꺼져 있으면 알릴 서버가 없으므로 즉시 hard-delete 한다 —
+        // 그래야 sync 를 안 쓰는 사용자의 DB 가 불필요하게 커지지 않는다.
+        let propagate = SyncFeatureFlag.isEnabled
+
+        // 1. 만료 (SmartRule TTL). 핀 고정 제외.
+        let expired = runStep("expired") {
+            try clipRepository.deleteExpired(propagateToSync: propagate)
+        }
+
+        // 2. 보관 기간 ("보관 기간" / `maxDaysToKeep`). 핀 고정 제외.
+        //    매 cleanup 사이클마다 평가 — 사용자가 보관 기간 줄이면 다음
+        //    사이클(최대 6시간) 안에 반영.
+        let aged = runStep("aged-out") {
+            try clipRepository.deleteOlderThanDays(maxDays, propagateToSync: propagate)
+        }
+
+        // 3. 개수 제한
+        let trimmed = runStep("over-limit") {
+            try clipRepository.deleteOldest(keepCount: limit, propagateToSync: propagate)
+        }
+
+        // 4. 소프트 삭제 확정분 제거 — **마지막에** 둔다. 위 세 단계가 방금
+        //    표시한 행 중 동기화 불필요한 것(sync OFF 등)은 같은 사이클에서
+        //    바로 회수되고, 동기화 대상은 ack 를 기다렸다가 다음 사이클에
+        //    지워진다.
         let softDeleted = runStep("soft-deleted") {
             try clipRepository.deleteSoftDeleted()
         }
 
-        // 2. Remove items past their explicit expiresAt (SmartRule TTL)
-        let expired = runStep("expired") {
-            try clipRepository.deleteExpired()
-        }
-
-        // 3. Apply global retention policy ("보관 기간" / `maxDaysToKeep`).
-        //    SmartRule 의 per-clip expiresAt 과 별개. 핀 고정은 제외.
-        //    매 cleanup 사이클마다 평가 — 사용자가 보관 기간 줄이면 다음
-        //    사이클(최대 6시간) 안에 반영.
-        let aged = runStep("aged-out") {
-            try clipRepository.deleteOlderThanDays(maxDays)
-        }
-
-        // 4. Enforce max item count
-        let trimmed = runStep("over-limit") {
-            try clipRepository.deleteOldest(keepCount: limit)
-        }
-
         if softDeleted + expired + aged + trimmed > 0 {
-            ClipRavenLog.cleanup.info("removed \(softDeleted) soft-deleted, \(expired) expired, \(aged) aged-out (>\(maxDays)d), \(trimmed) over-limit")
+            ClipRavenLog.cleanup.info("marked \(expired) expired, \(aged) aged-out (>\(maxDays)d), \(trimmed) over-limit; purged \(softDeleted) confirmed-deleted")
         }
 
         // 5. Clean up orphaned image files
