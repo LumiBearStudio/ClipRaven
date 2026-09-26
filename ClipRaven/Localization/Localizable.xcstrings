@@ -24084,12 +24084,59 @@
       }
     },
     "화면 공유 시 패널 숨기기" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide panel during screen sharing"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面共有中はパネルを隠す"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panel bei Bildschirmfreigabe ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le panneau pendant le partage d’écran"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar el panel al compartir pantalla"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi il pannello durante la condivisione dello schermo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar o painel ao compartilhar a tela"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕共享时隐藏面板"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "螢幕分享時隱藏面板"
           }
         }
       }
@@ -24613,61 +24660,61 @@
         }
       }
     },
-    "화면 공유 또는 녹화 중에 패널이 표시되지 않습니다. 스크린샷에도 찍히지 않으므로, 패널을 촬영해야 할 때는 잠시 꺼 주세요." : {
-      "comment" : "Privacy settings footer — screen-sharing panel hiding, with screenshot caveat",
+    "화면 공유·녹화·스크린샷에서 ClipRaven 창을 숨기도록 macOS에 요청합니다. macOS 15 이상에서는 일부 화면 공유·녹화 앱에 보일 수 있으니, 민감한 내용이 있을 때는 공유 전에 패널을 닫아 주세요. 패널을 촬영해야 할 때는 잠시 꺼 주세요." : {
+      "comment" : "Privacy settings footer — screen-sharing hiding is a best-effort request, not a guarantee on macOS 15+",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The panel stays hidden during screen sharing and recording. It is also excluded from screenshots, so turn this off while you capture the panel."
+            "value" : "Asks macOS to hide ClipRaven windows from screen sharing, recordings and screenshots. On macOS 15 and later some sharing and recording apps may still show them, so close the panel before sharing anything sensitive. Turn this off briefly when you need to capture the panel."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画面共有・録画中はパネルが表示されません。スクリーンショットにも写らないため、パネルを撮影するときは一時的にオフにしてください。"
+            "value" : "画面共有・録画・スクリーンショットで ClipRaven のウインドウを隠すよう macOS に要求します。macOS 15 以降では一部の共有・録画アプリに表示されることがあるため、機密性の高い内容があるときは共有前にパネルを閉じてください。パネルを撮影するときは一時的にオフにしてください。"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Panel bleibt bei Bildschirmfreigabe und -aufnahme verborgen. Es erscheint auch nicht auf Screenshots — schalte die Option zum Fotografieren des Panels kurz aus."
+            "value" : "Bittet macOS, ClipRaven-Fenster bei Bildschirmfreigabe, Aufnahmen und Screenshots auszublenden. Ab macOS 15 können einige Freigabe- und Aufnahme-Apps sie trotzdem zeigen – schließe das Panel daher, bevor du Sensibles teilst. Schalte die Option kurz aus, wenn du das Panel aufnehmen möchtest."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le panneau reste masqué pendant le partage et l’enregistrement d’écran. Il est aussi exclu des captures d’écran : désactivez cette option pour photographier le panneau."
+            "value" : "Demande à macOS de masquer les fenêtres de ClipRaven lors du partage d’écran, des enregistrements et des captures. Sous macOS 15 et versions ultérieures, certaines apps de partage ou d’enregistrement peuvent encore les afficher : fermez le panneau avant de partager du contenu sensible. Désactivez l’option le temps de capturer le panneau."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El panel permanece oculto al compartir y grabar la pantalla. También se excluye de las capturas, así que desactívalo cuando necesites fotografiarlo."
+            "value" : "Pide a macOS que oculte las ventanas de ClipRaven al compartir pantalla, grabar o hacer capturas. En macOS 15 y posteriores, algunas apps de uso compartido o grabación pueden seguir mostrándolas, así que cierra el panel antes de compartir algo sensible. Desactívalo un momento cuando necesites capturar el panel."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il pannello resta nascosto durante condivisione e registrazione dello schermo. È escluso anche dagli screenshot: disattiva l’opzione quando devi fotografarlo."
+            "value" : "Chiede a macOS di nascondere le finestre di ClipRaven durante condivisione dello schermo, registrazioni e screenshot. Da macOS 15 alcune app di condivisione o registrazione potrebbero comunque mostrarle: chiudi il pannello prima di condividere contenuti sensibili. Disattiva l’opzione per un attimo quando devi catturare il pannello."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O painel fica oculto durante compartilhamento e gravação de tela. Ele também não aparece em capturas de tela, então desative isto para fotografá-lo."
+            "value" : "Pede ao macOS que oculte as janelas do ClipRaven no compartilhamento de tela, em gravações e capturas. No macOS 15 e posterior, alguns apps de compartilhamento ou gravação ainda podem exibi-las; feche o painel antes de compartilhar algo sensível. Desative por um instante quando precisar capturar o painel."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "屏幕共享和录制期间面板不会显示。截图同样不会拍到面板，需要拍摄面板时请先关闭此项。"
+            "value" : "请求 macOS 在屏幕共享、录屏和截图中隐藏 ClipRaven 窗口。在 macOS 15 及更高版本中，部分共享或录屏应用仍可能显示这些窗口，因此共享敏感内容前请先关闭面板。需要拍摄面板时，请暂时关闭此项。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "螢幕分享與錄影期間不會顯示面板。截圖同樣拍不到面板，需要拍攝面板時請先關閉此項。"
+            "value" : "要求 macOS 在螢幕分享、錄影與截圖中隱藏 ClipRaven 視窗。在 macOS 15 及更新版本中，部分分享或錄影 App 仍可能顯示這些視窗，因此分享敏感內容前請先關閉面板。需要拍攝面板時，請暫時關閉此項。"
           }
         }
       }

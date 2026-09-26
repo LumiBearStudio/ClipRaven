@@ -45,6 +45,8 @@ final class ImageConfirmPanel {
         newPanel.backgroundColor = .clear
         newPanel.hasShadow = true
         newPanel.appearance = NSAppearance(named: .darkAqua)
+        // 복사한 이미지를 보여주므로 메인 패널과 같은 공유 정책을 따른다.
+        ScreenSharingPolicy.apply(to: newPanel)
 
         newPanel.contentView?.wantsLayer = true
         newPanel.contentView?.layer?.cornerRadius = 12

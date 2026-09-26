@@ -57,6 +57,9 @@ final class ClipListViewModel: ObservableObject {
 
     private var observation: AnyDatabaseCancellable?
     private var searchCancellable: AnyCancellable?
+    /// 진행 중인 검색. 새 검색이나 검색어 삭제 시 취소한다 — 느린 초성 검색이
+    /// 나중에 끝나며 새 결과를 덮어쓰는 것을 막는다 (v1 리뷰 G9).
+    private var searchTask: Task<Void, Never>?
 
     init(
         repository: ClipRepository = ClipRepository(),
@@ -101,6 +104,10 @@ final class ClipListViewModel: ObservableObject {
     private func onSearchQueryChanged() {
         let trimmed = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty {
+            // 200ms 뒤에 발화할 검색과 진행 중인 검색을 모두 취소한다. 이전에는
+            // 검색어를 지운 뒤에도 대기 중이던 검색이 결과를 덮어썼다.
+            searchCancellable?.cancel()
+            searchTask?.cancel()
             restartObservation()
             return
         }
@@ -127,7 +134,8 @@ final class ClipListViewModel: ObservableObject {
         // loadTags/updateCounts 는 이미 고쳐져 있었는데 검색 경로만 남아 있었다
         // (감사 F2). 확장이 write 락을 쥐고 있으면 busyTimeout 5초까지 UI 가
         // 그대로 멈춘다.
-        Task.detached(priority: .userInitiated) { [repository, log] in
+        searchTask?.cancel()
+        searchTask = Task.detached(priority: .userInitiated) { [repository, log] in
             do {
                 let results: [Clip]
                 if ChosungConverter.shouldUseChosungSearch(query) {
@@ -149,7 +157,15 @@ final class ClipListViewModel: ObservableObject {
                         aiCategory: aiCategory
                     )
                 }
-                await MainActor.run { [weak self] in self?.clips = results }
+                guard !Task.isCancelled else { return }
+                await MainActor.run { [weak self] in
+                    // 느린 검색(초성 LIKE)이 늦게 끝나 새 검색어의 결과를 덮어쓰지
+                    // 않도록, 그 사이 검색어가 바뀌었으면 버린다 (v1 리뷰 G9).
+                    guard let self, !Task.isCancelled,
+                          self.searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query
+                    else { return }
+                    self.clips = results
+                }
             } catch {
                 log.error("search failed: \(error.localizedDescription, privacy: .public)")
             }

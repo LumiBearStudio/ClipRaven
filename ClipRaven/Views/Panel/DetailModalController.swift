@@ -37,6 +37,9 @@ final class DetailModalController {
         panel.backgroundColor = .clear
         panel.hasShadow = true
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        // 클립 원문을 크게 보여주는 창이라 메인 패널과 같은 공유 정책을 따른다.
+        // 이전에는 적용되지 않아 설정과 무관하게 화면 공유에 그대로 보였다.
+        ScreenSharingPolicy.apply(to: panel)
 
         // Visual effect background
         let visualEffect = NSVisualEffectView(frame: panel.contentView!.bounds)

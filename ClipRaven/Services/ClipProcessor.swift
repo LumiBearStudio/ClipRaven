@@ -366,14 +366,15 @@ actor ClipProcessor {
     // MARK: - File Processing
 
     private func processFileURLs(_ fileURLs: [URL], sourceApp: SourceAppInfo) async {
-        ClipRavenLog.write(.processor, "[ClipProc] processFileURLs count=\(fileURLs.count) urls=\(fileURLs.map(\.path))")
+        ClipRavenLog.write(.processor, "[ClipProc] processFileURLs count=\(fileURLs.count) paths=\(ClipRavenLog.redacted(fileURLs.map(\.path).joined(separator: "\n")))")
 
         // Represent the file set as a sorted path list for hashing
         let sortedPaths = fileURLs.map(\.path).sorted()
         let combined = sortedPaths.joined(separator: "|")
         let hash = XXHash64Wrapper.hash(combined)
 
-        ClipRavenLog.write(.processor, "[ClipProc] fileURLs hash=\(hash.prefix(12)) paths=\(sortedPaths)")
+        // 파일 경로는 사용자명·문서명을 담는다 — P1 에서 이 두 줄을 놓쳤다 (v1 리뷰 G7).
+        ClipRavenLog.write(.processor, "[ClipProc] fileURLs hash=\(hash.prefix(12)) count=\(sortedPaths.count)")
 
         cleanExpiredHashes()
         if recentHashes[hash] != nil {

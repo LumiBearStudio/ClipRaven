@@ -51,7 +51,9 @@ struct OnboardingView: View {
     // MARK: - Persisted state
     @AppStorage("onboarding.completed")  private var completed  = false
     @AppStorage("clipraven.sync.enabled") private var syncEnabled = false
-    @AppStorage("clipraven.feedback.hapticOnPaste") private var hapticOnPaste      = true
+    // 키보드 확장이 읽는 App Group 키에 써야 한다. 이전 키(standard 의
+    // clipraven.feedback.*)는 아무도 읽지 않아 토글이 무효였다 (v1 리뷰 G8).
+    @AppStorage(SharedDefaultsKey.hapticOnPaste, store: .appGroup) private var hapticOnPaste = true
 
     // MARK: - Local state
     @State private var page = 0

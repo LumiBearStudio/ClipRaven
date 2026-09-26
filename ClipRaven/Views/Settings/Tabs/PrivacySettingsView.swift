@@ -49,7 +49,7 @@ struct PrivacySettingsView: View {
                                 object: nil
                             )
                         }
-                    Text("화면 공유 또는 녹화 중에 패널이 표시되지 않습니다. 스크린샷에도 찍히지 않으므로, 패널을 촬영해야 할 때는 잠시 꺼 주세요.")
+                    Text("화면 공유·녹화·스크린샷에서 ClipRaven 창을 숨기도록 macOS에 요청합니다. macOS 15 이상에서는 일부 화면 공유·녹화 앱에 보일 수 있으니, 민감한 내용이 있을 때는 공유 전에 패널을 닫아 주세요. 패널을 촬영해야 할 때는 잠시 꺼 주세요.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
