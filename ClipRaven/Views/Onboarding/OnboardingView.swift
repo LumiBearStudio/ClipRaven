@@ -804,7 +804,7 @@ var I18N = {
     selective_on_desc:'\u2318C \u00d72 items are saved.\nFull control over your history.',
     selective_hint:'You can change this anytime in Settings.',
     ax_title:'Grant Accessibility Access',
-    ax_desc:"ClipRaven needs Accessibility permission to paste clips into the app you're working in (via synthesized \u2318V). Without it, pasting won't work.",
+    ax_desc:'ClipRaven needs Accessibility permission to paste clips straight into the app you\u2019re using (it sends \u2318V). It doesn\u2019t monitor your typing.',
     ax_status_off:'Not granted',
     ax_status_on:'Granted',
     ax_cta_open:'Open System Settings',
@@ -828,16 +828,16 @@ var I18N = {
       {keys:['Enter'], label:'Paste selected card'},
       {keys:['Click'], label:'Paste into active app'},
       {keys:['\u2325','1-9'], label:'Quick paste #1-9'},
-      {keys:['Space'], label:'Quick Look preview'},
+      {keys:['Space'], label:'Preview'},
       {keys:['Esc'],   label:'Close panel'},
-      {keys:['\u2318','F'],label:'Focus search'},
-      {keys:['\u2191\u2193'],  label:'Navigate cards'}
+      {keys:['\u2318','/'],label:'Focus search'},
+      {keys:['\u2190\u2192'],  label:'Navigate cards'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'On macOS 26, clips are auto-classified (receipt, code, email…) and long texts can be summarized on-device.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'On macOS 26, clips are auto-classified (receipt, code, email\u2026) right on your Mac.'},
       {icon:'\ud83d\udd0d', title:'OCR for Images', desc:'Text inside screenshots becomes searchable automatically \u2014 including Korean.'},
       {icon:'\u21b7',  title:'Paste As\u2026',        desc:'Right-click any clip to paste as Plain Text, Markdown, or Rich Text.'},
-      {icon:'\u2318',  title:'Custom Shortcuts',   desc:'Assign a global hotkey to any clip from Settings \u2192 Shortcuts.'}
+      {icon:'\u2318',  title:'Custom Shortcuts',   desc:'Right-click a clip and choose Shortcuts \u2192 Assign shortcut\u2026 to give it a global hotkey.'}
     ]
   },
   ko:{
@@ -851,7 +851,7 @@ var I18N = {
     selection_title:'\ud074\ub9ad\uc73c\ub85c \ubd99\uc5ec\ub123\uae30',
     selection_desc:'\uce74\ub4dc\ub97c \ud074\ub9ad\ud558\uba74 \ud65c\uc131 \uc571\uc5d0 \ubc14\ub85c \ubd99\uc5ec\ub123\uc5b4\uc9d1\ub2c8\ub2e4.\n\u2318V \uc5c6\uc774 \u2014 \ubc14\ub85c \ub3d9\uc791\ud569\ub2c8\ub2e4.',
     selection_pasted:'\ubd99\uc5ec\ub123\uae30 \uc644\ub8cc!',
-    selective_title:'\uc120\ud0dd \uce90\uce58 \ubaa8\ub4dc',
+    selective_title:'\uc120\ud0dd \ucea1\ucc98 \ubaa8\ub4dc',
     selective_desc:'\ud074\ub9bd\ubcf4\ub4dc \ud56d\ubaa9\uc774 \uc800\uc7a5\ub418\ub294 \ubc29\uc2dd\uc744 \uc120\ud0dd\ud558\uc138\uc694.\n\uc120\ud0dd \ubaa8\ub4dc\ub85c \ud788\uc2a4\ud1a0\ub9ac\ub97c \uc9c1\uc811 \uc81c\uc5b4\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
     selective_off_title:'\ubaa8\ub450 \uc800\uc7a5',
     selective_off_desc:'\ubcf5\uc0ac\ud558\uba74 \uc790\ub3d9\uc73c\ub85c \ubaa8\ub450 \uc800\uc7a5\ub429\ub2c8\ub2e4.',
@@ -859,7 +859,7 @@ var I18N = {
     selective_on_desc:'\u2318C \u00d72\ub85c \uc800\uc7a5\ud55c \ud56d\ubaa9\ub9cc \uae30\ub85d\ub429\ub2c8\ub2e4.\n\ud788\uc2a4\ud1a0\ub9ac\ub97c \uc644\uc804\ud788 \uc81c\uc5b4\ud558\uc138\uc694.',
     selective_hint:'\uc124\uc815\uc5d0\uc11c \uc5b8\uc81c\ub4e0 \ubcc0\uacbd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
     ax_title:'\uc811\uadfc\uc131 \uad8c\ud55c \ud5c8\uc6a9',
-    ax_desc:'ClipRaven\uc774 \uc120\ud0dd\ud55c \ud074\ub9bd\uc744 \ud604\uc7ac \uc0ac\uc6a9 \uc911\uc778 \uc571\uc5d0 \ubc14\ub85c \ubd99\uc5ec\ub123\uc73c\ub824\uba74 \uc811\uadfc\uc131 \uad8c\ud55c(\uc190\uc27d\uc740 \uc0ac\uc6a9)\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. \uac1c\uc778 \uc785\ub825\uc744 \uac10\uc2dc\ud558\uc9c0 \uc54a\uc73c\uba70, \u2318V \uc774\ubca4\ud2b8 \uc804\uc1a1\uc5d0\ub9cc \uc0ac\uc6a9\ud569\ub2c8\ub2e4.',
+    ax_desc:'\uc120\ud0dd\ud55c \ud074\ub9bd\uc744 \uc0ac\uc6a9 \uc911\uc778 \uc571\uc5d0 \ubc14\ub85c \ubd99\uc5ec\ub123\uc73c\ub824\uba74 \uc190\uc26c\uc6b4 \uc0ac\uc6a9 \uad8c\ud55c\uc774 \ud544\uc694\ud569\ub2c8\ub2e4. \u2318V \uc785\ub825\uc744 \ubcf4\ub0b4\ub294 \ub370\uc5d0\ub9cc \uc4f0\uba70, \ud0a4 \uc785\ub825\uc744 \uac10\uc2dc\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.',
     ax_status_off:'\uad8c\ud55c \uc5c6\uc74c',
     ax_status_on:'\ud5c8\uc6a9\ub428',
     ax_cta_open:'\uc2dc\uc2a4\ud15c \uc124\uc815 \uc5f4\uae30',
@@ -869,7 +869,7 @@ var I18N = {
     crash_desc:'\ud65c\uc131\ud654\ud558\uba74 \uc571 \ube44\uc815\uc0c1 \uc885\ub8cc \uc2dc \uae30\uc220\uc801 \ucd94\uc801 \uc815\ubcf4\ub9cc \uc804\uc1a1\ub418\uc5b4 \ubc84\uadf8 \uc218\uc815\uc5d0 \uc0ac\uc6a9\ub429\ub2c8\ub2e4. \ud074\ub9bd\ubcf4\ub4dc \ub0b4\uc6a9\uc740 \uc808\ub300 \ud3ec\ud568\ub418\uc9c0 \uc54a\uc73c\uba70, \uc124\uc815\uc5d0\uc11c \uc5b8\uc81c\ub4e0 \ubcc0\uacbd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
     final_title:'\ub9c8\uc9c0\ub9c9\uc73c\ub85c, \uc774\ub7f0 \uae30\ub2a5\ub3c4 \uc788\uc5b4\uc694',
     fx_search_text:'\ud68c\uc758',
-    fx0_title:'\uc990\uc2dc \uac80\uc0c9',
+    fx0_title:'\uc989\uc2dc \uac80\uc0c9',
     fx0_desc:'\ud14d\uc2a4\ud2b8\u00b7\ucf54\ub4dc\u00b7\uc774\ubbf8\uc9c0 \uc548 \uae00\uc790\uae4c\uc9c0 \u2014 \uba87 \ubc00\ub9ac\ucd08 \ub9cc\uc5d0 \ucc3e\uc544\uc918\uc694.',
     fx1_title:'Paste As\u2026',
     fx1_desc:'\ud074\ub9bd \uc6b0\ud074\ub9ad \u2192 \uc77c\ubc18 \ud14d\uc2a4\ud2b8\u00b7\ub9c8\ud06c\ub2e4\uc6b4\u00b7\uc11c\uc2dd \uc788\ub294 \ud14d\uc2a4\ud2b8\ub85c \ubcc0\ud658\ud574 \ubd99\uc5ec\ub123\uc2b5\ub2c8\ub2e4.',
@@ -882,17 +882,17 @@ var I18N = {
       {keys:null,      label:'ClipRaven \ud328\ub110 \uc5f4\uae30/\ub2eb\uae30'},
       {keys:['Enter'], label:'\uc120\ud0dd\ud55c \uce74\ub4dc \ubd99\uc5ec\ub123\uae30'},
       {keys:['\ud074\ub9ad'],label:'\ud65c\uc131 \uc571\uc5d0 \ubd99\uc5ec\ub123\uae30'},
-      {keys:['\u2325','1-9'], label:'\ube60\ub978 \ud398\uc774\uc2a4\ud2b8 #1-9'},
-      {keys:['Space'], label:'\ud034\ub85d \ubbf8\ub9ac\ubcf4\uae30'},
+      {keys:['\u2325','1-9'], label:'\ube60\ub978 \ubd99\uc5ec\ub123\uae30 #1-9'},
+      {keys:['Space'], label:'\ubbf8\ub9ac\ubcf4\uae30'},
       {keys:['Esc'],   label:'\ud328\ub110 \ub2eb\uae30'},
-      {keys:['\u2318','F'],label:'\uac80\uc0c9 \ud3ec\ucee4\uc2a4'},
-      {keys:['\u2191\u2193'],  label:'\uce74\ub4dc \ud0d0\uc0c9'}
+      {keys:['\u2318','/'],label:'\uac80\uc0c9'},
+      {keys:['\u2190\u2192'],  label:'\uce74\ub4dc \ud0d0\uc0c9'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'macOS 26\uc5d0\uc11c \ud074\ub9bd\uc744 \uc790\ub3d9 \ubd84\ub958(\uc601\uc218\uc99d\u00b7\ucf54\ub4dc\u00b7\uba54\uc77c...) \ud558\uace0, \uae34 \ud14d\uc2a4\ud2b8\ub294 \uc628\ub514\ubc14\uc774\uc2a4 AI\ub85c \uc694\uc57d\ud574\uc9d1\ub2c8\ub2e4.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'macOS 26\uc5d0\uc11c \ud074\ub9bd\uc744 \uae30\uae30 \uc548\uc5d0\uc11c \uc790\ub3d9 \ubd84\ub958\ud569\ub2c8\ub2e4(\uc601\uc218\uc99d\u00b7\ucf54\ub4dc\u00b7\uba54\uc77c\u2026).'},
       {icon:'\ud83d\udd0d', title:'\uc774\ubbf8\uc9c0 OCR', desc:'\uc2a4\ud06c\ub9b0\uc0f7 \uc548\uc758 \ud14d\uc2a4\ud2b8\uac00 \uc790\ub3d9\uc73c\ub85c \uac80\uc0c9\ub418\uc5b4\uc694. \ud55c\uae00\ub3c4 \uc9c0\uc6d0.'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'\ud074\ub9bd \uc6b0\ud074\ub9ad \u2192 \uc77c\ubc18 \ud14d\uc2a4\ud2b8\u00b7\ub9c8\ud06c\ub2e4\uc6b4\u00b7\uc11c\uc2dd \uc788\ub294 \ud14d\uc2a4\ud2b8\ub85c \ubcc0\ud658\ud574\uc11c \ubd99\uc5ec\ub123\uae30.'},
-      {icon:'\u2318',  title:'\ud074\ub9bd\ubcc4 \ub2e8\ucd95\ud0a4', desc:'\uc124\uc815 \u2192 \ub2e8\ucd95\ud0a4\uc5d0\uc11c \ud2b9\uc815 \ud074\ub9bd\uc5d0 \uc804\uc6a9 \ud558\ub2e8\ucd95\ud0a4\ub97c \uc9c0\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.'}
+      {icon:'\u2318',  title:'\ud074\ub9bd\ubcc4 \ub2e8\ucd95\ud0a4', desc:'\ud074\ub9bd\uc744 \uc6b0\ud074\ub9ad\ud558\uace0 \ub2e8\ucd95\ud0a4 \u2192 \ub2e8\ucd95\ud0a4 \ud560\ub2f9\u2026\uc744 \uace0\ub974\uba74 \ud074\ub9bd\ub9c8\ub2e4 \uc804\uc5ed \ub2e8\ucd95\ud0a4\ub97c \uc9c0\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.'}
     ]
   },
   ja:{
@@ -914,7 +914,7 @@ var I18N = {
     selective_on_desc:'\u2318C\u00d72\u3057\u305f\u30a2\u30a4\u30c6\u30e0\u306e\u307f\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002\n\u5c65\u6b74\u3092\u5b8c\u5168\u306b\u30b3\u30f3\u30c8\u30ed\u30fc\u30eb\u3067\u304d\u307e\u3059\u3002',
     selective_hint:'\u8a2d\u5b9a\u304b\u3089\u3044\u3064\u3067\u3082\u5909\u66f4\u3067\u304d\u307e\u3059\u3002',
     ax_title:'\u30a2\u30af\u30bb\u30b7\u30d3\u30ea\u30c6\u30a3\u6a29\u9650\u3092\u8a31\u53ef',
-    ax_desc:'ClipRaven\u304c\u4f5c\u696d\u4e2d\u306e\u30a2\u30d7\u30ea\u306b\u30af\u30ea\u30c3\u30d7\u3092\u8cbc\u308a\u4ed8\u3051\u308b\u306b\u306f\u30a2\u30af\u30bb\u30b7\u30d3\u30ea\u30c6\u30a3\u6a29\u9650\u304c\u5fc5\u8981\u3067\u3059\uff08\u540c\u671f\u7684\u306a\u2318V\u306e\u305f\u3081\uff09\u3002\u8a31\u53ef\u304c\u306a\u3044\u3068\u8cbc\u308a\u4ed8\u3051\u306f\u6a5f\u80fd\u3057\u307e\u305b\u3093\u3002',
+    ax_desc:'\u4f5c\u696d\u4e2d\u306e\u30a2\u30d7\u30ea\u306b\u30af\u30ea\u30c3\u30d7\u3092\u76f4\u63a5\u8cbc\u308a\u4ed8\u3051\u308b\u306b\u306f\u3001\u30a2\u30af\u30bb\u30b7\u30d3\u30ea\u30c6\u30a3\u306e\u8a31\u53ef\u304c\u5fc5\u8981\u3067\u3059\uff08\u2318V\u306e\u5165\u529b\u3092\u9001\u308b\u305f\u3081\uff09\u3002\u30ad\u30fc\u5165\u529b\u3092\u76e3\u8996\u3059\u308b\u3053\u3068\u306f\u3042\u308a\u307e\u305b\u3093\u3002',
     ax_status_off:'\u672a\u8a31\u53ef',
     ax_status_on:'\u8a31\u53ef\u6e08\u307f',
     ax_cta_open:'\u30b7\u30b9\u30c6\u30e0\u8a2d\u5b9a\u3092\u958b\u304f',
@@ -938,16 +938,16 @@ var I18N = {
       {keys:['Enter'], label:'\u9078\u629e\u3057\u305f\u30ab\u30fc\u30c9\u3092\u8cbc\u308a\u4ed8\u3051'},
       {keys:['\u30af\u30ea\u30c3\u30af'], label:'\u30a2\u30af\u30c6\u30a3\u30d6\u30a2\u30d7\u30ea\u306b\u8cbc\u308a\u4ed8\u3051'},
       {keys:['\u2325','1-9'], label:'\u30af\u30a4\u30c3\u30af\u30da\u30fc\u30b9\u30c8 #1-9'},
-      {keys:['Space'], label:'\u30af\u30a4\u30c3\u30af\u30eb\u30c3\u30af\u30d7\u30ec\u30d3\u30e5\u30fc'},
+      {keys:['Space'], label:'\u30d7\u30ec\u30d3\u30e5\u30fc'},
       {keys:['Esc'],   label:'\u30d1\u30cd\u30eb\u3092\u9589\u3058\u308b'},
-      {keys:['\u2318','F'],label:'\u691c\u7d22\u306b\u30d5\u30a9\u30fc\u30ab\u30b9'},
-      {keys:['\u2191\u2193'],  label:'\u30ab\u30fc\u30c9\u3092\u30ca\u30d3\u30b2\u30fc\u30c8'}
+      {keys:['\u2318','/'],label:'\u691c\u7d22\u306b\u30d5\u30a9\u30fc\u30ab\u30b9'},
+      {keys:['\u2190\u2192'],  label:'\u30ab\u30fc\u30c9\u3092\u30ca\u30d3\u30b2\u30fc\u30c8'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'macOS 26\u3067\u306f\u30af\u30ea\u30c3\u30d7\u3092\u81ea\u52d5\u5206\u985e\uff08\u30ec\u30b7\u30fc\u30c8\u3001\u30b3\u30fc\u30c9\u3001\u30e1\u30fc\u30eb\u2026\uff09\u3057\u3001\u9577\u3044\u30c6\u30ad\u30b9\u30c8\u3092\u30c7\u30d0\u30a4\u30b9\u5185AI\u3067\u8981\u7d04\u3067\u304d\u307e\u3059\u3002'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'macOS 26\u3067\u306f\u3001\u30af\u30ea\u30c3\u30d7\u3092Mac\u4e0a\u3067\u81ea\u52d5\u5206\u985e\u3057\u307e\u3059\uff08\u9818\u53ce\u66f8\u3001\u30b3\u30fc\u30c9\u3001\u30e1\u30fc\u30eb\u2026\uff09\u3002'},
       {icon:'\ud83d\udd0d', title:'\u753b\u50cfOCR', desc:'\u30b9\u30af\u30ea\u30fc\u30f3\u30b7\u30e7\u30c3\u30c8\u5185\u306e\u30c6\u30ad\u30b9\u30c8\u304c\u81ea\u52d5\u7684\u306b\u691c\u7d22\u53ef\u80fd\u306b\u306a\u308a\u307e\u3059\u3002'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'\u30af\u30ea\u30c3\u30d7\u3092\u53f3\u30af\u30ea\u30c3\u30af\u3057\u3066\u30d7\u30ec\u30fc\u30f3\u30c6\u30ad\u30b9\u30c8\u3001Markdown\u3001\u30ea\u30c3\u30c1\u30c6\u30ad\u30b9\u30c8\u3068\u3057\u3066\u8cbc\u308a\u4ed8\u3051\u307e\u3059\u3002'},
-      {icon:'\u2318',  title:'\u30ab\u30b9\u30bf\u30e0\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8', desc:'\u8a2d\u5b9a \u2192 \u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8\u3067\u4efb\u610f\u306e\u30af\u30ea\u30c3\u30d7\u306b\u30b0\u30ed\u30fc\u30d0\u30eb\u30db\u30c3\u30c8\u30ad\u30fc\u3092\u5272\u308a\u5f53\u3066\u3089\u308c\u307e\u3059\u3002'}
+      {icon:'\u2318',  title:'\u30ab\u30b9\u30bf\u30e0\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8', desc:'\u30af\u30ea\u30c3\u30d7\u3092\u53f3\u30af\u30ea\u30c3\u30af\u3057\u3066\u300c\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8\u300d\u2192\u300c\u30b7\u30e7\u30fc\u30c8\u30ab\u30c3\u30c8\u3092\u5272\u308a\u5f53\u3066\u2026\u300d\u3092\u9078\u3076\u3068\u3001\u30af\u30ea\u30c3\u30d7\u3054\u3068\u306b\u30b0\u30ed\u30fc\u30d0\u30eb\u30db\u30c3\u30c8\u30ad\u30fc\u3092\u8a2d\u5b9a\u3067\u304d\u307e\u3059\u3002'}
     ]
   },
   'zh-Hans':{
@@ -969,7 +969,7 @@ var I18N = {
     selective_on_desc:'\u4ec5\u4fdd\u5b58 \u2318C \u00d72 \u7684\u9879\u76ee\u3002\n\u5b8c\u5168\u638c\u63a7\u5386\u53f2\u8bb0\u5f55\u3002',
     selective_hint:'\u53ef\u968f\u65f6\u5728\u8bbe\u7f6e\u4e2d\u66f4\u6539\u3002',
     ax_title:'\u6388\u4e88\u8f85\u52a9\u529f\u80fd\u6743\u9650',
-    ax_desc:'ClipRaven \u9700\u8981\u8f85\u52a9\u529f\u80fd\u6743\u9650\u624d\u80fd\u5c06\u526a\u8d34\u5185\u5bb9\u7c98\u8d34\u5230\u60a8\u6b63\u5728\u4f7f\u7528\u7684\u5e94\u7528\u7a0b\u5e8f\uff08\u901a\u8fc7\u6a21\u62df \u2318V \u5b9e\u73b0\uff09\u3002\u6ca1\u6709\u6743\u9650\u65f6\u65e0\u6cd5\u7c98\u8d34\u3002',
+    ax_desc:'ClipRaven \u9700\u8981\u8f85\u52a9\u529f\u80fd\u6743\u9650\uff0c\u624d\u80fd\u5c06\u526a\u8d34\u76f4\u63a5\u7c98\u8d34\u5230\u60a8\u6b63\u5728\u4f7f\u7528\u7684\u5e94\u7528\u4e2d\uff08\u901a\u8fc7\u53d1\u9001 \u2318V\uff09\u3002\u4e0d\u4f1a\u76d1\u89c6\u60a8\u7684\u952e\u76d8\u8f93\u5165\u3002',
     ax_status_off:'\u672a\u6388\u4e88',
     ax_status_on:'\u5df2\u6388\u4e88',
     ax_cta_open:'\u6253\u5f00\u7cfb\u7edf\u8bbe\u7f6e',
@@ -993,16 +993,16 @@ var I18N = {
       {keys:['Enter'], label:'\u7c98\u8d34\u9009\u4e2d\u7684\u5361\u7247'},
       {keys:['\u70b9\u51fb'], label:'\u7c98\u8d34\u5230\u5f53\u524d\u5e94\u7528'},
       {keys:['\u2325','1-9'], label:'\u5feb\u901f\u7c98\u8d34 #1-9'},
-      {keys:['Space'], label:'Quick Look \u9884\u89c8'},
+      {keys:['Space'], label:'\u9884\u89c8'},
       {keys:['Esc'],   label:'\u5173\u95ed\u9762\u677f'},
-      {keys:['\u2318','F'],label:'\u805a\u7126\u641c\u7d22\u6846'},
-      {keys:['\u2191\u2193'],  label:'\u6d4f\u89c8\u5361\u7247'}
+      {keys:['\u2318','/'],label:'\u805a\u7126\u641c\u7d22\u6846'},
+      {keys:['\u2190\u2192'],  label:'\u6d4f\u89c8\u5361\u7247'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'macOS 26 \u4e0a\u526a\u8d34\u88ab\u81ea\u52a8\u5206\u7c7b\uff08\u6536\u636e\u3001\u4ee3\u7801\u3001\u90ae\u4ef6\u2026\uff09\uff0c\u957f\u6587\u672c\u53ef\u672c\u5730 AI \u6458\u8981\u3002'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'\u5728 macOS 26 \u4e0a\uff0c\u526a\u8d34\u4f1a\u5728\u672c\u673a\u81ea\u52a8\u5206\u7c7b\uff08\u6536\u636e\u3001\u4ee3\u7801\u3001\u90ae\u4ef6\u2026\uff09\u3002'},
       {icon:'\ud83d\udd0d', title:'\u56fe\u7247 OCR', desc:'\u622a\u56fe\u5185\u7684\u6587\u5b57\u81ea\u52a8\u53ef\u641c\u7d22\u3002'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'\u53f3\u51fb\u526a\u8d34\u53ef\u9009\u62e9\u7eaf\u6587\u672c\u3001Markdown \u6216\u5bcc\u6587\u672c\u683c\u5f0f\u7c98\u8d34\u3002'},
-      {icon:'\u2318',  title:'\u81ea\u5b9a\u4e49\u5feb\u6377\u952e', desc:'\u5728\u8bbe\u7f6e \u2192 \u5feb\u6377\u952e \u4e2d\u4e3a\u4efb\u4f55\u526a\u8d34\u6307\u5b9a\u5168\u5c40\u5feb\u6377\u952e\u3002'}
+      {icon:'\u2318',  title:'\u81ea\u5b9a\u4e49\u5feb\u6377\u952e', desc:'\u53f3\u952e\u70b9\u6309\u526a\u8d34\uff0c\u9009\u62e9\u201c\u5feb\u6377\u952e\u201d\u2192\u201c\u5206\u914d\u5feb\u6377\u952e\u2026\u201d\uff0c\u5373\u53ef\u4e3a\u5176\u6307\u5b9a\u5168\u5c40\u5feb\u6377\u952e\u3002'}
     ]
   },
   'zh-Hant':{
@@ -1024,7 +1024,7 @@ var I18N = {
     selective_on_desc:'\u50c5\u5132\u5b58 \u2318C \u00d72 \u7684\u9805\u76ee\u3002\n\u5b8c\u5168\u638c\u63a7\u6b77\u53f2\u8a18\u9304\u3002',
     selective_hint:'\u53ef\u96a8\u6642\u5728\u8a2d\u5b9a\u4e2d\u66f4\u6539\u3002',
     ax_title:'\u6388\u4e88\u8f14\u52a9\u529f\u80fd\u6b0a\u9650',
-    ax_desc:'ClipRaven \u9700\u8981\u8f14\u52a9\u529f\u80fd\u6b0a\u9650\u624d\u80fd\u5c07\u526a\u8cbc\u5167\u5bb9\u8cbc\u4e0a\u60a8\u6b63\u5728\u4f7f\u7528\u7684\u61c9\u7528\u7a0b\u5f0f\uff08\u900f\u904e\u6a21\u64ec \u2318V \u5be6\u73fe\uff09\u3002\u6c92\u6709\u6b0a\u9650\u6642\u7121\u6cd5\u8cbc\u4e0a\u3002',
+    ax_desc:'ClipRaven \u9700\u8981\u8f14\u52a9\u4f7f\u7528\u6b0a\u9650\uff0c\u624d\u80fd\u5c07\u526a\u8cbc\u76f4\u63a5\u8cbc\u5230\u60a8\u6b63\u5728\u4f7f\u7528\u7684 App\uff08\u900f\u904e\u50b3\u9001 \u2318V\uff09\u3002\u4e0d\u6703\u76e3\u770b\u60a8\u7684\u9375\u76e4\u8f38\u5165\u3002',
     ax_status_off:'\u672a\u6388\u4e88',
     ax_status_on:'\u5df2\u6388\u4e88',
     ax_cta_open:'\u958b\u555f\u7cfb\u7d71\u8a2d\u5b9a',
@@ -1048,16 +1048,16 @@ var I18N = {
       {keys:['Enter'], label:'\u8cbc\u4e0a\u9078\u4e2d\u7684\u5361\u7247'},
       {keys:['\u9ede\u64ca'], label:'\u8cbc\u4e0a\u7576\u524d\u61c9\u7528'},
       {keys:['\u2325','1-9'], label:'\u5feb\u901f\u8cbc\u4e0a #1-9'},
-      {keys:['Space'], label:'Quick Look \u9810\u89bd'},
+      {keys:['Space'], label:'\u9810\u89bd'},
       {keys:['Esc'],   label:'\u95dc\u9589\u9762\u677f'},
-      {keys:['\u2318','F'],label:'\u805a\u7126\u641c\u5c0b\u6846'},
-      {keys:['\u2191\u2193'],  label:'\u700f\u89bd\u5361\u7247'}
+      {keys:['\u2318','/'],label:'\u805a\u7126\u641c\u5c0b\u6846'},
+      {keys:['\u2190\u2192'],  label:'\u700f\u89bd\u5361\u7247'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'macOS 26 \u4e0a\u526a\u8cbc\u88ab\u81ea\u52d5\u5206\u985e\uff08\u6536\u64da\u3001\u7a0b\u5f0f\u78bc\u3001\u90f5\u4ef6\u2026\uff09\uff0c\u9577\u6587\u5b57\u53ef\u672c\u6a5f AI \u6458\u8981\u3002'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'\u5728 macOS 26 \u4e0a\uff0c\u526a\u8cbc\u6703\u5728\u672c\u6a5f\u81ea\u52d5\u5206\u985e\uff08\u6536\u64da\u3001\u7a0b\u5f0f\u78bc\u3001\u90f5\u4ef6\u2026\uff09\u3002'},
       {icon:'\ud83d\udd0d', title:'\u5716\u7247 OCR', desc:'\u622a\u5716\u5167\u7684\u6587\u5b57\u81ea\u52d5\u53ef\u641c\u5c0b\u3002'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'\u53f3\u9375\u526a\u8cbc\u53ef\u9078\u64c7\u7d14\u6587\u5b57\u3001Markdown \u6216\u5bcc\u6587\u5b57\u683c\u5f0f\u8cbc\u4e0a\u3002'},
-      {icon:'\u2318',  title:'\u81ea\u5b9a\u5feb\u901f\u9375', desc:'\u5728\u8a2d\u5b9a \u2192 \u5feb\u901f\u9375 \u4e2d\u70ba\u4efb\u4f55\u526a\u8cbc\u6307\u5b9a\u5168\u57df\u5feb\u901f\u9375\u3002'}
+      {icon:'\u2318',  title:'\u81ea\u5b9a\u5feb\u901f\u9375', desc:'\u5728\u526a\u8cbc\u4e0a\u6309\u53f3\u9375\uff0c\u9078\u64c7\u300c\u5feb\u901f\u9375\u300d\u2192\u300c\u6307\u6d3e\u5feb\u901f\u9375\u2026\u300d\uff0c\u5373\u53ef\u6307\u5b9a\u5168\u57df\u5feb\u901f\u9375\u3002'}
     ]
   },
   es:{
@@ -1079,7 +1079,7 @@ var I18N = {
     selective_on_desc:'Solo se guardan los elementos con \u2318C \u00d72.\nControl total sobre tu historial.',
     selective_hint:'Puedes cambiarlo en cualquier momento en Ajustes.',
     ax_title:'Conceder acceso de accesibilidad',
-    ax_desc:'ClipRaven necesita permiso de Accesibilidad para pegar clips en la app en la que est\u00e1s trabajando (mediante \u2318V sint\u00e9tico). Sin ello, pegar no funcionar\u00e1.',
+    ax_desc:'ClipRaven necesita el permiso de Accesibilidad para pegar clips directamente en la app que est\u00e1s usando (env\u00eda \u2318V). No supervisa lo que escribes.',
     ax_status_off:'No concedido',
     ax_status_on:'Concedido',
     ax_cta_open:'Abrir Ajustes del Sistema',
@@ -1103,16 +1103,16 @@ var I18N = {
       {keys:['Enter'], label:'Pegar la tarjeta seleccionada'},
       {keys:['Clic'],  label:'Pegar en la app activa'},
       {keys:['\u2325','1-9'], label:'Pegado r\u00e1pido #1-9'},
-      {keys:['Space'], label:'Previsualizaci\u00f3n Quick Look'},
+      {keys:['Space'], label:'Vista previa'},
       {keys:['Esc'],   label:'Cerrar panel'},
-      {keys:['\u2318','F'],label:'Enfocar b\u00fasqueda'},
-      {keys:['\u2191\u2193'],  label:'Navegar por las tarjetas'}
+      {keys:['\u2318','/'],label:'Enfocar b\u00fasqueda'},
+      {keys:['\u2190\u2192'],  label:'Navegar por las tarjetas'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'En macOS 26, los clips se clasifican autom\u00e1ticamente (recibo, c\u00f3digo, correo\u2026) y los textos largos pueden resumirse en el dispositivo.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'En macOS 26, los clips se clasifican autom\u00e1ticamente (recibo, c\u00f3digo, correo\u2026) en tu Mac.'},
       {icon:'\ud83d\udd0d', title:'OCR de im\u00e1genes', desc:'El texto dentro de capturas de pantalla se vuelve buscable autom\u00e1ticamente.'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'Clic derecho en cualquier clip para pegar como texto plano, Markdown o texto con formato.'},
-      {icon:'\u2318',  title:'Atajos personalizados', desc:'Asigna un atajo global a cualquier clip desde Ajustes \u2192 Atajos.'}
+      {icon:'\u2318',  title:'Atajos personalizados', desc:'Haz clic derecho en un clip y elige Atajos \u2192 Asignar atajo\u2026 para darle un atajo global.'}
     ]
   },
   fr:{
@@ -1134,7 +1134,7 @@ var I18N = {
     selective_on_desc:'Seuls les \u00e9l\u00e9ments \u2318C \u00d72 sont enregistr\u00e9s.\nContr\u00f4le total sur votre historique.',
     selective_hint:'Vous pouvez le modifier \u00e0 tout moment dans R\u00e9glages.',
     ax_title:'Autoriser l\u2019acc\u00e8s \u00e0 l\u2019accessibilit\u00e9',
-    ax_desc:'ClipRaven a besoin de l\u2019autorisation Accessibilit\u00e9 pour coller les clips dans l\u2019app que vous utilisez (via \u2318V synth\u00e9tis\u00e9). Sans elle, le collage ne fonctionnera pas.',
+    ax_desc:'ClipRaven a besoin de l\u2019autorisation Accessibilit\u00e9 pour coller les clips directement dans l\u2019app que vous utilisez (en envoyant \u2318V). Il ne surveille pas votre saisie.',
     ax_status_off:'Non accord\u00e9',
     ax_status_on:'Accord\u00e9',
     ax_cta_open:'Ouvrir R\u00e9glages Syst\u00e8me',
@@ -1158,49 +1158,49 @@ var I18N = {
       {keys:['Enter'], label:'Coller la carte s\u00e9lectionn\u00e9e'},
       {keys:['Clic'],  label:'Coller dans l\u2019app active'},
       {keys:['\u2325','1-9'], label:'Collage rapide #1-9'},
-      {keys:['Space'], label:'Aper\u00e7u Quick Look'},
+      {keys:['Space'], label:'Aper\u00e7u'},
       {keys:['Esc'],   label:'Fermer le panneau'},
-      {keys:['\u2318','F'],label:'Focus recherche'},
-      {keys:['\u2191\u2193'],  label:'Parcourir les cartes'}
+      {keys:['\u2318','/'],label:'Focus recherche'},
+      {keys:['\u2190\u2192'],  label:'Parcourir les cartes'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'Sur macOS 26, les clips sont class\u00e9s automatiquement (re\u00e7u, code, e-mail\u2026) et les longs textes peuvent \u00eatre r\u00e9sum\u00e9s sur l\u2019appareil.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'Sur macOS 26, les clips sont class\u00e9s automatiquement (re\u00e7u, code, e-mail\u2026) sur votre Mac.'},
       {icon:'\ud83d\udd0d', title:'OCR d\u2019images', desc:'Le texte dans les captures d\u2019\u00e9cran devient automatiquement recherchable.'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'Clic droit sur un clip pour coller en texte brut, Markdown ou texte enrichi.'},
-      {icon:'\u2318',  title:'Raccourcis personnalis\u00e9s', desc:'Attribuez un raccourci global \u00e0 n\u2019importe quel clip depuis R\u00e9glages \u2192 Raccourcis.'}
+      {icon:'\u2318',  title:'Raccourcis personnalis\u00e9s', desc:'Faites un clic droit sur un clip, puis choisissez Raccourcis \u2192 Attribuer un raccourci\u2026 pour lui donner un raccourci global.'}
     ]
   },
   de:{
     trial_title:'15 Tage kostenlos testen',
-    trial_body:'15 Tage lang sind alle Funktionen kostenlos. Danach h\u00e4lt ein einmaliger Kauf f\u00fcr {PRICE} ClipRaven freigeschaltet. Es ist kein Abo. Ohne Kauf wird das Einf\u00fcgen von Clips nach dem Test gesperrt; Ihr Verlauf bleibt zum Ansehen und Durchsuchen verf\u00fcgbar.',
-    trial_body_noprice:'15 Tage lang sind alle Funktionen kostenlos. Danach h\u00e4lt ein einmaliger Kauf ClipRaven freigeschaltet. Es ist kein Abo. Ohne Kauf wird das Einf\u00fcgen von Clips nach dem Test gesperrt; Ihr Verlauf bleibt zum Ansehen und Durchsuchen verf\u00fcgbar.',
+    trial_body:'15 Tage lang sind alle Funktionen kostenlos. Danach h\u00e4lt ein einmaliger Kauf f\u00fcr {PRICE} ClipRaven freigeschaltet. Es ist kein Abo. Ohne Kauf wird das Einf\u00fcgen von Clips nach dem Test gesperrt; dein Verlauf bleibt zum Ansehen und Durchsuchen verf\u00fcgbar.',
+    trial_body_noprice:'15 Tage lang sind alle Funktionen kostenlos. Danach h\u00e4lt ein einmaliger Kauf ClipRaven freigeschaltet. Es ist kein Abo. Ohne Kauf wird das Einf\u00fcgen von Clips nach dem Test gesperrt; dein Verlauf bleibt zum Ansehen und Durchsuchen verf\u00fcgbar.',
     trial_start_btn:'15-Tage-Test starten',
-    welcome_subtitle:'Ihre intelligente Zwischenablage, neu gedacht.',
+    welcome_subtitle:'Deine intelligente Zwischenablage, neu gedacht.',
     hotkey_title:'ClipRaven sofort \u00f6ffnen',
-    hotkey_desc:'Dr\u00fccken Sie Ihren Kurzbefehl, um das Zwischenablage-Panel einzublenden.\nClipRaven l\u00e4uft im Hintergrund \u2014 so rufen Sie es auf.',
+    hotkey_desc:'Dr\u00fccke deinen Kurzbefehl, um das Zwischenablage-Panel einzublenden.\nClipRaven l\u00e4uft im Hintergrund \u2014 so rufst du es auf.',
     selection_title:'Zum Einf\u00fcgen klicken',
-    selection_desc:'Klicken Sie auf eine Karte, um sie in die aktive App einzuf\u00fcgen.\nKein \u2318V n\u00f6tig \u2014 es funktioniert einfach.',
+    selection_desc:'Klicke auf eine Karte, um sie in die aktive App einzuf\u00fcgen.\nKein \u2318V n\u00f6tig \u2014 es funktioniert einfach.',
     selection_pasted:'Eingef\u00fcgt!',
     selective_title:'Selektive Erfassung',
-    selective_desc:'W\u00e4hlen Sie, wie Zwischenablage-Eintr\u00e4ge gespeichert werden.\nDer selektive Modus gibt Ihnen volle Kontrolle \u00fcber Ihren Verlauf.',
+    selective_desc:'W\u00e4hle, wie Zwischenablage-Eintr\u00e4ge gespeichert werden.\nDer selektive Modus gibt dir volle Kontrolle \u00fcber deinen Verlauf.',
     selective_off_title:'Alles erfassen',
     selective_off_desc:'Jede Kopie wird automatisch gespeichert.',
     selective_on_title:'Selektiv',
-    selective_on_desc:'Nur Eintr\u00e4ge mit \u2318C \u00d72 werden gespeichert.\nVolle Kontrolle \u00fcber Ihren Verlauf.',
+    selective_on_desc:'Nur Eintr\u00e4ge mit \u2318C \u00d72 werden gespeichert.\nVolle Kontrolle \u00fcber deinen Verlauf.',
     selective_hint:'Jederzeit in den Einstellungen \u00e4nderbar.',
     ax_title:'Bedienungshilfen-Zugriff erteilen',
-    ax_desc:'ClipRaven ben\u00f6tigt die Berechtigung "Bedienungshilfen", um Clips in die App einzuf\u00fcgen, in der Sie arbeiten (durch simuliertes \u2318V). Ohne sie funktioniert das Einf\u00fcgen nicht.',
+    ax_desc:'ClipRaven braucht die Berechtigung \u201eBedienungshilfen\u201c, um Clips direkt in die App einzuf\u00fcgen, die du gerade verwendest (es sendet \u2318V). Deine Eingaben werden nicht \u00fcberwacht.',
     ax_status_off:'Nicht erteilt',
     ax_status_on:'Erteilt',
     ax_cta_open:'Systemeinstellungen \u00f6ffnen',
     ax_cta_granted:'In Systemeinstellungen pr\u00fcfen',
-    ax_hint:'Optional. Ohne diese Berechtigung kopiert ClipRaven den Clip trotzdem, sodass Sie ihn selbst mit \u2318V einf\u00fcgen k\u00f6nnen, und Sie k\u00f6nnen sie sp\u00e4ter aktivieren. Sie k\u00f6nnen den Zugriff jederzeit unter Systemeinstellungen \u2192 Datenschutz & Sicherheit \u2192 Bedienungshilfen entziehen.',
+    ax_hint:'Optional. Ohne diese Berechtigung kopiert ClipRaven den Clip trotzdem, sodass du ihn selbst mit \u2318V einf\u00fcgen kannst, und du kannst sie sp\u00e4ter aktivieren. Du kannst den Zugriff jederzeit unter Systemeinstellungen \u2192 Datenschutz & Sicherheit \u2192 Bedienungshilfen entziehen.',
     crash_label:'Anonyme Absturzberichte senden',
     crash_desc:'Wenn aktiviert, werden technische Absturz-Traces gesendet, um Fehler zu beheben. Zwischenablage-Inhalte werden niemals eingeschlossen. Jederzeit \u00e4nderbar.',
-    final_title:'Ein paar Funktionen, die Sie lieben werden',
+    final_title:'Ein paar Funktionen, die du lieben wirst',
     fx_search_text:'Meeting',
     fx0_title:'Sofortsuche',
-    fx0_desc:'Finden Sie jeden Clip in Millisekunden \u2014 Text, Code, sogar Text in Bildern.',
+    fx0_desc:'Finde jeden Clip in Millisekunden \u2014 Text, Code, sogar Text in Bildern.',
     fx1_title:'Paste As\u2026',
     fx1_desc:'Rechtsklick auf einen Clip, um ihn als reinen Text, Markdown oder formatierten Text einzuf\u00fcgen.',
     fx2_title:'Apple Intelligence',
@@ -1213,16 +1213,16 @@ var I18N = {
       {keys:['Enter'], label:'Ausgew\u00e4hlte Karte einf\u00fcgen'},
       {keys:['Klick'], label:'In aktive App einf\u00fcgen'},
       {keys:['\u2325','1-9'], label:'Schnelles Einf\u00fcgen #1-9'},
-      {keys:['Space'], label:'Quick Look Vorschau'},
+      {keys:['Space'], label:'Vorschau'},
       {keys:['Esc'],   label:'Panel schlie\u00dfen'},
-      {keys:['\u2318','F'],label:'Suche fokussieren'},
-      {keys:['\u2191\u2193'],  label:'Karten navigieren'}
+      {keys:['\u2318','/'],label:'Suche fokussieren'},
+      {keys:['\u2190\u2192'],  label:'Karten navigieren'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'Unter macOS 26 werden Clips automatisch klassifiziert (Beleg, Code, E-Mail\u2026) und lange Texte k\u00f6nnen on-device zusammengefasst werden.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'Unter macOS 26 werden Clips direkt auf deinem Mac automatisch klassifiziert (Beleg, Code, E-Mail \u2026).'},
       {icon:'\ud83d\udd0d', title:'Bild-OCR', desc:'Text in Screenshots wird automatisch durchsuchbar.'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'Rechtsklick auf einen Clip, um ihn als reinen Text, Markdown oder formatierten Text einzuf\u00fcgen.'},
-      {icon:'\u2318',  title:'Eigene Kurzbefehle', desc:'Weisen Sie jedem Clip einen globalen Kurzbefehl unter Einstellungen \u2192 Kurzbefehle zu.'}
+      {icon:'\u2318',  title:'Eigene Kurzbefehle', desc:'Klicke mit der rechten Maustaste auf einen Clip und w\u00e4hle Kurzbefehle \u2192 Kurzbefehl zuweisen \u2026, um ihm einen globalen Kurzbefehl zu geben.'}
     ]
   },
   it:{
@@ -1244,7 +1244,7 @@ var I18N = {
     selective_on_desc:'Solo gli elementi con \u2318C \u00d72 vengono salvati.\nControllo totale sulla cronologia.',
     selective_hint:'Puoi cambiarlo in qualsiasi momento nelle Impostazioni.',
     ax_title:'Concedi accesso Accessibilit\u00e0',
-    ax_desc:'ClipRaven necessita del permesso di Accessibilit\u00e0 per incollare i clip nell\u2019app in cui stai lavorando (tramite \u2318V sintetizzato). Senza di esso, l\u2019incolla non funzioner\u00e0.',
+    ax_desc:'ClipRaven ha bisogno del permesso di Accessibilit\u00e0 per incollare i clip direttamente nell\u2019app che stai usando (invia \u2318V). Non monitora ci\u00f2 che digiti.',
     ax_status_off:'Non concesso',
     ax_status_on:'Concesso',
     ax_cta_open:'Apri Impostazioni di Sistema',
@@ -1268,16 +1268,16 @@ var I18N = {
       {keys:['Enter'], label:'Incolla la scheda selezionata'},
       {keys:['Clic'],  label:'Incolla nell\u2019app attiva'},
       {keys:['\u2325','1-9'], label:'Incolla rapido #1-9'},
-      {keys:['Space'], label:'Anteprima Quick Look'},
+      {keys:['Space'], label:'Anteprima'},
       {keys:['Esc'],   label:'Chiudi pannello'},
-      {keys:['\u2318','F'],label:'Metti a fuoco la ricerca'},
-      {keys:['\u2191\u2193'],  label:'Naviga tra le schede'}
+      {keys:['\u2318','/'],label:'Metti a fuoco la ricerca'},
+      {keys:['\u2190\u2192'],  label:'Naviga tra le schede'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'Su macOS 26 i clip vengono classificati automaticamente (ricevuta, codice, email\u2026) e i testi lunghi possono essere riassunti sul dispositivo.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'Su macOS 26 i clip vengono classificati automaticamente (ricevuta, codice, email\u2026) direttamente sul tuo Mac.'},
       {icon:'\ud83d\udd0d', title:'OCR immagini', desc:'Il testo dentro gli screenshot diventa automaticamente ricercabile.'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'Clic destro su un clip per incollarlo come testo semplice, Markdown o testo formattato.'},
-      {icon:'\u2318',  title:'Scorciatoie personalizzate', desc:'Assegna una scorciatoia globale a qualsiasi clip da Impostazioni \u2192 Scorciatoie.'}
+      {icon:'\u2318',  title:'Scorciatoie personalizzate', desc:'Fai clic destro su un clip e scegli Scorciatoie \u2192 Assegna scorciatoia\u2026 per assegnargli una scorciatoia globale.'}
     ]
   },
   'pt-BR':{
@@ -1299,7 +1299,7 @@ var I18N = {
     selective_on_desc:'Apenas itens com \u2318C \u00d72 s\u00e3o salvos.\nControle total sobre seu hist\u00f3rico.',
     selective_hint:'Voc\u00ea pode mudar isso a qualquer momento em Ajustes.',
     ax_title:'Conceder acesso de Acessibilidade',
-    ax_desc:'O ClipRaven precisa da permiss\u00e3o de Acessibilidade para colar clips no app em que voc\u00ea est\u00e1 trabalhando (via \u2318V sintetizado). Sem ela, colar n\u00e3o funcionar\u00e1.',
+    ax_desc:'O ClipRaven precisa da permiss\u00e3o de Acessibilidade para colar clips direto no app que voc\u00ea est\u00e1 usando (ele envia \u2318V). Ele n\u00e3o monitora o que voc\u00ea digita.',
     ax_status_off:'N\u00e3o concedido',
     ax_status_on:'Concedido',
     ax_cta_open:'Abrir Ajustes do Sistema',
@@ -1323,16 +1323,16 @@ var I18N = {
       {keys:['Enter'], label:'Colar o cart\u00e3o selecionado'},
       {keys:['Clique'],label:'Colar no app ativo'},
       {keys:['\u2325','1-9'], label:'Colagem r\u00e1pida #1-9'},
-      {keys:['Space'], label:'Pr\u00e9-visualiza\u00e7\u00e3o Quick Look'},
+      {keys:['Space'], label:'Pr\u00e9-visualizar'},
       {keys:['Esc'],   label:'Fechar painel'},
-      {keys:['\u2318','F'],label:'Focar busca'},
-      {keys:['\u2191\u2193'],  label:'Navegar pelos cart\u00f5es'}
+      {keys:['\u2318','/'],label:'Focar busca'},
+      {keys:['\u2190\u2192'],  label:'Navegar pelos cart\u00f5es'}
     ],
     tips:[
-      {icon:'\u2728', title:'Apple Intelligence', desc:'No macOS 26, clips s\u00e3o classificados automaticamente (recibo, c\u00f3digo, e-mail\u2026) e textos longos podem ser resumidos no dispositivo.'},
+      {icon:'\u2728', title:'Apple Intelligence', desc:'No macOS 26, clips s\u00e3o classificados automaticamente (recibo, c\u00f3digo, e-mail\u2026) no seu Mac.'},
       {icon:'\ud83d\udd0d', title:'OCR de imagens', desc:'O texto dentro de capturas de tela se torna pesquis\u00e1vel automaticamente.'},
       {icon:'\u21b7',  title:'Paste As\u2026', desc:'Clique com o bot\u00e3o direito em qualquer clip para colar como texto simples, Markdown ou texto rico.'},
-      {icon:'\u2318',  title:'Atalhos personalizados', desc:'Atribua um atalho global a qualquer clip em Ajustes \u2192 Atalhos.'}
+      {icon:'\u2318',  title:'Atalhos personalizados', desc:'Clique com o bot\u00e3o direito em um clip e escolha Atalhos \u2192 Atribuir atalho\u2026 para dar a ele um atalho global.'}
     ]
   }
 };

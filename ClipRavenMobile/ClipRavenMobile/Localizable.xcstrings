@@ -2058,7 +2058,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Originale werden nur über WLAN gesendet. Originale von Ihren anderen Geräten können auch über Mobilfunk ankommen (Apple-iCloud-Richtlinie)."
+            "value" : "Originale werden nur über WLAN gesendet. Originale von deinen anderen Geräten können auch über Mobilfunk ankommen (Apple-iCloud-Richtlinie)."
           }
         },
         "fr" : {
@@ -3454,7 +3454,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versuchen Sie eine andere Suche oder einen anderen Filter"
+            "value" : "Versuch es mit einer anderen Suche oder einem anderen Filter"
           }
         },
         "en" : {
@@ -6744,7 +6744,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deaktivieren Sie, um Übergänge sofort anzuzeigen."
+            "value" : "Schalte die Option aus, um Übergänge sofort anzuzeigen."
           }
         },
         "en" : {
@@ -10578,7 +10578,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wählen Sie einen Clip aus,\num Details zu sehen"
+            "value" : "Wähle einen Clip aus,\num Details zu sehen"
           }
         },
         "fr" : {

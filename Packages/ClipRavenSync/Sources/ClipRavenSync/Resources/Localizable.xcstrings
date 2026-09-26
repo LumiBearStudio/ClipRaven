@@ -195,7 +195,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Kauf konnte nicht aus dem App Store geladen werden. Prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut."
+            "value" : "Der Kauf konnte nicht aus dem App Store geladen werden. Prüfe deine Internetverbindung und versuche es erneut."
           }
         },
         "fr" : {
@@ -660,7 +660,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Kaufinformationen werden noch geladen. Bitte versuchen Sie es gleich noch einmal."
+            "value" : "Die Kaufinformationen werden noch geladen. Bitte versuche es gleich noch einmal."
           }
         },
         "fr" : {
