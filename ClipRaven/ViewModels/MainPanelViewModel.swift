@@ -345,15 +345,27 @@ final class MainPanelViewModel: ObservableObject {
 
     // MARK: - Paste (with Cmd+V simulation)
 
-    /// 트라이얼 만료 상태면 paste 동작 차단 + PaywallWindow 표시.
-    /// 모든 paste 진입점 (pasteClip, AsPlainText, AsMarkdown 등) 의 single source
-    /// of truth. true 반환 시 호출자는 paste 진행 중단.
-    private func guardExpiredLockAndShowPaywall() -> Bool {
+    /// 트라이얼 만료 상태면 paste 동작 차단 + PaywallWindow 표시. true 반환 시
+    /// 호출자는 붙여넣기를 중단한다.
+    ///
+    /// **모든 붙여넣기 진입점이 거친다**: 패널(pasteClip, AsPlainText, AsMarkdown 등),
+    /// 클립별 전역 단축키, 단축어 "Paste Clip" 액션, Paste Stack. 이전에는 패널
+    /// 경로에만 있어서 만료 뒤에도 단축키·단축어·Paste Stack 으로는 계속
+    /// 붙여넣을 수 있었다 (v1 리뷰).
+    ///
+    /// 판정 직전에 남은 일수를 다시 계산한다. 메뉴바 앱은 몇 주씩 켜져 있어서,
+    /// 실행 시에만 판정하면 체험이 끝나도 잠기지 않았다.
+    static func blockPasteIfExpired() -> Bool {
+        PurchaseManager.shared.recomputeTrialState()
         if PurchaseManager.shared.lockState == .expired {
             PaywallWindowController.shared.show()
             return true
         }
         return false
+    }
+
+    private func guardExpiredLockAndShowPaywall() -> Bool {
+        Self.blockPasteIfExpired()
     }
 
     func pasteClip(_ clip: Clip) {

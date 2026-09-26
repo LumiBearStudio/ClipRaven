@@ -204,6 +204,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Show onboarding on first launch
         if !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") {
             showOnboarding()
+        } else {
+            // 체험은 온보딩 완료 시 시작한다. 온보딩을 이미 마친 사용자(체험 시작
+            // 로직이 바뀌기 전 빌드)는 여기서 한 번 보정한다. 이미 시작했으면 no-op.
+            PurchaseManager.shared.startTrialIfNeeded()
         }
 
         // iCloud sync engine. Engine is created eagerly but self-gates on
@@ -456,6 +460,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async {
                 guard let clip = try? repo.fetchOne(id: clipId),
                       !clip.isDeleted else { return }
+                // 체험 만료 시 클립별 단축키도 막는다 (패널 경로와 동일한 검사).
+                let blocked = MainActor.assumeIsolated { MainPanelViewModel.blockPasteIfExpired() }
+                guard !blocked else { return }
                 MainPanelViewModel.pasteClipStatic(clip, clipRepository: repo)
             }
         }

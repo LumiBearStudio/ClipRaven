@@ -150,6 +150,8 @@ struct OnboardingView: View {
                 } else {
                     actionButton(title: "시작하기") {
                         AppAnimations.withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                            // 체험 안내를 본 뒤 시작한다 (3.1.1, v1 리뷰 M3).
+                            PurchaseManager.shared.startTrialIfNeeded()
                             completed = true
                         }
                     }

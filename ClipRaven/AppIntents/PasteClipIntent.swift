@@ -47,6 +47,12 @@ struct PasteClipIntent: AppIntent {
     }
 
     func perform() async throws -> some IntentResult {
+        // Gate 0: 체험 만료 — 패널·단축키와 같은 검사 (v1 리뷰).
+        if await MainActor.run(body: { MainPanelViewModel.blockPasteIfExpired() }) {
+            intentLog("[PasteClipIntent] blocked: trial expired")
+            throw ClipRavenIntentError.trialExpired
+        }
+
         // Gate 1: accessibility — required for CGEvent paste synthesis
         guard PastePermission.isGranted else {
             intentLog("[PasteClipIntent] blocked: accessibility not trusted")

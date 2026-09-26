@@ -21,7 +21,9 @@ struct PaywallView: View {
                 VStack(spacing: 6) {
                     Text("ClipRaven")
                         .font(.title2.bold())
-                    Text("체험 기간이 종료되었습니다")
+                    // 상태별 문구. 이전에는 체험 중에 "지금 구매하기…" 로 열어도
+                    // "체험 기간이 종료되었습니다" 를 보여줬다 (v1 리뷰 M3).
+                    Text(headline)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -36,7 +38,9 @@ struct PaywallView: View {
                         .controlSize(.small)
                 }
 
-                Text("한 번 구매로 Mac + iPhone/iPad 모두 사용")
+                // 플랫폼 약속은 하지 않는다 — iOS 앱이 같은 시점에 출시되지 않으면
+                // 사실과 달라진다 (2.3.1). 구독이 아니라는 점만 분명히 적는다.
+                Text("1회 구매 · 구독 없음")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -52,6 +56,7 @@ struct PaywallView: View {
 
                 // Actions
                 VStack(spacing: 8) {
+                    if pm.lockState != .paid {
                     Button {
                         Task { await pm.purchase() }
                     } label: {
@@ -69,6 +74,7 @@ struct PaywallView: View {
                     .buttonStyle(.borderedProminent)
                     .disabled(pm.isPurchasing || pm.product == nil)
                     .accessibilityIdentifier("paywall.purchaseButton")
+                    }
 
                     Button("구매 복원") {
                         Task { await pm.restore() }
@@ -96,6 +102,13 @@ struct PaywallView: View {
             }
         }
     }
+    private var headline: String {
+        switch pm.lockState {
+        case .expired:        return String(localized: "체험 기간이 종료되었습니다")
+        case .trial(let days): return String(localized: "무료 체험 \(days)일 남음")
+        case .paid:           return String(localized: "구매해 주셔서 감사합니다")
+        }
+    }
 }
 
 /// 체험 중 패널 하단에 표시되는 배너.
@@ -121,4 +134,5 @@ struct TrialBannerView: View {
         .padding(.vertical, 6)
         .background(.bar)
     }
+
 }

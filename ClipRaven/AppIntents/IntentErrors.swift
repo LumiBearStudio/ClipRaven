@@ -11,6 +11,7 @@ enum ClipRavenIntentError: Error, CustomLocalizedStringResourceConvertible {
     case accessibilityRequired
     case cannotPasteIntoShortcutsEditor
     case processingFailed
+    case trialExpired
 
     var localizedStringResource: LocalizedStringResource {
         switch self {
@@ -26,6 +27,8 @@ enum ClipRavenIntentError: Error, CustomLocalizedStringResourceConvertible {
             return "Shortcuts 편집기에서는 붙여넣기를 실행할 수 없습니다. Spotlight(⌘Space), Siri, 또는 자동화(Automation)에서 호출해주세요."
         case .processingFailed:
             return "클립 처리에 실패했습니다."
+        case .trialExpired:
+            return "무료 체험이 끝났습니다. ClipRaven을 구매하면 계속 붙여넣을 수 있습니다."
         }
     }
 }

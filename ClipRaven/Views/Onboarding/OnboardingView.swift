@@ -44,7 +44,7 @@ final class OnboardingWindowController: NSObject, WKScriptMessageHandler, NSWind
 
         let config = WKWebViewConfiguration()
         let script = WKUserScript(
-            source: "window.CR_HOTKEY='\(hotkey)';window.CR_LANG='\(lang)';",
+            source: "window.CR_HOTKEY='\(hotkey)';window.CR_LANG='\(lang)';window.CR_TRIAL='\(Self.trialStateForOnboarding())';",
             injectionTime: .atDocumentStart,
             forMainFrameOnly: true
         )
@@ -133,6 +133,10 @@ final class OnboardingWindowController: NSObject, WKScriptMessageHandler, NSWind
                 // Stored preference only — actual SMAppService hookup lives in Settings.
                 UserDefaults.standard.set(body == "launchAtLogin:on", forKey: "launchAtLoginPending")
 
+            } else if body == "price:request" {
+                // 마지막 페이지 진입 시 — StoreKit 현지 가격을 체험 안내에 넣는다.
+                self.pushPriceToOnboarding()
+
             } else if body == "accessibility:check" {
                 self.reportAccessibilityStatus()
 
@@ -158,8 +162,35 @@ final class OnboardingWindowController: NSObject, WKScriptMessageHandler, NSWind
 
             } else if body == "complete" {
                 UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+                // 체험은 마지막 페이지의 체험 안내를 본 뒤 여기서 시작한다 (3.1.1).
+                PurchaseManager.shared.startTrialIfNeeded()
                 self.cleanup()
             }
+        }
+    }
+
+    // MARK: Trial disclosure (App Review 3.1.1)
+
+    /// 온보딩에 넘길 체험 상태. 'new' 일 때만 체험 안내와 "체험 시작" 버튼을 보여준다
+    /// — 설정에서 온보딩을 다시 보는 구매자·체험 중인 사용자에게는 숨긴다.
+    @MainActor
+    private static func trialStateForOnboarding() -> String {
+        if PurchaseManager.shared.lockState == .paid { return "paid" }
+        return TrialManager.shared.hasStarted ? "started" : "new"
+    }
+
+    /// 현지 통화 가격을 JS 로 보낸다. 상품 정보가 아직 없으면 불러온 뒤 보낸다.
+    @MainActor
+    private func pushPriceToOnboarding() {
+        Task { @MainActor [weak self] in
+            if PurchaseManager.shared.product == nil {
+                await PurchaseManager.shared.refresh()
+            }
+            guard let price = PurchaseManager.shared.product?.displayPrice else { return }
+            let escaped = price
+                .replacingOccurrences(of: "\\", with: "\\\\")
+                .replacingOccurrences(of: "'", with: "\\'")
+            _ = try? await self?.webView?.evaluateJavaScript("window.__setPrice && window.__setPrice('\(escaped)');")
         }
     }
 
@@ -360,9 +391,9 @@ h2{font-size:28px;font-weight:700;margin-bottom:10px;letter-spacing:-.3px;}
 .svm-hint{font-size:11px;color:#555;text-align:center;}
 
 /* Page 5 (Final: feature carousel) */
-.final-page{display:flex;flex-direction:column;align-items:center;gap:12px;padding:0 40px;}
+.final-page{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px;}
 .final-page h2{margin-bottom:0;}
-.fx-stage{position:relative;width:100%;max-width:560px;height:210px;margin-top:8px;}
+.fx-stage{position:relative;width:100%;max-width:560px;height:196px;margin-top:8px;}
 .fx-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:10px;
   opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease;pointer-events:none;}
 .fx-slide.active{opacity:1;transform:translateY(0);pointer-events:auto;}
@@ -509,8 +540,12 @@ h2{font-size:28px;font-weight:700;margin-bottom:10px;letter-spacing:-.3px;}
 .ax-cta.granted{background:rgba(77,216,192,.15);color:#4DD8C0;cursor:default;}
 .ax-hint{font-size:11px;color:#666;text-align:center;margin-top:8px;}
 
+/* 체험 안내 — App Review 3.1.1: 체험 기간·이후 가격·잠기는 기능을 시작 전에 고지 */
+.trial-note{max-width:600px;width:100%;margin:2px auto 0;padding:9px 16px;border-radius:12px;background:rgba(77,216,192,.06);border:1px solid rgba(77,216,192,.28);text-align:left;}
+.trial-title{margin:0 0 3px;font-size:13px;font-weight:700;color:#4DD8C0;}
+.trial-body{margin:0;font-size:11.5px;line-height:1.45;color:#BBB;}
 /* Page 6 — Privacy prefs */
-.privacy-prefs{max-width:520px;margin:4px auto 18px;padding:14px 18px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);}
+.privacy-prefs{max-width:600px;width:100%;margin:2px auto 6px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);}
 .pref-row{display:flex;align-items:center;gap:10px;cursor:pointer;}
 .pref-label{flex:1;font-size:13px;color:#CCC;font-weight:600;}
 .pref-check{position:absolute;opacity:0;pointer-events:none;}
@@ -711,6 +746,10 @@ h2{font-size:28px;font-weight:700;margin-bottom:10px;letter-spacing:-.3px;}
         <span class="fx-dot" data-fxi="1"></span>
         <span class="fx-dot" data-fxi="2"></span>
       </div>
+      <div class="trial-note" id="trialNote">
+        <p class="trial-title" id="trialTitle"></p>
+        <p class="trial-body" id="trialBody"></p>
+      </div>
       <div class="privacy-prefs" id="privacyPrefs">
         <label class="pref-row">
           <span class="pref-label" id="crashLabel"></span>
@@ -741,9 +780,16 @@ h2{font-size:28px;font-weight:700;margin-bottom:10px;letter-spacing:-.3px;}
 'use strict';
 var HOTKEY = window.CR_HOTKEY || '\u21e7\u2318V';
 var LANG   = window.CR_LANG   || 'ko';
+// 'new' = 아직 체험 전(안내 표시), 'started' / 'paid' = 설정에서 온보딩을 다시 보는 경우(안내 숨김)
+var TRIAL  = window.CR_TRIAL  || 'new';
+var PRICE  = window.CR_PRICE  || null;
 
 var I18N = {
   en:{
+    trial_title:'15-day free trial',
+    trial_body:'Everything is free for 15 days. After that, a one-time purchase of {PRICE} keeps ClipRaven unlocked. There is no subscription. If you don\u2019t buy, pasting clips is locked when the trial ends, and your history stays available to view and search.',
+    trial_body_noprice:'Everything is free for 15 days. After that, a one-time purchase keeps ClipRaven unlocked. There is no subscription. If you don\u2019t buy, pasting clips is locked when the trial ends, and your history stays available to view and search.',
+    trial_start_btn:'Start 15-day free trial',
     welcome_subtitle:'Your smart clipboard, reimagined.',
     hotkey_title:'Open ClipRaven Instantly',
     hotkey_desc:'Press your hotkey to reveal the clipboard panel.\nClipRaven lives in the background \u2014 this is how you summon it.',
@@ -795,6 +841,10 @@ var I18N = {
     ]
   },
   ko:{
+    trial_title:'15\uc77c \ubb34\ub8cc \uccb4\ud5d8',
+    trial_body:'15\uc77c \ub3d9\uc548 \ubaa8\ub4e0 \uae30\ub2a5\uc744 \ubb34\ub8cc\ub85c \uc4f8 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ud6c4\uc5d0\ub294 {PRICE} 1\ud68c \uad6c\ub9e4\ub85c \uacc4\uc18d \uc0ac\uc6a9\ud560 \uc218 \uc788\uc73c\uba70 \uad6c\ub3c5\uc774 \uc544\ub2d9\ub2c8\ub2e4. \uad6c\ub9e4\ud558\uc9c0 \uc54a\uc73c\uba74 \uccb4\ud5d8\uc774 \ub05d\ub09c \ub4a4 \ud074\ub9bd \ubd99\uc5ec\ub123\uae30\uac00 \uc7a0\uae30\uace0, \uae30\ub85d\uc740 \uacc4\uc18d \ubcf4\uace0 \uac80\uc0c9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
+    trial_body_noprice:'15\uc77c \ub3d9\uc548 \ubaa8\ub4e0 \uae30\ub2a5\uc744 \ubb34\ub8cc\ub85c \uc4f8 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774\ud6c4\uc5d0\ub294 1\ud68c \uad6c\ub9e4\ub85c \uacc4\uc18d \uc0ac\uc6a9\ud560 \uc218 \uc788\uc73c\uba70 \uad6c\ub3c5\uc774 \uc544\ub2d9\ub2c8\ub2e4. \uad6c\ub9e4\ud558\uc9c0 \uc54a\uc73c\uba74 \uccb4\ud5d8\uc774 \ub05d\ub09c \ub4a4 \ud074\ub9bd \ubd99\uc5ec\ub123\uae30\uac00 \uc7a0\uae30\uace0, \uae30\ub85d\uc740 \uacc4\uc18d \ubcf4\uace0 \uac80\uc0c9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
+    trial_start_btn:'15\uc77c \ubb34\ub8cc \uccb4\ud5d8 \uc2dc\uc791',
     welcome_subtitle:'\uc2a4\ub9c8\ud2b8 \ud074\ub9bd\ubcf4\ub4dc, \uc0c8\ub86d\uac8c \ub9cc\ub098\ubcf4\uc138\uc694.',
     hotkey_title:'ClipRaven\uc744 \ube60\ub974\uac8c \uc5f4\uae30',
     hotkey_desc:'\ub2e8\ucd95\ud0a4\ub97c \ub204\ub974\uba74 \ud074\ub9bd\ubcf4\ub4dc \ud328\ub110\uc774 \ub098\ud0c0\ub0a9\ub2c8\ub2e4.\nClipRaven\uc740 \ubc31\uadf8\ub77c\uc6b4\ub4dc\uc5d0\uc11c \ub300\uae30 \u2014 \ub2e8\ucd95\ud0a4\ub85c \ubd88\ub7ec\uc624\uc138\uc694.',
@@ -846,6 +896,10 @@ var I18N = {
     ]
   },
   ja:{
+    trial_title:'15\u65e5\u9593\u306e\u7121\u6599\u4f53\u9a13',
+    trial_body:'15\u65e5\u9593\u306f\u3059\u3079\u3066\u306e\u6a5f\u80fd\u3092\u7121\u6599\u3067\u4f7f\u3048\u307e\u3059\u3002\u305d\u306e\u5f8c\u306f {PRICE} \u306e\u8cb7\u3044\u5207\u308a\u3067\u5f15\u304d\u7d9a\u304d\u4f7f\u3048\u307e\u3059\u3002\u30b5\u30d6\u30b9\u30af\u30ea\u30d7\u30b7\u30e7\u30f3\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002\u8cfc\u5165\u3057\u306a\u3044\u5834\u5408\u3001\u4f53\u9a13\u671f\u9593\u306e\u7d42\u4e86\u5f8c\u306f\u30af\u30ea\u30c3\u30d7\u306e\u8cbc\u308a\u4ed8\u3051\u304c\u30ed\u30c3\u30af\u3055\u308c\u307e\u3059\u304c\u3001\u5c65\u6b74\u306e\u95b2\u89a7\u3068\u691c\u7d22\u306f\u305d\u306e\u307e\u307e\u4f7f\u3048\u307e\u3059\u3002',
+    trial_body_noprice:'15\u65e5\u9593\u306f\u3059\u3079\u3066\u306e\u6a5f\u80fd\u3092\u7121\u6599\u3067\u4f7f\u3048\u307e\u3059\u3002\u305d\u306e\u5f8c\u306f\u8cb7\u3044\u5207\u308a\u306e\u8cfc\u5165\u3067\u5f15\u304d\u7d9a\u304d\u4f7f\u3048\u307e\u3059\u3002\u30b5\u30d6\u30b9\u30af\u30ea\u30d7\u30b7\u30e7\u30f3\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002\u8cfc\u5165\u3057\u306a\u3044\u5834\u5408\u3001\u4f53\u9a13\u671f\u9593\u306e\u7d42\u4e86\u5f8c\u306f\u30af\u30ea\u30c3\u30d7\u306e\u8cbc\u308a\u4ed8\u3051\u304c\u30ed\u30c3\u30af\u3055\u308c\u307e\u3059\u304c\u3001\u5c65\u6b74\u306e\u95b2\u89a7\u3068\u691c\u7d22\u306f\u305d\u306e\u307e\u307e\u4f7f\u3048\u307e\u3059\u3002',
+    trial_start_btn:'15\u65e5\u9593\u306e\u7121\u6599\u4f53\u9a13\u3092\u59cb\u3081\u308b',
     welcome_subtitle:'\u30b9\u30de\u30fc\u30c8\u306a\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3001\u518d\u767a\u898b\u3002',
     hotkey_title:'ClipRaven\u3092\u7d20\u65e9\u304f\u958b\u304f',
     hotkey_desc:'\u30db\u30c3\u30c8\u30ad\u30fc\u3067\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u30d1\u30cd\u30eb\u304c\u8868\u793a\u3055\u308c\u307e\u3059\u3002\nClipRaven\u306f\u30d0\u30c3\u30af\u30b0\u30e9\u30a6\u30f3\u30c9\u3067\u5f85\u6a5f \u2014 \u30db\u30c3\u30c8\u30ad\u30fc\u3067\u547c\u3073\u51fa\u305b\u307e\u3059\u3002',
@@ -897,6 +951,10 @@ var I18N = {
     ]
   },
   'zh-Hans':{
+    trial_title:'15 \u5929\u514d\u8d39\u8bd5\u7528',
+    trial_body:'15 \u5929\u5185\u53ef\u514d\u8d39\u4f7f\u7528\u5168\u90e8\u529f\u80fd\u3002\u4e4b\u540e\u4e00\u6b21\u6027\u8d2d\u4e70 {PRICE} \u5373\u53ef\u7ee7\u7eed\u4f7f\u7528\uff0c\u4e0d\u662f\u8ba2\u9605\u3002\u5982\u679c\u4e0d\u8d2d\u4e70\uff0c\u8bd5\u7528\u7ed3\u675f\u540e\u5c06\u65e0\u6cd5\u7c98\u8d34\u526a\u8d34\u5185\u5bb9\uff0c\u4f46\u4ecd\u53ef\u67e5\u770b\u548c\u641c\u7d22\u5386\u53f2\u8bb0\u5f55\u3002',
+    trial_body_noprice:'15 \u5929\u5185\u53ef\u514d\u8d39\u4f7f\u7528\u5168\u90e8\u529f\u80fd\u3002\u4e4b\u540e\u4e00\u6b21\u6027\u8d2d\u4e70\u5373\u53ef\u7ee7\u7eed\u4f7f\u7528\uff0c\u4e0d\u662f\u8ba2\u9605\u3002\u5982\u679c\u4e0d\u8d2d\u4e70\uff0c\u8bd5\u7528\u7ed3\u675f\u540e\u5c06\u65e0\u6cd5\u7c98\u8d34\u526a\u8d34\u5185\u5bb9\uff0c\u4f46\u4ecd\u53ef\u67e5\u770b\u548c\u641c\u7d22\u5386\u53f2\u8bb0\u5f55\u3002',
+    trial_start_btn:'\u5f00\u59cb 15 \u5929\u514d\u8d39\u8bd5\u7528',
     welcome_subtitle:'\u91cd\u65b0\u8bbe\u8ba1\u7684\u667a\u80fd\u526a\u8d34\u677f\u3002',
     hotkey_title:'\u7acb\u5373\u6253\u5f00 ClipRaven',
     hotkey_desc:'\u6309\u5feb\u6377\u952e\u5373\u53ef\u663e\u793a\u526a\u8d34\u677f\u9762\u677f\u3002\nClipRaven \u5728\u540e\u53f0\u8fd0\u884c \u2014 \u4f7f\u7528\u5feb\u6377\u952e\u968f\u65f6\u5524\u51fa\u3002',
@@ -948,6 +1006,10 @@ var I18N = {
     ]
   },
   'zh-Hant':{
+    trial_title:'15 \u5929\u514d\u8cbb\u8a66\u7528',
+    trial_body:'15 \u5929\u5167\u53ef\u514d\u8cbb\u4f7f\u7528\u5168\u90e8\u529f\u80fd\u3002\u4e4b\u5f8c\u4e00\u6b21\u8cfc\u8cb7 {PRICE} \u5373\u53ef\u7e7c\u7e8c\u4f7f\u7528\uff0c\u4e0d\u662f\u8a02\u95b1\u3002\u5982\u679c\u4e0d\u8cfc\u8cb7\uff0c\u8a66\u7528\u7d50\u675f\u5f8c\u5c07\u7121\u6cd5\u8cbc\u4e0a\u526a\u8cbc\u5167\u5bb9\uff0c\u4f46\u4ecd\u53ef\u67e5\u770b\u548c\u641c\u5c0b\u6b77\u53f2\u8a18\u9304\u3002',
+    trial_body_noprice:'15 \u5929\u5167\u53ef\u514d\u8cbb\u4f7f\u7528\u5168\u90e8\u529f\u80fd\u3002\u4e4b\u5f8c\u4e00\u6b21\u8cfc\u8cb7\u5373\u53ef\u7e7c\u7e8c\u4f7f\u7528\uff0c\u4e0d\u662f\u8a02\u95b1\u3002\u5982\u679c\u4e0d\u8cfc\u8cb7\uff0c\u8a66\u7528\u7d50\u675f\u5f8c\u5c07\u7121\u6cd5\u8cbc\u4e0a\u526a\u8cbc\u5167\u5bb9\uff0c\u4f46\u4ecd\u53ef\u67e5\u770b\u548c\u641c\u5c0b\u6b77\u53f2\u8a18\u9304\u3002',
+    trial_start_btn:'\u958b\u59cb 15 \u5929\u514d\u8cbb\u8a66\u7528',
     welcome_subtitle:'\u91cd\u65b0\u8a2d\u8a08\u7684\u667a\u6167\u526a\u8cbc\u677f\u3002',
     hotkey_title:'\u7acb\u5373\u958b\u555f ClipRaven',
     hotkey_desc:'\u6309\u5feb\u901f\u9375\u5373\u53ef\u986f\u793a\u526a\u8cbc\u677f\u9762\u677f\u3002\nClipRaven \u5728\u80cc\u666f\u57f7\u884c \u2014 \u4f7f\u7528\u5feb\u901f\u9375\u96a8\u6642\u547c\u53eb\u3002',
@@ -999,6 +1061,10 @@ var I18N = {
     ]
   },
   es:{
+    trial_title:'Prueba gratuita de 15 d\u00edas',
+    trial_body:'Todas las funciones son gratis durante 15 d\u00edas. Despu\u00e9s, una compra \u00fanica de {PRICE} mantiene ClipRaven desbloqueado. No es una suscripci\u00f3n. Si no compras, al terminar la prueba se bloquea el pegado de clips, y tu historial sigue disponible para ver y buscar.',
+    trial_body_noprice:'Todas las funciones son gratis durante 15 d\u00edas. Despu\u00e9s, una compra \u00fanica mantiene ClipRaven desbloqueado. No es una suscripci\u00f3n. Si no compras, al terminar la prueba se bloquea el pegado de clips, y tu historial sigue disponible para ver y buscar.',
+    trial_start_btn:'Empezar la prueba de 15 d\u00edas',
     welcome_subtitle:'Tu portapapeles inteligente, reinventado.',
     hotkey_title:'Abre ClipRaven al instante',
     hotkey_desc:'Pulsa tu atajo para mostrar el panel del portapapeles.\nClipRaven vive en segundo plano \u2014 as\u00ed lo invocas.',
@@ -1050,6 +1116,10 @@ var I18N = {
     ]
   },
   fr:{
+    trial_title:'Essai gratuit de 15 jours',
+    trial_body:'Toutes les fonctions sont gratuites pendant 15 jours. Ensuite, un achat unique de {PRICE} garde ClipRaven d\u00e9verrouill\u00e9. Ce n\u2019est pas un abonnement. Sans achat, le collage des clips est verrouill\u00e9 \u00e0 la fin de l\u2019essai, et votre historique reste consultable et recherchable.',
+    trial_body_noprice:'Toutes les fonctions sont gratuites pendant 15 jours. Ensuite, un achat unique garde ClipRaven d\u00e9verrouill\u00e9. Ce n\u2019est pas un abonnement. Sans achat, le collage des clips est verrouill\u00e9 \u00e0 la fin de l\u2019essai, et votre historique reste consultable et recherchable.',
+    trial_start_btn:'Commencer l\u2019essai de 15 jours',
     welcome_subtitle:'Votre presse-papiers intelligent, r\u00e9imagin\u00e9.',
     hotkey_title:'Ouvrir ClipRaven instantan\u00e9ment',
     hotkey_desc:'Appuyez sur votre raccourci pour afficher le panneau du presse-papiers.\nClipRaven vit en arri\u00e8re-plan \u2014 c\u2019est ainsi que vous l\u2019invoquez.',
@@ -1101,6 +1171,10 @@ var I18N = {
     ]
   },
   de:{
+    trial_title:'15 Tage kostenlos testen',
+    trial_body:'15 Tage lang sind alle Funktionen kostenlos. Danach h\u00e4lt ein einmaliger Kauf f\u00fcr {PRICE} ClipRaven freigeschaltet. Es ist kein Abo. Ohne Kauf wird das Einf\u00fcgen von Clips nach dem Test gesperrt; Ihr Verlauf bleibt zum Ansehen und Durchsuchen verf\u00fcgbar.',
+    trial_body_noprice:'15 Tage lang sind alle Funktionen kostenlos. Danach h\u00e4lt ein einmaliger Kauf ClipRaven freigeschaltet. Es ist kein Abo. Ohne Kauf wird das Einf\u00fcgen von Clips nach dem Test gesperrt; Ihr Verlauf bleibt zum Ansehen und Durchsuchen verf\u00fcgbar.',
+    trial_start_btn:'15-Tage-Test starten',
     welcome_subtitle:'Ihre intelligente Zwischenablage, neu gedacht.',
     hotkey_title:'ClipRaven sofort \u00f6ffnen',
     hotkey_desc:'Dr\u00fccken Sie Ihren Kurzbefehl, um das Zwischenablage-Panel einzublenden.\nClipRaven l\u00e4uft im Hintergrund \u2014 so rufen Sie es auf.',
@@ -1120,7 +1194,7 @@ var I18N = {
     ax_status_on:'Erteilt',
     ax_cta_open:'Systemeinstellungen \u00f6ffnen',
     ax_cta_granted:'In Systemeinstellungen pr\u00fcfen',
-    ax_hint:'Optional. Ohne diese Berechtigung kopiert ClipRaven den Clip trotzdem, sodass du ihn selbst mit \u2318V einf\u00fcgen kannst, und du kannst sie sp\u00e4ter aktivieren. Du kannst den Zugriff jederzeit unter Systemeinstellungen \u2192 Datenschutz & Sicherheit \u2192 Bedienungshilfen entziehen.',
+    ax_hint:'Optional. Ohne diese Berechtigung kopiert ClipRaven den Clip trotzdem, sodass Sie ihn selbst mit \u2318V einf\u00fcgen k\u00f6nnen, und Sie k\u00f6nnen sie sp\u00e4ter aktivieren. Sie k\u00f6nnen den Zugriff jederzeit unter Systemeinstellungen \u2192 Datenschutz & Sicherheit \u2192 Bedienungshilfen entziehen.',
     crash_label:'Anonyme Absturzberichte senden',
     crash_desc:'Wenn aktiviert, werden technische Absturz-Traces gesendet, um Fehler zu beheben. Zwischenablage-Inhalte werden niemals eingeschlossen. Jederzeit \u00e4nderbar.',
     final_title:'Ein paar Funktionen, die Sie lieben werden',
@@ -1152,6 +1226,10 @@ var I18N = {
     ]
   },
   it:{
+    trial_title:'Prova gratuita di 15 giorni',
+    trial_body:'Tutte le funzioni sono gratuite per 15 giorni. Poi un acquisto unico di {PRICE} mantiene ClipRaven sbloccato. Non \u00e8 un abbonamento. Senza acquisto, alla fine della prova l\u2019incollaggio dei clip viene bloccato, mentre la cronologia resta consultabile e ricercabile.',
+    trial_body_noprice:'Tutte le funzioni sono gratuite per 15 giorni. Poi un acquisto unico mantiene ClipRaven sbloccato. Non \u00e8 un abbonamento. Senza acquisto, alla fine della prova l\u2019incollaggio dei clip viene bloccato, mentre la cronologia resta consultabile e ricercabile.',
+    trial_start_btn:'Inizia la prova di 15 giorni',
     welcome_subtitle:'I tuoi appunti intelligenti, reinventati.',
     hotkey_title:'Apri ClipRaven all\u2019istante',
     hotkey_desc:'Premi la tua scorciatoia per mostrare il pannello degli appunti.\nClipRaven vive in background \u2014 cos\u00ec lo richiami.',
@@ -1203,6 +1281,10 @@ var I18N = {
     ]
   },
   'pt-BR':{
+    trial_title:'Teste gr\u00e1tis de 15 dias',
+    trial_body:'Todos os recursos s\u00e3o gr\u00e1tis por 15 dias. Depois, uma compra \u00fanica de {PRICE} mant\u00e9m o ClipRaven desbloqueado. N\u00e3o \u00e9 assinatura. Sem a compra, colar clipes fica bloqueado quando o teste termina, e seu hist\u00f3rico continua dispon\u00edvel para ver e pesquisar.',
+    trial_body_noprice:'Todos os recursos s\u00e3o gr\u00e1tis por 15 dias. Depois, uma compra \u00fanica mant\u00e9m o ClipRaven desbloqueado. N\u00e3o \u00e9 assinatura. Sem a compra, colar clipes fica bloqueado quando o teste termina, e seu hist\u00f3rico continua dispon\u00edvel para ver e pesquisar.',
+    trial_start_btn:'Come\u00e7ar o teste de 15 dias',
     welcome_subtitle:'Sua \u00e1rea de transfer\u00eancia inteligente, reimaginada.',
     hotkey_title:'Abra o ClipRaven instantaneamente',
     hotkey_desc:'Pressione seu atalho para mostrar o painel da \u00e1rea de transfer\u00eancia.\nO ClipRaven roda em segundo plano \u2014 \u00e9 assim que voc\u00ea o chama.',
@@ -1265,9 +1347,23 @@ var nextBtn=document.getElementById('nextBtn');
 var startBtn=document.getElementById('startBtn');
 
 function init(){
-  applyI18n(); buildKbDemo(); createParticles();
+  applyI18n(); renderTrial(); buildKbDemo(); createParticles();
   setupNav(); setupSelMode(); setupAx(); setupPrivacyPrefs(); setupCarousel(); onPageEnter(0);
 }
+
+/* 체험 안내 — 가격은 StoreKit 현지 가격을 Swift 가 주입한다 (없으면 가격 없는 문장) */
+function renderTrial(){
+  var s=I18N[LANG]||I18N.en;
+  var note=document.getElementById('trialNote');
+  if(!note)return;
+  if(TRIAL!=='new'){note.style.display='none';return;}
+  note.style.display='';
+  document.getElementById('trialTitle').textContent=s.trial_title||'';
+  document.getElementById('trialBody').textContent=PRICE?(s.trial_body||'').replace('{PRICE}',PRICE):(s.trial_body_noprice||'');
+  var sb=document.getElementById('startBtn');
+  if(sb&&s.trial_start_btn)sb.textContent=s.trial_start_btn;
+}
+window.__setPrice=function(p){PRICE=p||null;renderTrial();};
 
 function applyI18n(){
   var s=I18N[LANG]||I18N.en;
@@ -1428,7 +1524,7 @@ function onPageEnter(i){
   if(i===1)startKb();
   if(i===2){send('accessibility:poll:start');updateAxGate();}
   if(i===3)startSvm();
-  if(i===4)startFxRotation();
+  if(i===4){startFxRotation();send('price:request');}
 }
 function onPageLeave(i){
   if(i===1)stopKb();

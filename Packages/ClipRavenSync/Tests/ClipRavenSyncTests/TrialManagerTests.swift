@@ -82,6 +82,34 @@ final class TrialManagerTests: XCTestCase {
         XCTAssertEqual(sut.daysRemaining(), 0)
     }
 
+    // MARK: - 시작 시점 (v1 리뷰 M3 — 3.1.1 고지 후 시작)
+
+    /// 잔여 일수를 읽는 것만으로는 체험이 시작되면 안 된다. 이전에는 앱 초기화가
+    /// `daysRemaining()` 을 읽는 순간 안내 없이 시작됐다.
+    func test_daysRemaining_doesNotStartTrial() {
+        XCTAssertEqual(sut.daysRemaining(), 15)
+        XCTAssertFalse(sut.hasStarted)
+        XCTAssertNil(keychain.loadFirstLaunchDate())
+        clock.advance(days: 20)
+        XCTAssertEqual(sut.daysRemaining(), 15, "시작 전에는 시간이 흘러도 전체 기간이어야 한다")
+    }
+
+    func test_startIfNeeded_startsOnce() {
+        let first = sut.startIfNeeded()
+        clock.advance(days: 3)
+        let second = sut.startIfNeeded()
+        XCTAssertEqual(first, second, "두 번째 호출이 시작일을 늦추면 안 된다")
+        XCTAssertTrue(sut.hasStarted)
+        XCTAssertEqual(sut.daysRemaining(), 12)
+    }
+
+    /// 기기 시계를 과거로 돌려도 체험 기간보다 늘어나지 않는다.
+    func test_daysRemaining_clockSetBack_neverExceedsTrialDays() {
+        sut.startIfNeeded()
+        clock.advance(days: -100)
+        XCTAssertEqual(sut.daysRemaining(), 15)
+    }
+
     // MARK: - 트라이얼 일수 커스텀
 
     func test_daysRemaining_customTrialDays() {
@@ -90,6 +118,7 @@ final class TrialManagerTests: XCTestCase {
             storage: keychain,
             trialDays: 7
         )
+        custom.startIfNeeded()
         XCTAssertEqual(custom.daysRemaining(), 7)
         clock.advance(days: 3)
         XCTAssertEqual(custom.daysRemaining(), 4)

@@ -115,6 +115,12 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
         CRSentry.startIfEnabled()
         CRSentry.breadcrumb("app launched", category: "app")
 
+        // 체험은 온보딩 완료 시 시작한다. 이미 온보딩을 마친 사용자(이전 빌드)는
+        // 여기서 한 번 보정한다. 이미 시작했으면 no-op (v1 리뷰 M3).
+        if UserDefaults.standard.bool(forKey: "onboarding.completed") {
+            PurchaseManager.shared.startTrialIfNeeded()
+        }
+
         // Force AppDatabase initialization so migrations run before any
         // code touches Clip (UI loads list immediately on launch).
         _ = AppDatabase.shared

@@ -44,6 +44,27 @@ public final class PurchaseManager: ObservableObject {
 
     // MARK: - Public
 
+    /// 체험을 시작하고 상태를 곧바로 반영한다. 온보딩에서 체험 안내를 보여준 뒤
+    /// 호출한다 (`TrialManager.startIfNeeded` 참고).
+    public func startTrialIfNeeded() {
+        TrialManager.shared.startIfNeeded()
+        recomputeTrialState()
+    }
+
+    /// 체험 잔여 일수만 다시 계산한다 (StoreKit 조회 없이, 동기).
+    ///
+    /// 메뉴바 앱은 몇 주씩 켜져 있으므로 실행 시에만 판정하면 체험이 끝나도 잠기지
+    /// 않는다 (v1 리뷰). 패널을 열 때와 붙여넣기 직전에 부른다. 이미 구매한
+    /// 상태(`.paid`)는 건드리지 않는다.
+    public func recomputeTrialState() {
+        guard lockState != .paid else { return }
+        let next = Self.computeLockState(
+            daysLeft: TrialManager.shared.daysRemaining(),
+            hasPaidEntitlement: false
+        )
+        if next != lockState { lockState = next }
+    }
+
     /// 앱 시작 시 호출 — 상품 정보 로드 + 구매 상태 확인.
     public func refresh() async {
         async let productLoad: Void = loadProduct()

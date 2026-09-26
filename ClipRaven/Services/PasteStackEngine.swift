@@ -31,6 +31,8 @@ final class PasteStackEngine: ObservableObject {
 
     func start() {
         guard !items.isEmpty else { return }
+        // 체험 만료 시 Paste Stack 도 막는다 (패널 경로와 동일한 검사).
+        guard !MainPanelViewModel.blockPasteIfExpired() else { return }
         isActive = true
         currentIndex = 0
         pasteNext()

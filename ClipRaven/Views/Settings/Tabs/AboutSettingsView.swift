@@ -1,4 +1,5 @@
 import SwiftUI
+import ClipRavenSync
 
 /// 정보 탭 — 앱 버전, 라이선스, 정책 링크.
 struct AboutSettingsView: View {
@@ -49,6 +50,8 @@ struct AboutSettingsView: View {
                 Text("by LumiBear Studio")
                     .font(.callout)
                     .foregroundStyle(.secondary)
+
+                PurchaseStatusRow()
 
                 HStack(spacing: 16) {
                     Button("지원 (Issues)") {
@@ -137,5 +140,34 @@ private struct LicensesSheet: View {
             }
         }
         .frame(width: 480, height: 360)
+    }
+}
+
+/// 구매 상태와 구매·복원 버튼. 설정에서도 복원에 닿을 수 있어야 한다 (3.1.1).
+private struct PurchaseStatusRow: View {
+    @ObservedObject private var pm = PurchaseManager.shared
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text(statusText)
+                .foregroundStyle(.secondary)
+            if pm.lockState != .paid {
+                Button("구매…") { PaywallWindowController.shared.show() }
+                    .buttonStyle(.link)
+            }
+            Button("구매 복원") { Task { await pm.restore() } }
+                .buttonStyle(.link)
+                .disabled(pm.isPurchasing)
+        }
+        .font(.callout)
+        .onAppear { pm.recomputeTrialState() }
+    }
+
+    private var statusText: String {
+        switch pm.lockState {
+        case .paid:            return String(localized: "구매 완료")
+        case .trial(let days): return String(localized: "무료 체험 \(days)일 남음")
+        case .expired:         return String(localized: "무료 체험 만료")
+        }
     }
 }

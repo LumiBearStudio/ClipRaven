@@ -144,7 +144,9 @@ final class StatusItemController {
         menu.addItem(aboutItem)
         menu.addItem(NSMenuItem.separator())
 
-        // 체험 / 만료 상태 표시
+        // 체험 / 만료 상태 표시 — 메뉴를 열 때마다 남은 일수를 다시 계산한다
+        // (메뉴바 앱은 몇 주씩 켜져 있다).
+        PurchaseManager.shared.recomputeTrialState()
         let lockState = PurchaseManager.shared.lockState
         if case .trial(let days) = lockState {
             let trialItem = NSMenuItem()
@@ -169,6 +171,7 @@ final class StatusItemController {
             )
             upgradeItem.target = self
             menu.addItem(upgradeItem)
+            menu.addItem(makeRestoreItem())
             menu.addItem(NSMenuItem.separator())
         } else if lockState == .expired {
             let expiredItem = NSMenuItem()
@@ -190,6 +193,7 @@ final class StatusItemController {
             )
             upgradeItem.target = self
             menu.addItem(upgradeItem)
+            menu.addItem(makeRestoreItem())
             menu.addItem(NSMenuItem.separator())
         }
 
@@ -247,6 +251,25 @@ final class StatusItemController {
         statusItem?.menu = menu
         statusItem?.button?.performClick(nil)
         statusItem?.menu = nil  // Reset to allow left-click again
+    }
+
+    /// "구매 복원…" — 메뉴바 앱은 이 메뉴가 주 진입점이라 복원이 여기서 바로 닿아야
+    /// 한다 (3.1.1). 이전에는 페이월 창 안에만 있었다.
+    private func makeRestoreItem() -> NSMenuItem {
+        let item = NSMenuItem(
+            title: NSLocalizedString("구매 복원…", comment: "Restore purchases menu item"),
+            action: #selector(restorePurchases(_:)),
+            keyEquivalent: ""
+        )
+        item.target = self
+        return item
+    }
+
+    /// 결과(진행·오류·완료)가 보이도록 페이월 창을 함께 연다. `.paid` 가 되면 창은
+    /// 자동으로 닫힌다.
+    @objc @MainActor private func restorePurchases(_ sender: NSMenuItem) {
+        PaywallWindowController.shared.show()
+        Task { await PurchaseManager.shared.restore() }
     }
 
     @objc @MainActor private func openPaywall(_ sender: NSMenuItem) {

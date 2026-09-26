@@ -222,15 +222,31 @@ public final class TrialManager {
 
     // MARK: - Instance API
 
-    /// 체험 잔여 일수 (0 이면 만료).
+    /// 체험이 시작됐는가 (시작일이 기록돼 있는가).
+    public var hasStarted: Bool { storage.loadFirstLaunchDate() != nil }
+
+    /// 체험을 시작한다. 이미 시작했으면 아무 일도 없다.
+    ///
+    /// App Review 3.1.1: 체험 기간·이후 가격·잠기는 기능을 **알린 뒤에** 시작해야
+    /// 한다. 그래서 온보딩에서 체험 안내를 보여준 뒤(완료 시점)에만 호출한다.
+    /// 이전에는 앱이 처음 뜰 때 `PurchaseManager` 초기화가 `daysRemaining()` 을
+    /// 읽는 순간 아무 안내 없이 시작됐다 (v1 리뷰 M3).
+    @discardableResult
+    public func startIfNeeded() -> Date { firstLaunchDate() }
+
+    /// 체험 잔여 일수 (0 이면 만료). **읽기 전용** — 시작 전이면 전체 기간.
     public func daysRemaining() -> Int {
+        guard let start = storage.loadFirstLaunchDate() else { return trialDays }
         let elapsed = Calendar.current.dateComponents(
-            [.day], from: firstLaunchDate(), to: clock.now()
+            [.day], from: start, to: clock.now()
         ).day ?? 0
-        return max(0, trialDays - elapsed)
+        // 기기 시계를 과거로 돌려 elapsed 가 음수가 되어도 체험 기간보다 늘어나지
+        // 않게 한다 (이전에는 100일 되돌리면 "115일 남음").
+        return min(trialDays, max(0, trialDays - elapsed))
     }
 
-    /// 첫 실행일. 저장된 값이 없으면 지금 시각을 기록하고 반환.
+    /// 체험 시작일. 저장된 값이 없으면 지금 시각을 기록하고 반환한다 (= 시작).
+    /// 시작 시점을 통제하려면 `startIfNeeded()` 를 쓴다.
     public func firstLaunchDate() -> Date {
         if let saved = storage.loadFirstLaunchDate() { return saved }
         let now = clock.now()
