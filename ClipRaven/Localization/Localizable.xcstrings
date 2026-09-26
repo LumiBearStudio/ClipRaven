@@ -25356,6 +25356,183 @@
           }
         }
       }
+    },
+    "클립 %lld개가 삭제됩니다" : {
+      "comment" : "Retention change confirmation title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld clips will be deleted"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 件のクリップが削除されます"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Clips werden gelöscht"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld clips seront supprimés"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se eliminarán %lld clips"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verranno eliminati %lld clip"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld clipes serão excluídos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将删除 %lld 条剪贴内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將刪除 %lld 則剪貼內容"
+          }
+        }
+      }
+    },
+    "삭제하고 변경" : {
+      "comment" : "Retention change confirmation — destructive confirm",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete and Change"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除して変更"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen und ändern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer et modifier"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar y cambiar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina e modifica"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir e alterar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除并更改"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除並變更"
+          }
+        }
+      }
+    },
+    "이 설정은 다음 정리 때 적용되며, 삭제된 클립은 되돌릴 수 없습니다. 고정한 클립은 삭제되지 않습니다." : {
+      "comment" : "Retention change confirmation message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This takes effect at the next cleanup, and deleted clips can’t be restored. Pinned clips are never deleted."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この設定は次回の整理で適用され、削除したクリップは元に戻せません。固定したクリップは削除されません。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Änderung gilt ab der nächsten Bereinigung, gelöschte Clips lassen sich nicht wiederherstellen. Angeheftete Clips werden nie gelöscht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce réglage s’applique au prochain nettoyage et les clips supprimés ne peuvent pas être restaurés. Les clips épinglés ne sont jamais supprimés."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica en la próxima limpieza y los clips eliminados no se pueden recuperar. Los clips fijados nunca se eliminan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’impostazione si applica alla prossima pulizia e i clip eliminati non si possono recuperare. I clip fissati non vengono mai eliminati."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A alteração vale a partir da próxima limpeza e clipes excluídos não podem ser recuperados. Clipes fixados nunca são excluídos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此设置将在下次清理时生效，删除的剪贴内容无法恢复。已固定的剪贴内容不会被删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此設定將在下次清理時生效，刪除的剪貼內容無法復原。已釘選的剪貼內容不會被刪除。"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

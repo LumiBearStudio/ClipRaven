@@ -595,4 +595,26 @@ final class ClipRepositoryTests: XCTestCase {
         XCTAssertEqual(all.count, 1)
         XCTAssertEqual(all.first?.contentText, "visible")
     }
+
+    // MARK: - 정리 규모 미리 보기 (v1 리뷰 M7 — 설정 변경 확인용)
+
+    func test_countExceeding_countsOnlyUnpinnedOverLimit() throws {
+        for i in 0..<5 { var c = makeClip("c\(i)"); try repo.save(&c) }
+        var pinned = makeClip("pinned", isPinned: true); try repo.save(&pinned)
+
+        XCTAssertEqual(try repo.countExceeding(keepCount: 2), 3, "핀 고정은 세지 않는다")
+        XCTAssertEqual(try repo.countExceeding(keepCount: 10), 0)
+    }
+
+    func test_countOlderThan_matchesWhatRetentionWouldDelete() throws {
+        var old = makeClip("old"); old.lastCopiedAt = Date().addingTimeInterval(-20 * 86400); try repo.save(&old)
+        var fresh = makeClip("fresh"); try repo.save(&fresh)
+        var oldPinned = makeClip("oldPinned", isPinned: true)
+        oldPinned.lastCopiedAt = Date().addingTimeInterval(-20 * 86400); try repo.save(&oldPinned)
+
+        XCTAssertEqual(try repo.countOlderThan(days: 7), 1)
+        XCTAssertEqual(try repo.countOlderThan(days: 30), 0)
+        // 미리 보기와 실제 정리가 같은 행을 가리키는지
+        XCTAssertEqual(try repo.deleteOlderThanDays(7), 1)
+    }
 }

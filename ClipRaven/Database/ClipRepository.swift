@@ -394,6 +394,34 @@ struct ClipRepository {
         }
     }
 
+    // MARK: - 정리 규모 미리 보기 (설정 변경 확인용)
+
+    /// 최대 저장 개수를 `keepCount` 로 바꾸면 다음 정리 때 지워질 클립 수 (핀 고정 제외).
+    /// 설정 화면이 큰 삭제를 확인받는 데 쓴다 — 5000 을 500 으로 잘못 쳐도 확인 없이
+    /// 4500개가 지워지던 문제 (v1 리뷰 M7).
+    func countExceeding(keepCount: Int) throws -> Int {
+        try dbPool.read { db in
+            let total = try Clip
+                .filter(Column("isDeleted") == false)
+                .filter(Column("isPinned") == false)
+                .fetchCount(db)
+            return max(0, total - keepCount)
+        }
+    }
+
+    /// 보관 기간을 `days` 로 바꾸면 다음 정리 때 지워질 클립 수 (핀 고정 제외).
+    func countOlderThan(days: Int) throws -> Int {
+        guard days > 0 else { return 0 }
+        let cutoff = Date().addingTimeInterval(-Double(days) * 86400)
+        return try dbPool.read { db in
+            try Clip
+                .filter(Column("isDeleted") == false)
+                .filter(Column("isPinned") == false)
+                .filter(Column("lastCopiedAt") < cutoff)
+                .fetchCount(db)
+        }
+    }
+
     /// 보관 기간 자동 정리 — `lastCopiedAt < now - days` 인 클립을 hard-delete.
     /// 핀 고정(`isPinned = 1`) 은 영구 보관이므로 제외.
     /// SmartRule 의 명시적 `expiresAt` 과 별개로 글로벌 retention 적용.

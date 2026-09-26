@@ -11,6 +11,24 @@ struct CaptureSettingsView: View {
     @State private var isRunningCleanup = false
     @State private var cleanupDone = false
 
+    // 삭제를 부르는 변경은 확인을 받는다 (v1 리뷰 M7).
+    // 이전에는 입력칸이 Stepper 범위와 무관하게 아무 값이나 받았고, 5000 을 500 으로
+    // 잘못 치면 다음 정리 때 확인 없이 4500개가 지워졌다. 동기화가 켜져 있으면 그
+    // 삭제가 모든 기기로 전파된다.
+    /// 마지막으로 확정된 값 — 확인을 취소하면 여기로 되돌린다.
+    @State private var confirmedClipCount: Int?
+    @State private var confirmedDays: Int?
+    @State private var pendingDeletion: PendingDeletion?
+
+    private struct PendingDeletion {
+        enum Setting { case clipCount, days }
+        let setting: Setting
+        let affected: Int
+    }
+
+    private static let clipCountRange = 100...50_000
+    private static let daysRange = 1...365
+
     var body: some View {
         Form {
             // Capture mode — select-all vs. double-copy
@@ -140,5 +158,70 @@ struct CaptureSettingsView: View {
             }
         }
         .darkFormStyle()
+        .onAppear {
+            // 이전 빌드에서 범위 밖으로 저장된 값을 보정한다.
+            maxClipCount = Self.clipCountRange.clamp(maxClipCount)
+            maxDaysToKeep = Self.daysRange.clamp(maxDaysToKeep)
+            confirmedClipCount = maxClipCount
+            confirmedDays = maxDaysToKeep
+        }
+        .onChange(of: maxClipCount) { reviewClipCount($0) }
+        .onChange(of: maxDaysToKeep) { reviewDays($0) }
+        .alert(
+            pendingDeletion.map { String(localized: "클립 \($0.affected)개가 삭제됩니다") } ?? "",
+            isPresented: Binding(get: { pendingDeletion != nil }, set: { _ in }),
+            presenting: pendingDeletion
+        ) { change in
+            Button("삭제하고 변경", role: .destructive) { confirm(change) }
+            Button("취소", role: .cancel) { revert(change) }
+        } message: { _ in
+            Text("이 설정은 다음 정리 때 적용되며, 삭제된 클립은 되돌릴 수 없습니다. 고정한 클립은 삭제되지 않습니다.")
+        }
     }
+
+    // MARK: - 삭제 확인
+
+    private func reviewClipCount(_ value: Int) {
+        let clamped = Self.clipCountRange.clamp(value)
+        if clamped != value { maxClipCount = clamped; return }   // onChange 가 다시 불린다
+        guard let confirmed = confirmedClipCount, clamped != confirmed else { return }
+        let affected = (try? ClipRepository().countExceeding(keepCount: clamped)) ?? 0
+        if affected > 0 {
+            pendingDeletion = PendingDeletion(setting: .clipCount, affected: affected)
+        } else {
+            confirmedClipCount = clamped
+        }
+    }
+
+    private func reviewDays(_ value: Int) {
+        let clamped = Self.daysRange.clamp(value)
+        if clamped != value { maxDaysToKeep = clamped; return }
+        guard let confirmed = confirmedDays, clamped != confirmed else { return }
+        let affected = (try? ClipRepository().countOlderThan(days: clamped)) ?? 0
+        if affected > 0 {
+            pendingDeletion = PendingDeletion(setting: .days, affected: affected)
+        } else {
+            confirmedDays = clamped
+        }
+    }
+
+    private func confirm(_ change: PendingDeletion) {
+        switch change.setting {
+        case .clipCount: confirmedClipCount = maxClipCount
+        case .days:      confirmedDays = maxDaysToKeep
+        }
+        pendingDeletion = nil
+    }
+
+    private func revert(_ change: PendingDeletion) {
+        switch change.setting {
+        case .clipCount: if let v = confirmedClipCount { maxClipCount = v }
+        case .days:      if let v = confirmedDays { maxDaysToKeep = v }
+        }
+        pendingDeletion = nil
+    }
+}
+
+private extension ClosedRange where Bound == Int {
+    func clamp(_ value: Int) -> Int { Swift.min(Swift.max(value, lowerBound), upperBound) }
 }
