@@ -50,6 +50,12 @@ enum CRSentry {
             options.enableCaptureFailedRequests = false
             options.enableNetworkTracking = false
             options.sendClientReports = false
+            // iOS 의 자동 breadcrumb 은 화면이 나타날 때 뷰 컨트롤러 제목과 버튼 제목을
+            // 기록한다(SentryBreadcrumbTracker). 클립 상세 화면은 제목이 클립 내용
+            // (`clip.displayTitle`)이라 클립 내용이 크래시 리포트에 실릴 수 있었다.
+            // 앱이 직접 남기는 breadcrumb 은 이 옵션과 무관하게 계속 남는다.
+            // (macOS 의 자동 breadcrumb 은 활성/비활성 상태만 기록해 켜 둔다.)
+            options.enableAutoBreadcrumbTracking = false
             // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
         }
         breadcrumb("crash reporting enabled", category: "app")
