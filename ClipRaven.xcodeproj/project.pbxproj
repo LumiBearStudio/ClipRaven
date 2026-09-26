@@ -1323,9 +1323,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSMinimumSystemVersion = 14.0;
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "ClipRaven uses system events to automatically paste selected clips into the currently active application.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 LumiBear Studio";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1353,9 +1351,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSMinimumSystemVersion = 14.0;
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSAppleEventsUsageDescription = "ClipRaven uses system events to automatically paste selected clips into the currently active application.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 LumiBear Studio";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

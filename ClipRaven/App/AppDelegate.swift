@@ -291,7 +291,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 queue: .main
             ) { [weak self] _ in
                 guard let self else { return }
-                // Deployment target is macOS 14.0 — #available 가드 불필요.
+                // 이 옵저버는 위 `#available(macOS 14.0, *)` 블록 안에서 등록되므로
+                // 추가 가드가 필요 없다 (배포 타깃은 13.0).
                 // shutdown() 은 @MainActor isolated 이고 이 closure 는 main
                 // queue 에서 호출됨. main-actor jump 명시로 Swift 6 strict
                 // concurrency 만족.
