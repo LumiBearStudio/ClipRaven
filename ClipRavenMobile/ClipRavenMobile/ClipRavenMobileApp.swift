@@ -246,7 +246,8 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
                     }
                 } catch {
                     ClipRavenLog.database.error("WAL checkpoint failed: \(String(describing: error), privacy: .public)")
-                    CRSentry.capture(error, context: "background WAL checkpoint")
+                    // 크래시가 아니므로 breadcrumb 으로만 남긴다 (동의 범위, v1 리뷰).
+                    CRSentry.breadcrumb("background WAL checkpoint failed", category: "database", level: .error)
                 }
             }
         }

@@ -54,13 +54,13 @@ struct AboutSettingsView: View {
                 PurchaseStatusRow()
 
                 HStack(spacing: 16) {
-                    Button("지원 (Issues)") {
-                        NSWorkspace.shared.open(URL(string: "https://github.com/LumiBearStudio/ClipRaven/issues")!)
+                    Button("지원") {
+                        NSWorkspace.shared.open(AppLinks.support)
                     }
                     .buttonStyle(.link)
 
                     Button("개인정보 처리방침") {
-                        NSWorkspace.shared.open(URL(string: "https://github.com/LumiBearStudio/ClipRaven/blob/main/PRIVACY.md")!)
+                        NSWorkspace.shared.open(AppLinks.privacyPolicy)
                     }
                     .buttonStyle(.link)
 

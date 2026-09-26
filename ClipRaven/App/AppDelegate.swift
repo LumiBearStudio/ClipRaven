@@ -238,8 +238,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // the handler gates on engine presence.
             NSApplication.shared.registerForRemoteNotifications()
 
-            // APS registration can fail on Xcode dev builds (OSStatus 13),
-            // which means silent-push wake-ups are unavailable. Compensate
+            // APS registration used to fail on every build (OSStatus 13): the
+            // entitlements file used the iOS key `aps-environment`, which a Mac
+            // app ignores, so the signed app had no push entitlement at all. The
+            // key is now `com.apple.developer.aps-environment` (v1 review).
+            // Registration can still fail (no network, profile problems), so
+            // silent-push wake-ups are best-effort. Compensate
             // by pulling fresh changes every time the user opens the panel
             // or brings the app forward — these are the only moments the
             // user cares about freshness. `requestSyncCycle` coalesces
@@ -354,7 +358,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         //   - Anything else → look up `domain` + `code` in Apple docs.
         let ns = error as NSError
         ClipRavenLog.app.error("APNs registration failed — domain=\(ns.domain, privacy: .public) code=\(ns.code, privacy: .public) \(ns.localizedDescription, privacy: .public)")
-        CRSentry.capture(error, context: "APNs registration failed — domain=\(ns.domain) code=\(ns.code)")
+        // 크래시가 아니므로 이벤트로 보내지 않고 breadcrumb 으로만 남긴다 — 다음 크래시
+        // 리포트에 함께 실린다 (동의 범위는 "비정상 종료 시에만", v1 리뷰).
+        CRSentry.breadcrumb("APNs registration failed — domain=\(ns.domain) code=\(ns.code)", category: "sync", level: .error)
     }
 
     func application(

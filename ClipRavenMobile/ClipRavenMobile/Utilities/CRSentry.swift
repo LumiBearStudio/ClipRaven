@@ -1,7 +1,7 @@
 import Foundation
 import Sentry
 
-/// Sentry helper — breadcrumb 추가 및 에러 캡처.
+/// Sentry helper — 동의 시작·철회와 breadcrumb.
 ///
 /// `crashReportsEnabled` 가 off 이면 SentrySDK 는 미초기화 상태이므로
 /// 모든 호출은 no-op 이 된다 (Sentry-cocoa 내부 guard 처리).
@@ -42,6 +42,14 @@ enum CRSentry {
             // 데이터만)이 사실이 되도록 끈다 (v1 리뷰).
             options.enableAutoSessionTracking = false
             options.enableAppHangTracking = false
+            // 같은 이유로 크래시와 무관한 자동 전송도 끈다. 기본값은 앱 안의 HTTP 요청
+            // URL 을 breadcrumb 으로 기록하고(링크 미리보기가 사용자가 복사한 URL 을
+            // 여는 경로), 5xx 응답을 별도 이벤트로 보내고, 폐기 통계(client report)를
+            // 보낸다 — 모두 "크래시 시에만, 클립 내용 없이" 약속 밖이다.
+            options.enableNetworkBreadcrumbs = false
+            options.enableCaptureFailedRequests = false
+            options.enableNetworkTracking = false
+            options.sendClientReports = false
             // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
         }
         breadcrumb("crash reporting enabled", category: "app")
@@ -55,7 +63,7 @@ enum CRSentry {
     // MARK: - Breadcrumb
 
     /// 앱 생명주기 이벤트 등을 Sentry breadcrumb 링버퍼에 쌓는다.
-    /// 이후 발생하는 crash / captureError 이벤트에 자동 첨부됨.
+    /// 이후 발생하는 크래시 리포트에 자동 첨부된다.
     static func breadcrumb(_ message: String, category: String, level: SentryLevel = .info) {
         let crumb = Breadcrumb(level: level, category: category)
         crumb.message = message
@@ -63,32 +71,7 @@ enum CRSentry {
         SentrySDK.addBreadcrumb(crumb)
     }
 
-    // MARK: - Error capture
-
-    /// 에러를 Sentry 로 전송한다. context 문자열은 호출자가 정하므로
-    /// 사용자 콘텐츠를 넣지 말 것.
-    ///
-    /// macOS 와 동일하게 background queue 에서 실행 — 전송 준비가 호출
-    /// 스레드에서 일어나 메인을 막는 것을 피한다.
-    static func capture(_ error: Error, context: String? = nil) {
-        Task.detached(priority: .utility) {
-            SentrySDK.capture(error: error) { scope in
-                if let context {
-                    scope.setExtra(value: context, key: "context")
-                }
-            }
-        }
-    }
-
-    /// 메시지를 에러로 전송한다.
-    static func captureMessage(_ message: String, level: SentryLevel = .error, context: String? = nil) {
-        Task.detached(priority: .utility) {
-            SentrySDK.capture(message: message) { scope in
-                scope.setLevel(level)
-                if let context {
-                    scope.setExtra(value: context, key: "context")
-                }
-            }
-        }
-    }
+    // 크래시가 아닌 오류를 이벤트로 보내는 `capture` API 는 두지 않는다. 동의 문구와
+    // 개인정보 라벨이 "비정상 종료 시에만" 이므로, 비치명 오류는 `breadcrumb(level:
+    // .error)` 로 남겨 다음 크래시 리포트에 함께 실리게 한다 (v1 리뷰).
 }

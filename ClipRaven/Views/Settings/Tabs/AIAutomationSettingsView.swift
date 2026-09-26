@@ -44,7 +44,6 @@ struct AIAutomationSettingsView: View {
 /// own view so `AIAutomationSettingsView` can swap it in on sub-tab selection.
 struct AppleIntelligenceView: View {
     @AppStorage("aiCategorizationEnabled") private var aiCategorizationEnabled = true
-    @AppStorage("aiSummaryEnabled")        private var aiSummaryEnabled = true
 
     @State private var batchInProgress = false
     @State private var batchProgress = ""
@@ -97,16 +96,10 @@ struct AppleIntelligenceView: View {
                             }
                         }
 
-                        LabeledContent("AI 요약") {
-                            Toggle("", isOn: $aiSummaryEnabled)
-                                .labelsHidden()
-                        }
-
-                        if aiSummaryEnabled {
-                            Text("500자 이상의 텍스트 클립에서 프리뷰 패널의 '요약' 버튼으로 AI 요약을 생성합니다.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                        // "AI 요약" 토글은 v1.0 에서 숨긴다. 요약 버튼이 있는 프리뷰 패널을 여는
+                        // 진입점이 없어(`togglePreview` 호출자 없음) 토글과 "프리뷰 패널의 '요약'
+                        // 버튼" 안내가 존재하지 않는 기능을 가리켰다 (v1 리뷰). 상세 보기에 요약
+                        // 버튼을 붙일 때 다시 노출한다.
                     }
                     .listRowBackground(Color(NSColor.controlBackgroundColor))
                 } header: {

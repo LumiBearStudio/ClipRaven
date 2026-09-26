@@ -386,8 +386,12 @@ struct SettingsView: View {
                 Label("앱 버전", systemImage: "info.circle")
             }
 
-            Link(destination: URL(string: "https://github.com/yourorg/ClipRaven/blob/main/PRIVACY.md")!) {
+            Link(destination: AppLinks.privacyPolicy) {
                 Label("개인정보 처리방침", systemImage: "hand.raised.fill")
+            }
+
+            Link(destination: AppLinks.support) {
+                Label("지원", systemImage: "questionmark.circle")
             }
 
             Button {
