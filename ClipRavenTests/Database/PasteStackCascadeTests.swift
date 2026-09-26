@@ -127,19 +127,77 @@ final class PasteStackCascadeTests: XCTestCase {
 
     // MARK: - 마이그레이션 데이터 보존
 
-    /// v15 는 테이블을 재생성한다 — 기존 스택 내용이 살아남아야 한다.
-    /// (마이그레이션 자체는 TestDatabase 생성 시 이미 전부 적용됐으므로,
-    ///  여기서는 재생성 후에도 스키마와 동작이 온전한지 확인한다.)
-    func test_pasteStackSchema_survivesMigration_withWorkingColumns() throws {
-        let a = try insertClip("a")
-        let b = try insertClip("b")
-        let first = try stackRepo.add(clipId: a)
-        let second = try stackRepo.add(clipId: b)
+    /// **v14 에서 만들어진 기존 데이터**가 v15 테이블 재생성을 거쳐 살아남는지.
+    ///
+    /// 개발 머신과 TestFlight 사용자 DB 는 v14 스키마에 실제 데이터를 담은 채
+    /// v15 를 맞는다. v15 는 테이블을 DROP 후 재생성하므로, 여기서 행이 빠지거나
+    /// 컬럼 값이 어긋나면 조용한 데이터 손실이다. 마이그레이션을 v14 까지만 적용한
+    /// DB 를 직접 만들어 그 상태에서 v15 를 올린다.
+    func test_v15_preservesExistingPasteStackRows_andEnablesCascade() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ClipRavenTests-v15-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
 
-        XCTAssertEqual(try stackRepo.count(), 2)
-        XCTAssertLessThan(first.sortOrder, second.sortOrder, "sortOrder 컬럼이 재생성 후에도 동작해야 한다")
+        var config = Configuration()
+        config.foreignKeysEnabled = true
+        let pool = try DatabasePool(path: dir.appendingPathComponent("db.sqlite").path, configuration: config)
 
-        try stackRepo.markPasted(id: first.id!)
-        XCTAssertEqual(try stackRepo.fetchNext()?.clipId, b, "isPasted 컬럼이 재생성 후에도 동작해야 한다")
+        var migrator = DatabaseMigrator()
+        DatabaseMigrations.registerAll(&migrator)
+
+        // 1) v14 까지만 — pasteStack 은 아직 cascade 없는 v1 정의
+        try migrator.migrate(pool, upTo: "v14_userIntentTimestamps")
+        let fkBefore = try pool.read { db in
+            try String.fetchOne(db, sql: "SELECT on_delete FROM pragma_foreign_key_list('pasteStack')")
+        }
+        XCTAssertEqual(fkBefore, "NO ACTION", "전제: v14 에서는 cascade 가 없어야 이 테스트가 의미 있다")
+
+        // 2) v14 상태에서 실데이터 생성 — 소비 표시된 행 포함
+        let clips = ClipRepository(dbPool: pool)
+        let stack = PasteStackRepository(dbPool: pool)
+        func insert(_ text: String) throws -> Int64 {
+            var clip = Clip(contentType: .text, contentText: text, contentHash: XXHash64Wrapper.hash(text))
+            try clips.save(&clip)
+            return clip.id!
+        }
+        let a = try insert("a"), b = try insert("b"), c = try insert("c")
+        let itemA = try stack.add(clipId: a)
+        let itemB = try stack.add(clipId: b)
+        let itemC = try stack.add(clipId: c)
+        try stack.markPasted(id: itemA.id!)
+
+        struct Snapshot: Equatable { let id: Int64; let clipId: Int64; let sortOrder: Int; let isPasted: Bool }
+        func snapshot() throws -> [Snapshot] {
+            try pool.read { db in
+                try Row.fetchAll(db, sql: "SELECT id, clipId, sortOrder, isPasted FROM pasteStack ORDER BY id")
+                    .map { Snapshot(id: $0["id"], clipId: $0["clipId"], sortOrder: $0["sortOrder"], isPasted: $0["isPasted"]) }
+            }
+        }
+        let before = try snapshot()
+        XCTAssertEqual(before.count, 3)
+
+        // 3) v15 적용
+        try migrator.migrate(pool)
+
+        // 행·컬럼 값이 그대로여야 한다
+        XCTAssertEqual(try snapshot(), before, "v15 재생성 후 기존 행이 한 글자도 달라지면 안 된다")
+
+        // FK 가 cascade 로 바뀌었고 DB 전체에 위반이 없어야 한다
+        let fkAfter = try pool.read { db in
+            try String.fetchOne(db, sql: "SELECT on_delete FROM pragma_foreign_key_list('pasteStack')")
+        }
+        XCTAssertEqual(fkAfter, "CASCADE")
+        let violations = try pool.read { db in try Row.fetchAll(db, sql: "PRAGMA foreign_key_check") }
+        XCTAssertTrue(violations.isEmpty, "마이그레이션 후 FK 위반이 없어야 한다")
+
+        // 실제 동작: 스택에 담긴 클립 삭제가 성공하고 해당 행만 사라진다
+        try clips.hardDelete(id: b)
+        XCTAssertEqual(try snapshot().map(\.id), [itemA.id!, itemC.id!])
+
+        // 재생성 후에도 새 항목 추가가 정상 동작 (sortOrder 는 기존 최대값 다음)
+        let d = try insert("d")
+        let itemD = try stack.add(clipId: d)
+        XCTAssertGreaterThan(itemD.sortOrder, itemC.sortOrder)
     }
 }
