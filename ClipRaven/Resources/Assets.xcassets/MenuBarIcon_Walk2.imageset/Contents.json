@@ -6,7 +6,29 @@
       "scale" : "1x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "MenuBarIcon_Walk2_onDark.png",
+      "idiom" : "mac",
+      "scale" : "1x"
+    },
+    {
       "filename" : "MenuBarIcon_Walk2@2x.png",
+      "idiom" : "mac",
+      "scale" : "2x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "MenuBarIcon_Walk2_onDark@2x.png",
       "idiom" : "mac",
       "scale" : "2x"
     }

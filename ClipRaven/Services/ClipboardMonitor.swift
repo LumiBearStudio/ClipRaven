@@ -35,7 +35,18 @@ final class ClipboardMonitor: ObservableObject {
     private var lastContentHash: String = ""
 
     // Excluded app bundle IDs
-    private var excludedApps: Set<String> = []
+    /// 제외 앱 목록 — **캡처할 때마다** 설정에서 새로 읽는다 (v1 리뷰 M8).
+    /// 이전에는 start() 에서 한 번만 읽어서, 설정에서 은행·비밀번호 앱을 제외해도
+    /// 재시작 전까지 그 앱에서 복사한 내용이 계속 저장됐다 (갱신 함수는 호출자가
+    /// 없었다). 복사 이벤트마다 짧은 문자열을 한 번 파싱하는 비용뿐이다.
+    private var excludedApps: Set<String> {
+        let raw = UserDefaults.standard.string(forKey: "excludedApps") ?? ""
+        return Set(
+            raw.components(separatedBy: .newlines)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+        )
+    }
     private var pauseObserver: Any?
 
     // MARK: Selective Mode State
@@ -67,7 +78,6 @@ final class ClipboardMonitor: ObservableObject {
         isMonitoring = true
 
         // Load excluded apps from UserDefaults
-        loadExcludedApps()
 
         // Listen for pause toggle
         pauseObserver = NotificationCenter.default.addObserver(
@@ -143,9 +153,6 @@ final class ClipboardMonitor: ObservableObject {
         )
     }
 
-    func setExcludedApps(_ apps: Set<String>) {
-        excludedApps = apps
-    }
 
     /// 클립보드 변경 검사 entry point. 품질 감사 B-CS5 권고에 따라 4단계로 분해:
     /// 1. changeCount + pause 확인
@@ -334,14 +341,6 @@ final class ClipboardMonitor: ObservableObject {
         }
     }
 
-    private func loadExcludedApps() {
-        let raw = UserDefaults.standard.string(forKey: "excludedApps") ?? ""
-        let apps = raw
-            .components(separatedBy: .newlines)
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        excludedApps = Set(apps)
-    }
 
     /// Read all pasteboard data on the main thread
     private func readPasteboardData() -> ClipboardData {

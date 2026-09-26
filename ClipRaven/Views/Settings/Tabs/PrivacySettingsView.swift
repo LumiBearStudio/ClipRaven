@@ -10,6 +10,8 @@ struct PrivacySettingsView: View {
     @AppStorage("hideOnScreenSharing")  private var hideOnScreenSharing = true
     /// 기본 OFF — 켜면 복사한 URL 로 앱이 직접 HTTP 요청을 보낸다 (감사 P3-b).
     @AppStorage("linkPreviewEnabled")   private var linkPreviewEnabled = false
+    /// 크래시 리포트 동의 — 온보딩에서 켠 것을 여기서 철회할 수 있어야 한다 (M9).
+    @AppStorage(CRSentry.enabledKey)    private var crashReportsEnabled = false
     @AppStorage("excludedApps")         private var excludedAppsRaw = ""
 
     @State private var excludedList: [String] = []
@@ -50,6 +52,15 @@ struct PrivacySettingsView: View {
                             )
                         }
                     Text("화면 공유·녹화·스크린샷에서 ClipRaven 창을 숨기도록 macOS에 요청합니다. macOS 15 이상에서는 일부 화면 공유·녹화 앱에 보일 수 있으니, 민감한 내용이 있을 때는 공유 전에 패널을 닫아 주세요. 패널을 촬영해야 할 때는 잠시 꺼 주세요.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Toggle("크래시 리포트 보내기", isOn: $crashReportsEnabled)
+                        .onChange(of: crashReportsEnabled) { on in
+                            // 재시작 없이 즉시 반영.
+                            if on { CRSentry.start() } else { CRSentry.stop() }
+                        }
+                    Text("앱이 비정상 종료되면 기술 정보만 익명으로 보냅니다. 클립보드 내용은 포함되지 않습니다.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
 

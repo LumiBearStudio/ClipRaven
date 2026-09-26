@@ -36,6 +36,12 @@ enum CRSentry {
             #endif
             options.sendDefaultPii = false
             options.maxBreadcrumbs = 200
+            // 크래시가 없을 때는 아무것도 보내지 않는다. Sentry 9 는 기본값으로 세션
+            // 추적과 앱 멈춤 추적이 켜져 있어, 크래시가 없어도 세션·멈춤 데이터를
+            // 보냈다 — "비정상 종료 시에만" 이라는 동의 문구와 개인정보 라벨(충돌
+            // 데이터만)이 사실이 되도록 끈다 (v1 리뷰).
+            options.enableAutoSessionTracking = false
+            options.enableAppHangTracking = false
             // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
         }
         breadcrumb("crash reporting enabled", category: "app")

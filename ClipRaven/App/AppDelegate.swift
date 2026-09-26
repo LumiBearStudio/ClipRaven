@@ -37,30 +37,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var syncChangeCapture: SyncChangeCapture?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Crash reporting — strictly opt-in (toggle on onboarding last page)
-        if UserDefaults.standard.bool(forKey: "crashReportsEnabled") {
-            SentrySDK.start { options in
-                options.dsn = "https://c5f56450b1edd3c00bbe4efb757a3bc1@o4510949994266624.ingest.de.sentry.io/4511348541489232"
-                // Sentry dashboard 의 environment 필터로 dev / prod 구분.
-                // Debug 빌드 (Xcode Run) 에서 발생한 crash 가 production 의
-                // 진짜 사용자 crash 와 섞이지 않게.
-                #if DEBUG
-                options.environment = "development"
-                #else
-                options.environment = "production"
-                #endif
-                options.sendDefaultPii = false
-                options.maxBreadcrumbs = 200
-                // 진단 정보는 breadcrumb 으로만 보낸다. 이전엔 beforeSend 에서
-                // 최근 os.log 200줄을 첨부했는데 (a) 그 안에 클립 본문이 섞여
-                // 개인정보처리방침을 위반했고 (b) OSLogStore 동기 호출이 호출
-                // 스레드를 막아 App Hang 을 유발했다 (보안 감사 P2).
-            }
-            // 실행 자체는 크래시가 아니다. 여기서 이벤트를 보내면 크래시
-            // 리포트 토글이 사실상 사용량 텔레메트리로 동작해 "앱이 충돌할 때만"
-            // 이라는 고지와 어긋난다. breadcrumb 만 남긴다.
-            CRSentry.breadcrumb("app launched", category: "app")
-        }
+        // Crash reporting — 온보딩 마지막 페이지·설정 › 개인정보에서 켜고 끈다 (기본 OFF).
+        CRSentry.startIfEnabled()
+        // 실행 자체는 크래시가 아니므로 이벤트는 보내지 않고 breadcrumb 만 남긴다.
+        CRSentry.breadcrumb("app launched", category: "app")
 
         // Register default UserDefaults values
         // 보안 감사 A-C2: 보호 관련 토글은 명시적으로 ON 으로 등록해 신규

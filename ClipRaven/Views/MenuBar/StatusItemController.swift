@@ -20,6 +20,9 @@ final class StatusItemController {
     /// frame asset 이 2개 이상 있으면 frame swap, 없으면 transform-only
     /// fallback (subtle sway/tilt) 로 동작.
     private var walkTimer: Timer?
+    private var screenSleepObserver: Any?
+    private var screenWakeObserver: Any?
+    private var displayOptionsObserver: Any?
     private var walkFrameIndex: Int = 0
     /// 클립 capture 시 잠시 재생되는 flap 애니메이션의 타이머. 한 사이클 끝나면
     /// walking 으로 자동 복귀.
@@ -53,6 +56,27 @@ final class StatusItemController {
         button.action = #selector(statusItemClicked(_:))
         button.target = self
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+
+        // 화면이 꺼져 있는 동안에는 4Hz 걷기 타이머를 멈춘다 (배터리). 이전에는
+        // 디스플레이가 잠들어도 초당 4회 메뉴바를 다시 그렸다.
+        let workspaceCenter = NSWorkspace.shared.notificationCenter
+        screenSleepObserver = workspaceCenter.addObserver(
+            forName: NSWorkspace.screensDidSleepNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.stopWalkingAnimation()
+        }
+        screenWakeObserver = workspaceCenter.addObserver(
+            forName: NSWorkspace.screensDidWakeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.startWalkingAnimation()
+        }
+        // "동작 줄이기" 를 켜고 끄면 즉시 반영한다.
+        displayOptionsObserver = workspaceCenter.addObserver(
+            forName: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.stopWalkingAnimation()
+            self?.startWalkingAnimation()
+        }
 
         // Listen for new clip capture → flap (1회 재생 후 walking 으로 복귀)
         newClipObserver = NotificationCenter.default.addObserver(
@@ -397,9 +421,21 @@ final class StatusItemController {
         var frames: [NSImage] = []
         for i in 1...maxCount {
             guard let img = NSImage(named: "\(prefix)\(i)") else { break }
+            // 프레임이 바뀔 때마다 VoiceOver 이름이 사라지지 않게 (v1 리뷰 G6).
+            img.accessibilityDescription = "ClipRaven"
             frames.append(img)
         }
         return frames
+    }
+
+    /// 까마귀 애니메이션을 돌려도 되는가 — 손쉬운 사용의 "동작 줄이기" 와 앱의
+    /// "애니메이션" 설정을 존중한다. 이전에는 둘 다 무시하고 4Hz 로 계속 돌았다.
+    ///
+    /// 프레임 자산은 메뉴바 명암에 따라 두 벌이다 (밝은 메뉴바: 명도만 반전한 검은
+    /// 까마귀, 어두운 메뉴바: 흰 원본). 이전에는 흰 원본 한 벌뿐이라 밝은 메뉴바에서
+    /// 메뉴바 전용 앱의 유일한 진입점이 보이지 않았다 (v1 리뷰 G6).
+    private var motionAllowed: Bool {
+        !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion && AppAnimations.enabled
     }
 
     /// idle walking animation 을 시작한다. 이미 돌고 있으면 no-op (idempotent).
@@ -408,6 +444,11 @@ final class StatusItemController {
         guard !isPaused else { return }
         guard walkTimer == nil else { return }   // idempotent
         guard let button = statusItem?.button else { return }
+        guard motionAllowed else {
+            // 움직이지 않는 첫 프레임만 보여준다 (명암 변형은 그대로 적용된다).
+            if let first = Self.walkFrames.first { button.image = first }
+            return
+        }
 
         let frames = Self.walkFrames
         if frames.count >= 2 {
@@ -485,6 +526,7 @@ final class StatusItemController {
     /// 완료 후 walking 으로 복귀.
     func playFlapAnimation() {
         guard !isPaused else { return }
+        guard motionAllowed else { return }
         guard let button = statusItem?.button else { return }
 
         // 진행 중이던 flap 이 있으면 cancel (overlap 방지).

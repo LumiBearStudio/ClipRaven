@@ -25881,6 +25881,122 @@
           }
         }
       }
+    },
+    "크래시 리포트 보내기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send crash reports"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラッシュレポートを送信"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absturzberichte senden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer les rapports de plantage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar informes de fallos"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invia rapporti di arresto anomalo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar relatórios de falha"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送崩溃报告"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送當機報告"
+          }
+        }
+      }
+    },
+    "앱이 비정상 종료되면 기술 정보만 익명으로 보냅니다. 클립보드 내용은 포함되지 않습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If the app crashes, only technical details are sent, anonymously. Clipboard contents are never included."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリが異常終了したときに、技術情報のみを匿名で送信します。クリップボードの内容は含まれません。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn die App abstürzt, werden nur technische Details anonym gesendet. Zwischenablage-Inhalte sind nie enthalten."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si l’app plante, seules des informations techniques sont envoyées, de façon anonyme. Le contenu du presse-papiers n’est jamais inclus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si la app falla, solo se envían datos técnicos de forma anónima. Nunca se incluye el contenido del portapapeles."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se l’app si chiude in modo anomalo, vengono inviati solo dati tecnici in forma anonima. Il contenuto degli appunti non è mai incluso."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se o app falhar, só dados técnicos são enviados, de forma anônima. O conteúdo da área de transferência nunca é incluído."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用异常退出时，仅匿名发送技术信息，绝不包含剪贴板内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App 異常結束時，僅匿名傳送技術資訊，絕不包含剪貼簿內容。"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
