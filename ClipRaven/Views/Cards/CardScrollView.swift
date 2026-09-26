@@ -181,7 +181,7 @@ struct CardScrollView: View {
                                 Menu {
                                     ForEach(TransformCategory.allCases, id: \.rawValue) { category in
                                         let items = TextTransform.allCases.filter { $0.category == category }
-                                        Section(category.rawValue) {
+                                        Section(category.displayName) {
                                             ForEach(items) { transform in
                                                 Button {
                                                     onClipPasteWithTransform(clip, transform)

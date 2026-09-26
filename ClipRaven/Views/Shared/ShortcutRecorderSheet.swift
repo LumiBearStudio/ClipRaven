@@ -147,7 +147,7 @@ struct ShortcutRecorderSheet: View {
         if let existing = try? clipRepository.fetchClipByShortcut(keyCode: keyCode, modifiers: modifiers),
            existing.id != clipId {
             let preview = (existing.contentText ?? "").prefix(30)
-            return "이미 다른 클립(\"\(preview)…\")에 할당된 단축키입니다."
+            return String(localized: "이미 다른 클립(\"\(preview)…\")에 할당된 단축키입니다.")
         }
 
         return nil

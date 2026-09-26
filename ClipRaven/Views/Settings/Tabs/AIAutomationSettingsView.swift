@@ -130,7 +130,7 @@ struct AppleIntelligenceView: View {
         if #available(macOS 26, *) {
             batchInProgress = true
             batchResult = nil
-            batchProgress = "준비 중…"
+            batchProgress = String(localized: "준비 중…")
             Task.detached(priority: .utility) {
                 let progressCB: @Sendable (Int, Int) -> Void = { done, total in
                     Task { @MainActor in
@@ -145,7 +145,7 @@ struct AppleIntelligenceView: View {
                 }
                 await MainActor.run {
                     batchInProgress = false
-                    batchResult = "완료: \(count)개 처리"
+                    batchResult = String(localized: "완료: \(count)개 처리")
                 }
             }
         }

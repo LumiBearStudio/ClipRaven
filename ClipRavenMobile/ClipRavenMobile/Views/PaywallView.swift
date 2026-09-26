@@ -108,7 +108,7 @@ struct PaywallView: View {
 
 private struct FeatureRow: View {
     let icon: String
-    let text: String
+    let text: LocalizedStringKey
 
     var body: some View {
         HStack(spacing: 12) {

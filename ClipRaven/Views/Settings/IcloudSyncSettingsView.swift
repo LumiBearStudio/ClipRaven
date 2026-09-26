@@ -379,11 +379,11 @@ struct IcloudSyncSettingsView: View {
                 _ = try await db.deleteRecordZone(
                     withID: SyncRecordMapper.zoneID
                 )
-                wipeResult = "완료"
+                wipeResult = String(localized: "완료")
             } catch let error as CKError where error.code == .zoneNotFound {
-                wipeResult = "완료 (이미 비어있음)"
+                wipeResult = String(localized: "완료 (이미 비어있음)")
             } catch {
-                wipeResult = "로컬 sync 상태 초기화 됨, 서버 삭제 실패: \(error.localizedDescription)"
+                wipeResult = String(localized: "로컬 sync 상태 초기화 됨, 서버 삭제 실패: \(error.localizedDescription)")
             }
             wipeInProgress = false
             // Surface restart prompt — the in-process engine state is now

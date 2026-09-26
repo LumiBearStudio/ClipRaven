@@ -382,11 +382,11 @@ final class BackupService {
         var errorDescription: String? {
             switch self {
             case .unsupportedVersion(let v):
-                return "이 백업 파일은 더 새로운 버전(v\(v))의 ClipRaven에서 생성되었습니다. 앱을 업데이트한 뒤 다시 시도하세요."
+                return String(localized: "이 백업 파일은 더 새로운 버전(v\(String(v)))의 ClipRaven에서 생성되었습니다. 앱을 업데이트한 뒤 다시 시도하세요.")
             case .zipExtractionFailed(let status):
-                return "ZIP 압축 해제에 실패했습니다. (status: \(status))"
+                return String(localized: "ZIP 압축 해제에 실패했습니다. (status: \(String(status)))")
             case .missingBackupJSON:
-                return "백업 파일에 backup.json이 없습니다. 올바른 ClipRaven 백업 파일이 맞는지 확인해주세요."
+                return String(localized: "백업 파일에 backup.json이 없습니다. 올바른 ClipRaven 백업 파일이 맞는지 확인해주세요.")
             }
         }
     }

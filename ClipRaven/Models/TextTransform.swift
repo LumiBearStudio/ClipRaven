@@ -9,6 +9,18 @@ enum TransformCategory: String, CaseIterable {
     case encoding   = "인코딩"
     case hash       = "해시"
     case format     = "포맷"
+
+    /// 메뉴 섹션 제목. `rawValue` 를 그대로 `Section(_:)` 에 넘기면 문자열 그대로
+    /// 표시돼 모든 언어에서 한국어가 보였다 (v1 리뷰).
+    var displayName: String {
+        switch self {
+        case .caseChange: return String(localized: "대소문자")
+        case .whitespace: return String(localized: "공백 / 줄바꿈")
+        case .encoding:   return String(localized: "인코딩")
+        case .hash:       return String(localized: "해시")
+        case .format:     return String(localized: "포맷")
+        }
+    }
 }
 
 // MARK: - TextTransform
@@ -66,23 +78,23 @@ enum TextTransform: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .uppercase:      return "대문자로"
-        case .lowercase:      return "소문자로"
-        case .trim:           return "앞뒤 공백 제거"
-        case .joinLines:      return "한 줄로 합치기"
-        case .collapseSpaces: return "연속 공백 축소"
+        case .uppercase:      return String(localized: "대문자로")
+        case .lowercase:      return String(localized: "소문자로")
+        case .trim:           return String(localized: "앞뒤 공백 제거")
+        case .joinLines:      return String(localized: "한 줄로 합치기")
+        case .collapseSpaces: return String(localized: "연속 공백 축소")
         case .crlfToLf:       return "CRLF → LF"
-        case .urlEncode:      return "URL 인코딩"
-        case .urlDecode:      return "URL 디코딩"
-        case .base64Encode:   return "Base64 인코딩"
-        case .base64Decode:   return "Base64 디코딩"
-        case .htmlEncode:     return "HTML 인코딩"
-        case .htmlDecode:     return "HTML 디코딩"
-        case .md5:            return "MD5 해시"
-        case .sha256:         return "SHA-256 해시"
-        case .jsonFormat:     return "JSON 포맷 (들여쓰기)"
-        case .jsonMinify:     return "JSON 압축"
-        case .slugify:        return "Slug 변환"
+        case .urlEncode:      return String(localized: "URL 인코딩")
+        case .urlDecode:      return String(localized: "URL 디코딩")
+        case .base64Encode:   return String(localized: "Base64 인코딩")
+        case .base64Decode:   return String(localized: "Base64 디코딩")
+        case .htmlEncode:     return String(localized: "HTML 인코딩")
+        case .htmlDecode:     return String(localized: "HTML 디코딩")
+        case .md5:            return String(localized: "MD5 해시")
+        case .sha256:         return String(localized: "SHA-256 해시")
+        case .jsonFormat:     return String(localized: "JSON 포맷 (들여쓰기)")
+        case .jsonMinify:     return String(localized: "JSON 압축")
+        case .slugify:        return String(localized: "Slug 변환")
         }
     }
 

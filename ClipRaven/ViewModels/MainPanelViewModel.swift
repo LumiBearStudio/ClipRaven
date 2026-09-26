@@ -986,9 +986,9 @@ final class MainPanelViewModel: ObservableObject {
         let countAfter = pasteStackEngine.items.count
 
         if countAfter > countBefore {
-            stackFeedbackMessage = "스택에 추가됨 (\(countAfter)개)"
+            stackFeedbackMessage = String(localized: "스택에 추가됨 (\(countAfter)개)")
         } else if countAfter >= PasteStackEngine.maxItems {
-            stackFeedbackMessage = "스택 최대 \(PasteStackEngine.maxItems)개"
+            stackFeedbackMessage = String(localized: "스택 최대 \(PasteStackEngine.maxItems)개")
         }
 
         // Auto-dismiss feedback

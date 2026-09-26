@@ -34,7 +34,7 @@ struct StackHUDView: View {
         }
     }
 
-    private func keyHint(_ key: String, _ label: String) -> some View {
+    private func keyHint(_ key: String, _ label: LocalizedStringKey) -> some View {
         HStack(spacing: 2) {
             Text(key)
                 .padding(.horizontal, 3)

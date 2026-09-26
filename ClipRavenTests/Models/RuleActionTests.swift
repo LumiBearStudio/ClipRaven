@@ -28,8 +28,10 @@ final class RuleActionTests: XCTestCase {
     }
 
     func test_displayName_ttlZeroMeansPermanent() {
+        // 표시 이름은 현재 언어로 번역되므로 한국어 문구 대신 같은 키의 번역과 비교한다.
         let action: RuleAction = .setTTL(days: 0)
-        XCTAssertTrue(action.displayName.contains("영구"))
+        XCTAssertEqual(action.displayName, String(localized: "TTL: 영구 보관"))
+        XCTAssertNotEqual(action.displayName, RuleAction.setTTL(days: 30).displayName)
     }
 
     func test_displayName_ttlShowsDays() {

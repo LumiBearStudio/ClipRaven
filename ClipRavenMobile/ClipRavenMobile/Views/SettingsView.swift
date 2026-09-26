@@ -501,7 +501,7 @@ private struct ClipStats {
     var syncTarget: Int = 0      // excludeFromSync = 0
     var syncCompleted: Int = 0   // ckLastSyncedAt IS NOT NULL
 
-    var totalText: String { "\(total)개" }
+    var totalText: String { String(localized: "\(total)개") }
     var syncedText: String { "\(syncCompleted) / \(syncTarget)" }
 
     static func collect() async -> ClipStats {

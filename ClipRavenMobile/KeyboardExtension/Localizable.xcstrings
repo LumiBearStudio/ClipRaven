@@ -7,7 +7,55 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enable 'Allow Full Access'\nSettings → General → Keyboards → ClipRaven"
+            "value" : "Turn on “Allow Full Access”\nSettings → General → Keyboard → Keyboards → ClipRaven"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「フルアクセスを許可」をオンにしてください\n設定 → 一般 → キーボード → キーボード → ClipRaven"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktivieren Sie „Vollen Zugriff erlauben“\nEinstellungen → Allgemein → Tastatur → Tastaturen → ClipRaven"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez « Autoriser l’accès complet »\nRéglages → Général → Clavier → Claviers → ClipRaven"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa «Permitir acceso completo»\nAjustes → General → Teclado → Teclados → ClipRaven"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attiva «Consenti accesso completo»\nImpostazioni → Generali → Tastiera → Tastiere → ClipRaven"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative “Permitir Acesso Total”\nAjustes → Geral → Teclado → Teclados → ClipRaven"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请打开“允许完全访问”\n设置 → 通用 → 键盘 → 键盘 → ClipRaven"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請開啟「允許完整取用」\n設定 → 一般 → 鍵盤 → 鍵盤 → ClipRaven"
           }
         }
       }
@@ -961,7 +1009,55 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Potentially dangerous URL — paste blocked"
+            "value" : "Possibly unsafe link — not pasted"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "危険な可能性があるURLのため貼り付けませんでした"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Möglicherweise unsicherer Link – nicht eingefügt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lien potentiellement dangereux — non collé"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace posiblemente peligroso: no se pegó"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link potenzialmente pericoloso: non incollato"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link possivelmente perigoso — não colado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接可能不安全，未粘贴"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "連結可能不安全，未貼上"
           }
         }
       }

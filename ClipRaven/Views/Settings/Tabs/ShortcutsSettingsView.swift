@@ -159,7 +159,7 @@ final class KeyRecorderField: NSView {
         path.stroke()
 
         // Label
-        let label = isRecording ? "입력 중..." : displayString
+        let label = isRecording ? String(localized: "입력 중...") : displayString
         let color: NSColor = isRecording ? .controlAccentColor : .labelColor
         let font = NSFont.monospacedSystemFont(ofSize: 13, weight: .medium)
         let attrs: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: color]

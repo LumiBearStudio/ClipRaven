@@ -8,8 +8,8 @@ enum RuleAction: Codable, Equatable {
 
     var displayName: String {
         switch self {
-        case .assignTag: return "태그 지정"
-        case .setTTL(let days): return days == 0 ? "TTL: 영구 보관" : "TTL: \(days)일"
+        case .assignTag: return String(localized: "태그 지정")
+        case .setTTL(let days): return days == 0 ? String(localized: "TTL: 영구 보관") : String(localized: "TTL: \(days)일")
         }
     }
 }
@@ -93,10 +93,10 @@ enum RuleCondition: Codable, Equatable {
 
     var displayType: String {
         switch self {
-        case .sourceApp: return "앱"
-        case .contentType: return "콘텐츠 유형"
-        case .textContains: return "텍스트 포함"
-        case .urlDomain: return "URL 도메인"
+        case .sourceApp: return String(localized: "앱")
+        case .contentType: return String(localized: "콘텐츠 유형")
+        case .textContains: return String(localized: "텍스트 포함")
+        case .urlDomain: return String(localized: "URL 도메인")
         }
     }
 

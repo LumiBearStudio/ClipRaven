@@ -139,7 +139,7 @@ struct ImageConfirmView: View {
                         Image(systemName: "photo.on.rectangle")
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
-                        Text(sourceAppName ?? "클립보드")
+                        Text(sourceAppName ?? String(localized: "클립보드"))
                             .font(.system(size: 11, weight: .medium))
                             .foregroundColor(.secondary)
                             .lineLimit(1)

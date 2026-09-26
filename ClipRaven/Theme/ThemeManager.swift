@@ -64,14 +64,14 @@ enum ColorPreset: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .default:  return "기본"
-        case .lavender: return "라벤더"
-        case .ocean:    return "오션"
-        case .sunset:   return "선셋"
-        case .mint:     return "민트"
-        case .rose:     return "로즈"
-        case .amber:    return "앰버"
-        case .graphite: return "그래파이트"
+        case .default:  return String(localized: "기본")
+        case .lavender: return String(localized: "라벤더")
+        case .ocean:    return String(localized: "오션")
+        case .sunset:   return String(localized: "선셋")
+        case .mint:     return String(localized: "민트")
+        case .rose:     return String(localized: "로즈")
+        case .amber:    return String(localized: "앰버")
+        case .graphite: return String(localized: "그래파이트")
         }
     }
 

@@ -16,7 +16,7 @@ struct ClipWidgetEntry: TimelineEntry {
         clips: [
             ClipSnapshot(
                 id: 0,
-                text: "회의 메모",
+                text: String(localized: "회의 메모"),
                 contentType: "text",
                 lastCopiedAt: Date().addingTimeInterval(-30),
                 thumbnailData: nil,
@@ -86,16 +86,16 @@ struct ClipSnapshot: Identifiable, Codable {
     }
 
     /// 상대 시간 표시 ("방금", "5분", "1시간", "어제", "3일", "2주").
-    /// SwiftUI `.relative` 스타일 대신 직접 — Korean 단위 일관성.
+    /// SwiftUI `.relative` 스타일 대신 직접 — 짧은 단위 일관성. 단위는 위젯 카탈로그에서 번역한다.
     var relativeTime: String {
         let secs = Int(-lastCopiedAt.timeIntervalSinceNow)
-        if secs < 60    { return "방금" }
-        if secs < 3600  { return "\(secs / 60)분" }
-        if secs < 86400 { return "\(secs / 3600)시간" }
+        if secs < 60    { return String(localized: "방금") }
+        if secs < 3600  { return String(localized: "\(secs / 60)분") }
+        if secs < 86400 { return String(localized: "\(secs / 3600)시간") }
         let days = secs / 86400
-        if days == 1    { return "어제" }
-        if days < 7     { return "\(days)일" }
-        return "\(days / 7)주"
+        if days == 1    { return String(localized: "어제") }
+        if days < 7     { return String(localized: "\(days)일") }
+        return String(localized: "\(days / 7)주")
     }
 
     /// 콘텐츠 타입별 SF Symbol 이름.
