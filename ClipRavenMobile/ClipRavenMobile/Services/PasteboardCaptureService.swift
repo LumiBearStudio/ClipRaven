@@ -106,27 +106,36 @@ final class PasteboardCaptureService {
         // 설정을 보도록.
         let sharedDefaults = UserDefaults.appGroup
         let blockSensitiveOn = sharedDefaults.sharedBool(SharedDefaultsKey.blockSensitive)
-        if blockSensitiveOn {
-            // concealed 마커(1Password 등)는 텍스트·이미지 구분 없이 먼저 차단.
-            if SensitiveDataFilter.isSensitivePasteboardType(pasteboard.types) {
-                log.info("skip capture — sensitive pasteboard type (concealed)")
-                return
-            }
-            if pasteboard.hasStrings, let preview = pasteboard.string {
-                let filter2FA = sharedDefaults.sharedBool(SharedDefaultsKey.filter2FA)
-                if SensitiveDataFilter.isSensitiveWithContext(
-                    preview,
-                    sourceAppBundleId: nil, // iOS 는 복사 원본 앱을 알 수 없다
-                    filter2FAEnabled: filter2FA
-                ) {
-                    log.info("skip capture — sensitive pattern detected")
-                    return
-                }
-            }
+
+        // concealed 마커(1Password 등)는 **내용을 읽기 전에** 타입만으로 차단한다.
+        // `types` 조회는 "붙여넣기 허용" 확인을 띄우지 않으므로, 비밀번호를
+        // 읽지도 않고 사용자에게 묻지도 않은 채 건너뛸 수 있다.
+        if blockSensitiveOn, SensitiveDataFilter.isSensitivePasteboardType(pasteboard.types) {
+            log.info("skip capture — sensitive pasteboard type (concealed)")
+            return
+        }
+
+        // 텍스트는 **한 번만** 읽는다.
+        //
+        // 이전에는 민감정보 검사용으로 한 번, 저장용으로 또 한 번 `string` 을
+        // 읽었다. (a) iOS 16+ 는 프로그램적 읽기마다 "붙여넣기 허용" 확인을 띄울
+        // 수 있어 복사 한 번에 확인이 두 번 뜰 수 있고, (b) 두 읽기 사이에
+        // 클립보드가 바뀌면 **검사한 텍스트와 저장한 텍스트가 달라진다**
+        // — 민감정보 필터를 우회하는 TOCTOU 다.
+        let text: String? = pasteboard.hasStrings ? pasteboard.string : nil
+
+        if blockSensitiveOn, let text,
+           SensitiveDataFilter.isSensitiveWithContext(
+               text,
+               sourceAppBundleId: nil, // iOS 는 복사 원본 앱을 알 수 없다
+               filter2FAEnabled: sharedDefaults.sharedBool(SharedDefaultsKey.filter2FA)
+           ) {
+            log.info("skip capture — sensitive pattern detected")
+            return
         }
 
         // Text takes priority (matches Mac ClipProcessor behavior).
-        if pasteboard.hasStrings, let text = pasteboard.string {
+        if let text {
             await captureText(text)
             return
         }
