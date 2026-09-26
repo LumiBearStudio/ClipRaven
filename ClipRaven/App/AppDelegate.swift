@@ -8,9 +8,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let statusItemController = StatusItemController()
     private let panelController = MainPanelController()
     private let hotKeyManager = HotKeyManager()
-    private let clipboardMonitor = ClipboardMonitor()
-    private let cleanupService = CleanupService()
-    private let clipRepository = ClipRepository()
+    // 아래 세 개는 생성되는 순간 DB 를 열고 마이그레이션까지 돌린다. `lazy` 로 두어
+    // `terminateOtherInstances()` 가 이전 인스턴스를 정리한 **뒤에** 처음 열리게 한다.
+    // 이전에는 AppDelegate 생성 시점에 열려, 종료 중인 이전 인스턴스가 쥔 잠금 때문에
+    // 마이그레이션이 BUSY 로 실패할 수 있었다 (v1 리뷰 M5).
+    private lazy var clipboardMonitor = ClipboardMonitor()
+    private lazy var cleanupService = CleanupService.production()
+    private lazy var clipRepository = ClipRepository()
     private let feedbackService = FeedbackService()
     // onboarding window is managed by OnboardingWindowController.shared
 
@@ -85,16 +89,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 7일 이상 된 staging 고아 파일 정리.
         AssetStaging.shared.purgeStaleStaging()
 
-        // 이미지 binary TTL cleanup — 30일 이상 된 non-pinned 이미지 원본 삭제.
-        // 백그라운드 detached task — 메인 launch 차단하지 않음.
-        Task.detached(priority: .utility) {
-            do {
-                _ = try await ImageBinaryCleanup.run(dbPool: AppDatabase.shared.dbPool)
-            } catch {
-                ClipRavenLog.cleanup.error("ImageBinaryCleanup failed: \(String(describing: error), privacy: .public)")
-                CRSentry.capture(error, context: "ImageBinaryCleanup on launch")
-            }
-        }
+        // 이미지 원본은 클립과 같은 수명이다 — 30일 TTL 삭제는 없앴다 (v1 리뷰 M6).
+        // 삭제된 클립의 원본 파일은 CleanupService 의 고아 정리(6시간마다)가 회수한다.
 
         // Restore Dock icon visibility from saved preference. Info.plist sets
         // LSUIElement=1, so every launch starts as .accessory (no Dock icon)
@@ -200,6 +196,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             await cleanupService.startSchedule()
         }
+
+        // DB 손상으로 새로 시작했다면 알린다. 이전에는 복구 플래그를 기록만 하고
+        // 아무도 읽지 않아, 사용자는 히스토리가 왜 비었는지 알 수 없었다 (v1 리뷰 M5).
+        showDatabaseRecoveryNoticeIfNeeded()
 
         // Show onboarding on first launch
         if !UserDefaults.standard.bool(forKey: "hasCompletedOnboarding") {
@@ -469,6 +469,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // MARK: - Duplicate Instance Prevention
+
+    private func showDatabaseRecoveryNoticeIfNeeded() {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: AppDatabase.corruptionRecoveryFlagKey) != nil else { return }
+        let folderPath = defaults.string(forKey: AppDatabase.quarantineFolderKey)
+        defaults.removeObject(forKey: AppDatabase.corruptionRecoveryFlagKey)
+        defaults.removeObject(forKey: AppDatabase.quarantineFolderKey)
+
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = String(localized: "기록 데이터베이스가 손상되어 새로 시작했습니다")
+        alert.informativeText = String(localized: "손상된 파일은 지우지 않고 따로 보관했습니다. 필요하면 지원 페이지로 보내 복구를 요청할 수 있습니다.")
+        if folderPath != nil { alert.addButton(withTitle: String(localized: "Finder에서 보기")) }
+        alert.addButton(withTitle: String(localized: "확인"))
+        NSApp.activate(ignoringOtherApps: true)
+        if alert.runModal() == .alertFirstButtonReturn, let folderPath {
+            NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: folderPath)])
+        }
+    }
 
     private func terminateOtherInstances() {
         let myPID = ProcessInfo.processInfo.processIdentifier

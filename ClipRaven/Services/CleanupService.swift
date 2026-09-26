@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 import ClipRavenSync
 
 /// 정기 cleanup 액터 — 6시간마다 실행되어 4가지 정리 전략을 적용한다.
@@ -26,7 +27,24 @@ actor CleanupService {
     private let clipRepository: ClipRepository
     private let defaults: UserDefaults
     private let defaultMaxClipCount: Int
+    private let orphanSweep: OrphanSweepConfig?
     private var timer: Timer?
+
+    /// 고아 이미지 정리 대상. **명시적으로 넘길 때만** 돈다 — 기본값이 실제 이미지
+    /// 폴더면 격리된 테스트 DB 기준으로 개발 Mac 의 실제 원본을 지울 수 있다
+    /// (테스트는 앱 프로세스 안에서 돈다).
+    struct OrphanSweepConfig: Sendable {
+        let imagesDirectory: URL
+        let dbReader: DatabasePool
+    }
+
+    /// 앱이 쓰는 구성 — 실제 이미지 폴더와 DB 로 고아 정리까지 수행.
+    static func production() -> CleanupService {
+        CleanupService(orphanSweep: OrphanSweepConfig(
+            imagesDirectory: ImageStorageService.imagesDirectory,
+            dbReader: AppDatabase.shared.dbPool
+        ))
+    }
 
     static let cleanupInterval: TimeInterval = 6 * 3600 // 6 hours
 
@@ -34,11 +52,13 @@ actor CleanupService {
     init(
         clipRepository: ClipRepository = ClipRepository(),
         defaults: UserDefaults = .standard,
-        defaultMaxClipCount: Int = AppConstants.maxClipCount
+        defaultMaxClipCount: Int = AppConstants.maxClipCount,
+        orphanSweep: OrphanSweepConfig? = nil
     ) {
         self.clipRepository = clipRepository
         self.defaults = defaults
         self.defaultMaxClipCount = defaultMaxClipCount
+        self.orphanSweep = orphanSweep
     }
 
     /// Run cleanup on app startup and schedule periodic cleanup
@@ -125,7 +145,17 @@ actor CleanupService {
         }
     }
 
+    /// 어떤 클립도 참조하지 않는 원본 파일을 회수한다. 원본을 지우는 경로는 이것
+    /// 하나다 — 클립이 지워지면 다음 사이클에서 원본도 사라진다 (v1 리뷰 M6).
     private func cleanOrphanedImages() async {
-        // Future: scan images/ directory vs imagePath values in DB
+        guard let orphanSweep else { return }
+        do {
+            _ = try await ImageOrphanSweep.run(
+                imagesDirectory: orphanSweep.imagesDirectory,
+                dbReader: orphanSweep.dbReader
+            )
+        } catch {
+            ClipRavenLog.cleanup.error("orphan sweep failed: \(String(describing: error), privacy: .public)")
+        }
     }
 }

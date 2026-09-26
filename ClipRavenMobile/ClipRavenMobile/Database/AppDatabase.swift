@@ -70,30 +70,40 @@ final class AppDatabase {
 
         let dbURL = dbDir.appendingPathComponent("clipraven.sqlite")
 
-        // First attempt — 정상 경로.
-        do {
-            return try makeAppDatabase(at: dbURL)
-        } catch {
-            NSLog("⚠️ ClipRaven: first DB init attempt failed: \(error)")
-            // Recovery: 손상된 sqlite + WAL/SHM 을 `.corrupted-{timestamp}`
-            // 로 백업 이동 (best-effort). 빈 DB 로 재시도 → 앱이 적어도
-            // 사용 가능 상태. 사용자 데이터 영구 손실은 막음.
-            quarantineCorruptedDB(at: dbURL, error: error)
-            UserDefaults.standard.set(
-                Date(), forKey: corruptionRecoveryFlagKey
-            )
-        }
-
-        // Second attempt — fresh DB.
-        do {
-            return try makeAppDatabase(at: dbURL)
-        } catch {
-            // 백업 + fresh init 도 실패하면 진짜 unrecoverable.
-            fatalError("Database initialization failed after recovery attempt: \(error)")
+        // 실패 원인에 따라 다르게 처리한다 (v1 리뷰 M5, `DatabaseOpenRecovery` 문서).
+        // 이전에는 어떤 오류든 손상으로 보고 히스토리를 격리한 뒤 빈 DB 로 시작했다.
+        var retries = 0
+        while true {
+            do {
+                return try makeAppDatabase(at: dbURL)
+            } catch {
+                let action = DatabaseOpenRecovery.action(for: error) {
+                    DatabaseOpenRecovery.quickCheck(at: dbURL)
+                }
+                NSLog("⚠️ ClipRaven: DB open failed (\(action)): \(error)")
+                switch action {
+                case .retry where retries < 2:
+                    // 확장 프로그램이 쓰기 잠금을 쥐고 있을 수 있다.
+                    retries += 1
+                    Thread.sleep(forTimeInterval: Double(retries))
+                case .quarantine:
+                    guard DatabaseOpenRecovery.quarantine(databaseAt: dbURL) != nil else {
+                        fatalError("Database corrupt and could not be quarantined: \(error)")
+                    }
+                    UserDefaults.standard.set(Date(), forKey: corruptionRecoveryFlagKey)
+                    do { return try makeAppDatabase(at: dbURL) } catch {
+                        fatalError("Database initialization failed after quarantine: \(error)")
+                    }
+                default:
+                    // 데이터를 건드리지 않는다. 기록은 디스크에 그대로 있고, 원인
+                    // (디스크 부족, 잠금 해제 전 실행, 마이그레이션 문제)이 해결되면 다음
+                    // 실행에서 그대로 열린다. 빈 DB 로 조용히 시작하는 것보다 낫다.
+                    fatalError("Cannot open the history database (data left untouched): \(error)")
+                }
+            }
         }
     }
 
-    /// 손상된 DB 파일 (sqlite + wal + shm) 을 timestamp suffix 붙여 백업 이동.
     /// 실패해도 best-effort — 백업 못 살리면 그냥 새 DB 로 진행.
     private static func quarantineCorruptedDB(at dbURL: URL, error: Error) {
         let ts = ISO8601DateFormatter().string(from: Date())

@@ -265,7 +265,7 @@ struct IcloudSyncSettingsView: View {
         } header: {
             iCloudSectionHeader(title: "이미지")
         } footer: {
-            Text("이미지 원본은 iCloud 저장공간을 사용합니다. 30일 이상 된 원본은 자동 삭제되며, 핀 고정한 클립은 영구 보관됩니다.")
+            Text("이미지 원본은 iCloud 저장공간을 사용합니다. 원본은 클립이 남아 있는 동안 보관되고, 클립을 삭제하면 함께 삭제됩니다.")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }

@@ -48,7 +48,7 @@ enum ImageStorageService {
 
     /// 절대 경로 빌더 — `imagePath` 가 파일명만 가지고 있을 때.
     static func fullURL(for relativePath: String) -> URL {
-        imagesDirectory.appendingPathComponent(relativePath)
+        imagesDirectory.appendingPathComponent(ImageOrphanSweep.sanitizedFileName(relativePath))
     }
 
     // MARK: - Save

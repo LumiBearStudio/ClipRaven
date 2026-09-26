@@ -25533,6 +25533,354 @@
           }
         }
       }
+    },
+    "기록 데이터베이스를 열 수 없습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can’t open the history database"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴データベースを開けません"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlaufsdatenbank kann nicht geöffnet werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’ouvrir la base de l’historique"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se puede abrir la base de datos del historial"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile aprire il database della cronologia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não é possível abrir o banco de dados do histórico"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法打开历史记录数据库"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法開啟歷史記錄資料庫"
+          }
+        }
+      }
+    },
+    "기존 기록은 삭제되지 않고 그대로 있습니다. 디스크 공간을 확인한 뒤 ClipRaven을 다시 실행해 주세요. 문제가 계속되면 지원 페이지로 알려 주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your history has not been deleted and is still on disk. Check your free disk space, then open ClipRaven again. If the problem continues, let us know on the support page."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "既存の履歴は削除されず、そのまま残っています。ディスクの空き容量を確認してから ClipRaven を再度開いてください。問題が続く場合はサポートページからお知らせください。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Verlauf wurde nicht gelöscht und liegt weiter auf dem Datenträger. Prüfe den freien Speicherplatz und öffne ClipRaven erneut. Wenn das Problem bleibt, melde es auf der Support-Seite."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre historique n’a pas été supprimé et reste sur le disque. Vérifiez l’espace disponible, puis rouvrez ClipRaven. Si le problème persiste, signalez-le sur la page d’assistance."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu historial no se ha eliminado y sigue en el disco. Revisa el espacio libre y vuelve a abrir ClipRaven. Si el problema continúa, avísanos en la página de soporte."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cronologia non è stata eliminata ed è ancora sul disco. Controlla lo spazio libero, poi riapri ClipRaven. Se il problema persiste, segnalalo nella pagina di supporto."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu histórico não foi excluído e continua no disco. Verifique o espaço livre e abra o ClipRaven novamente. Se o problema continuar, avise-nos na página de suporte."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的历史记录没有被删除，仍保存在磁盘上。请检查可用磁盘空间后重新打开 ClipRaven。如果问题仍然存在，请在支持页面告诉我们。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的歷史記錄沒有被刪除，仍保存在磁碟上。請檢查可用磁碟空間後重新開啟 ClipRaven。如果問題持續，請在支援頁面告訴我們。"
+          }
+        }
+      }
+    },
+    "기록 데이터베이스가 손상되어 새로 시작했습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The history database was damaged, so ClipRaven started fresh"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴データベースが破損していたため、新しく開始しました"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Verlaufsdatenbank war beschädigt, daher hat ClipRaven neu begonnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La base de l’historique était endommagée, ClipRaven a donc repris à zéro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La base de datos del historial estaba dañada, así que ClipRaven empezó de nuevo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il database della cronologia era danneggiato, quindi ClipRaven è ripartito da zero"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O banco de dados do histórico estava danificado, então o ClipRaven recomeçou"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史记录数据库已损坏，ClipRaven 已重新开始"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歷史記錄資料庫已損毀，ClipRaven 已重新開始"
+          }
+        }
+      }
+    },
+    "손상된 파일은 지우지 않고 따로 보관했습니다. 필요하면 지원 페이지로 보내 복구를 요청할 수 있습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The damaged files were kept, not deleted. You can send them via the support page to ask for recovery."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "破損したファイルは削除せずに別の場所に保管しました。必要であればサポートページから送って復旧を依頼できます。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die beschädigten Dateien wurden aufbewahrt, nicht gelöscht. Du kannst sie über die Support-Seite zur Wiederherstellung senden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les fichiers endommagés ont été conservés, pas supprimés. Vous pouvez les envoyer via la page d’assistance pour demander une récupération."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los archivos dañados se conservaron, no se eliminaron. Puedes enviarlos desde la página de soporte para pedir su recuperación."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I file danneggiati sono stati conservati, non eliminati. Puoi inviarli dalla pagina di supporto per chiederne il recupero."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os arquivos danificados foram guardados, não excluídos. Você pode enviá-los pela página de suporte para pedir a recuperação."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保留损坏的文件，未删除。如有需要，可通过支持页面发送给我们请求恢复。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保留損毀的檔案，未刪除。如有需要，可透過支援頁面傳送給我們請求復原。"
+          }
+        }
+      }
+    },
+    "Finder에서 보기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show in Finder"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder で表示"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Finder zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher dans le Finder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra nel Finder"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar no Finder"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在访达中显示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Finder 中顯示"
+          }
+        }
+      }
+    },
+    "이미지 원본은 iCloud 저장공간을 사용합니다. 원본은 클립이 남아 있는 동안 보관되고, 클립을 삭제하면 함께 삭제됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image originals use your iCloud storage. An original is kept as long as its clip, and is deleted when you delete the clip."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像のオリジナルは iCloud ストレージを使用します。オリジナルはクリップがある間保存され、クリップを削除すると一緒に削除されます。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildoriginale belegen iCloud-Speicher. Ein Original bleibt erhalten, solange der Clip existiert, und wird mit dem Clip gelöscht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les originaux d’image utilisent votre stockage iCloud. Un original est conservé tant que son clip existe et supprimé avec lui."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los originales de imagen usan tu almacenamiento de iCloud. Se conservan mientras exista el clip y se eliminan al eliminarlo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli originali delle immagini usano lo spazio iCloud. Un originale resta finché esiste il clip e viene eliminato insieme a esso."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os originais de imagem usam seu armazenamento do iCloud. Cada original fica guardado enquanto o clipe existir e é excluído junto com ele."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片原件会占用 iCloud 存储空间。原件会随剪贴内容一直保留，删除剪贴内容时一并删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片原件會佔用 iCloud 儲存空間。原件會隨剪貼內容一直保留，刪除剪貼內容時一併刪除。"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

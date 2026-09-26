@@ -128,7 +128,7 @@ struct CaptureSettingsView: View {
                             isRunningCleanup = true
                             cleanupDone = false
                             Task {
-                                await CleanupService().runCleanup()
+                                await CleanupService.production().runCleanup()
                                 await MainActor.run {
                                     isRunningCleanup = false
                                     cleanupDone = true

@@ -136,14 +136,16 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
         // Stale staging 파일 정리 (앱 재시작 시 1회). 7일 이상 된 고아 파일.
         AssetStaging.shared.purgeStaleStaging()
 
-        // 이미지 binary TTL cleanup — 30일 이상 된 non-pinned 이미지 원본 삭제.
-        // .utility 우선순위로 백그라운드 실행, 메인 launch 차단 안 함.
+        // 이미지 원본은 클립과 같은 수명이다 — 30일 TTL 삭제는 없앴다 (v1 리뷰 M6).
+        // 어떤 클립도 참조하지 않는 원본만 실행 시 한 번 회수한다.
         Task.detached(priority: .utility) {
             do {
-                _ = try await ImageBinaryCleanup.run(dbPool: AppDatabase.shared.dbPool)
+                _ = try await ImageOrphanSweep.run(
+                    imagesDirectory: ImageStorageService.imagesDirectory,
+                    dbReader: AppDatabase.shared.dbPool
+                )
             } catch {
-                ClipRavenLog.cleanup.error("ImageBinaryCleanup failed: \(String(describing: error), privacy: .public)")
-                CRSentry.capture(error, context: "ImageBinaryCleanup on launch")
+                ClipRavenLog.cleanup.error("orphan sweep failed: \(String(describing: error), privacy: .public)")
             }
         }
 

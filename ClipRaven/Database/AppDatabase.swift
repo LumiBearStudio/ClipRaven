@@ -1,6 +1,8 @@
+import AppKit
 import GRDB
 import SQLite3
 import Foundation
+import ClipRavenSync
 
 final class AppDatabase {
     static let shared = makeShared()
@@ -38,50 +40,59 @@ final class AppDatabase {
 
         let dbURL = appSupportURL.appendingPathComponent("clipraven.sqlite")
 
-        // First attempt — 정상 경로.
-        do {
-            return try makeAppDatabase(at: dbURL)
-        } catch {
-            NSLog("⚠️ ClipRaven: first DB init attempt failed: \(error)")
-            // Recovery: 손상된 sqlite 파일 + WAL/SHM 을 `.corrupted-{timestamp}`
-            // 로 백업 이동. 사용자 데이터가 영구 손실되지 않도록 보관 (Finder 로
-            // 사용자가 직접 옮기거나 우리가 제공할 future recovery 도구로 살림).
-            // 이후 빈 DB 로 재시도 → 사용자는 적어도 앱은 사용 가능한 상태.
-            quarantineCorruptedDB(at: dbURL, error: error)
-            UserDefaults.standard.set(
-                Date(), forKey: corruptionRecoveryFlagKey
-            )
-        }
-
-        // Second attempt — fresh DB.
-        do {
-            return try makeAppDatabase(at: dbURL)
-        } catch {
-            // 백업 + fresh init 도 실패하면 진짜 unrecoverable. fatalError 마지막.
-            fatalError("Database initialization failed after recovery attempt: \(error)")
+        // 실패 원인에 따라 다르게 처리한다 (v1 리뷰 M5, `DatabaseOpenRecovery` 문서).
+        // 이전에는 어떤 오류든 손상으로 보고 히스토리를 격리한 뒤 빈 DB 로 시작했다 —
+        // 잠금 대기(BUSY)나 GRDB 의 전역 FK 검사 실패처럼 파일이 멀쩡한 경우에도.
+        var retries = 0
+        while true {
+            do {
+                return try makeAppDatabase(at: dbURL)
+            } catch {
+                let action = DatabaseOpenRecovery.action(for: error) {
+                    DatabaseOpenRecovery.quickCheck(at: dbURL)
+                }
+                NSLog("⚠️ ClipRaven: DB open failed (\(action)): \(error)")
+                switch action {
+                case .retry where retries < 2:
+                    // 다른 프로세스(막 종료 중인 이전 인스턴스 등)가 잠금을 쥐고 있다.
+                    retries += 1
+                    Thread.sleep(forTimeInterval: Double(retries))
+                case .quarantine:
+                    // 손상이 확인됐다 — 원본을 보관하고 새로 시작한다.
+                    guard let folder = DatabaseOpenRecovery.quarantine(databaseAt: dbURL) else {
+                        // 본 파일을 옮기지 못했는데 새 DB 를 만들면 남은 -wal 이 재생될 수 있다.
+                        abortLaunch(error)
+                    }
+                    UserDefaults.standard.set(Date(), forKey: corruptionRecoveryFlagKey)
+                    UserDefaults.standard.set(folder.path, forKey: quarantineFolderKey)
+                    do { return try makeAppDatabase(at: dbURL) } catch { abortLaunch(error) }
+                default:
+                    abortLaunch(error)
+                }
+            }
         }
     }
 
-    /// 손상된 DB 파일 (sqlite + wal + shm) 을 timestamp suffix 붙여 백업 이동.
-    /// 실패해도 best-effort — 백업 못 살리면 그냥 새 DB 로 진행.
-    private static func quarantineCorruptedDB(at dbURL: URL, error: Error) {
-        let ts = ISO8601DateFormatter().string(from: Date())
-            .replacingOccurrences(of: ":", with: "-")
-        let suffix = ".corrupted-\(ts)"
-        let fm = FileManager.default
-        for ext in ["", "-wal", "-shm"] {
-            let src = URL(fileURLWithPath: dbURL.path + ext)
-            guard fm.fileExists(atPath: src.path) else { continue }
-            let dst = URL(fileURLWithPath: dbURL.path + ext + suffix)
-            do {
-                try fm.moveItem(at: src, to: dst)
-                NSLog("📦 ClipRaven: quarantined \(src.lastPathComponent) → \(dst.lastPathComponent)")
-            } catch {
-                NSLog("⚠️ ClipRaven: quarantine failed for \(src.lastPathComponent): \(error)")
-                // best-effort — 백업 실패 시 그냥 src 그대로 두고 진행.
-                // 두 번째 makeAppDatabase 시도가 또 실패하면 fatalError 로 종료.
-            }
+    /// 격리한 파일이 있는 폴더 경로 (복구 안내에서 "Finder 에서 보기" 에 쓴다).
+    static let quarantineFolderKey = "clipraven.db.quarantineFolder"
+
+    /// 데이터를 건드리지 않고 사용자에게 알린 뒤 종료한다.
+    ///
+    /// 빈 DB 로 조용히 시작하는 것보다 낫다 — 기록은 디스크에 그대로 있고, 원인
+    /// (디스크 부족, 권한, 마이그레이션 문제)이 해결되면 다음 실행에서 그대로 열린다.
+    private static func abortLaunch(_ error: Error) -> Never {
+        NSLog("⛔️ ClipRaven: cannot open the history database: \(error)")
+        if Thread.isMainThread {
+            let alert = NSAlert()
+            alert.alertStyle = .critical
+            alert.messageText = String(localized: "기록 데이터베이스를 열 수 없습니다")
+            alert.informativeText = String(localized: "기존 기록은 삭제되지 않고 그대로 있습니다. 디스크 공간을 확인한 뒤 ClipRaven을 다시 실행해 주세요. 문제가 계속되면 지원 페이지로 알려 주세요.")
+                + "\n\n" + String(describing: error)
+            alert.addButton(withTitle: String(localized: "종료"))
+            NSApp.activate(ignoringOtherApps: true)
+            alert.runModal()
         }
+        exit(1)
     }
 
     /// 단일 DB pool 생성 + migrator 실행. 두 번 호출되므로 (정상 + recovery 후)

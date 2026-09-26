@@ -234,84 +234,9 @@ final class PhaseCAssetTests: XCTestCase {
         XCTAssertEqual(exceeded, 1, "over-cap should mark assetExceeded=1")
     }
 
-    // MARK: - ImageBinaryCleanup
+    // (30일 원본 TTL 테스트는 정책 폐지와 함께 제거 — 새 정책은 ClipRavenSync 의
+    //  ImageOrphanSweepTests 가 검증한다. v1 리뷰 M6)
 
-    func test_ImageBinaryCleanup_removesOlderThanRetention() async throws {
-        // in-memory DB
-        let dbQueue = try DatabaseQueue()
-        try await dbQueue.write { db in
-            try db.create(table: "clips") { t in
-                t.autoIncrementedPrimaryKey("id")
-                t.column("contentType", .text).notNull()
-                t.column("imagePath", .text)
-                t.column("isPinned", .boolean).notNull().defaults(to: false)
-                t.column("createdAt", .datetime).notNull()
-            }
-        }
-
-        let store = TestImageStore(rootDir: tempDir)
-        ImageOriginalStoreRegistry.register(store)
-
-        let oldDate = Date().addingTimeInterval(-31 * 86400)  // 31일 전
-        let recentDate = Date().addingTimeInterval(-5 * 86400)  // 5일 전
-
-        // 케이스 1: 31일 전 + non-pinned + imagePath → 삭제 대상
-        let oldUuid = "old"
-        _ = store.saveOriginal(Data([0x01, 0x02]), uuid: oldUuid, preferredExt: "png")
-        let oldFile = store.fullURL(for: "\(oldUuid).png")
-        try await dbQueue.write { db in
-            try db.execute(sql: """
-                INSERT INTO clips (contentType, imagePath, isPinned, createdAt)
-                VALUES ('image', ?, 0, ?)
-                """, arguments: ["\(oldUuid).png", oldDate])
-        }
-
-        // 케이스 2: 31일 전 + pinned → 보존
-        let pinnedUuid = "pinned"
-        _ = store.saveOriginal(Data([0x03]), uuid: pinnedUuid, preferredExt: "png")
-        let pinnedFile = store.fullURL(for: "\(pinnedUuid).png")
-        try await dbQueue.write { db in
-            try db.execute(sql: """
-                INSERT INTO clips (contentType, imagePath, isPinned, createdAt)
-                VALUES ('image', ?, 1, ?)
-                """, arguments: ["\(pinnedUuid).png", oldDate])
-        }
-
-        // 케이스 3: 5일 전 + non-pinned → 보존 (cutoff 미만)
-        let recentUuid = "recent"
-        _ = store.saveOriginal(Data([0x04]), uuid: recentUuid, preferredExt: "png")
-        let recentFile = store.fullURL(for: "\(recentUuid).png")
-        try await dbQueue.write { db in
-            try db.execute(sql: """
-                INSERT INTO clips (contentType, imagePath, isPinned, createdAt)
-                VALUES ('image', ?, 0, ?)
-                """, arguments: ["\(recentUuid).png", recentDate])
-        }
-
-        // 실행
-        let result = try await ImageBinaryCleanup.run(
-            dbPool: dbQueue,
-            retentionDays: 30,
-            store: store
-        )
-
-        // 31일 전 + non-pinned 만 삭제됨
-        XCTAssertEqual(result.removed, 1)
-        XCTAssertFalse(FileManager.default.fileExists(atPath: oldFile.path),
-                       "old non-pinned should be deleted")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: pinnedFile.path),
-                      "pinned should be preserved")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: recentFile.path),
-                      "recent should be preserved")
-
-        // DB 의 imagePath 도 삭제된 케이스만 nil
-        try await dbQueue.read { db in
-            let oldRow = try Row.fetchOne(
-                db, sql: "SELECT imagePath FROM clips WHERE imagePath IS NULL"
-            )
-            XCTAssertNotNil(oldRow, "deleted clip's imagePath should be NULL")
-        }
-    }
 }
 
 // MARK: - Cellular policy tests

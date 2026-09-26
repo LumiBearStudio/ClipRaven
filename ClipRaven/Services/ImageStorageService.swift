@@ -39,7 +39,7 @@ enum ImageStorageService {
 
     /// Load image data from relative path
     static func loadImage(relativePath: String) -> Data? {
-        let fileURL = imagesDirectory.appendingPathComponent(relativePath)
+        let fileURL = imagesDirectory.appendingPathComponent(ImageOrphanSweep.sanitizedFileName(relativePath))
         return try? Data(contentsOf: fileURL)
     }
 
@@ -101,7 +101,7 @@ enum ImageStorageService {
 
     /// Delete image file by relative path
     static func deleteImage(relativePath: String) {
-        let fileURL = imagesDirectory.appendingPathComponent(relativePath)
+        let fileURL = imagesDirectory.appendingPathComponent(ImageOrphanSweep.sanitizedFileName(relativePath))
         try? FileManager.default.removeItem(at: fileURL)
     }
 
@@ -110,7 +110,7 @@ enum ImageStorageService {
     /// Absolute URL for a relative path (filename) — `imagePath` 컬럼 값을
     /// 절대 경로로 변환할 때.
     static func fullURL(for relativePath: String) -> URL {
-        imagesDirectory.appendingPathComponent(relativePath)
+        imagesDirectory.appendingPathComponent(ImageOrphanSweep.sanitizedFileName(relativePath))
     }
 
     /// Calculate total disk usage of stored images in bytes

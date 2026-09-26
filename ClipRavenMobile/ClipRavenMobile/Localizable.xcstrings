@@ -12335,6 +12335,64 @@
           }
         }
       }
+    },
+    "이미지 원본은 iCloud 저장공간을 사용합니다. 원본은 클립이 남아 있는 동안 보관되고, 클립을 삭제하면 함께 삭제됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image originals use your iCloud storage. An original is kept as long as its clip, and is deleted when you delete the clip."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像のオリジナルは iCloud ストレージを使用します。オリジナルはクリップがある間保存され、クリップを削除すると一緒に削除されます。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildoriginale belegen iCloud-Speicher. Ein Original bleibt erhalten, solange der Clip existiert, und wird mit dem Clip gelöscht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les originaux d’image utilisent votre stockage iCloud. Un original est conservé tant que son clip existe et supprimé avec lui."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los originales de imagen usan tu almacenamiento de iCloud. Se conservan mientras exista el clip y se eliminan al eliminarlo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli originali delle immagini usano lo spazio iCloud. Un originale resta finché esiste il clip e viene eliminato insieme a esso."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os originais de imagem usam seu armazenamento do iCloud. Cada original fica guardado enquanto o clipe existir e é excluído junto com ele."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片原件会占用 iCloud 存储空间。原件会随剪贴内容一直保留，删除剪贴内容时一并删除。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圖片原件會佔用 iCloud 儲存空間。原件會隨剪貼內容一直保留，刪除剪貼內容時一併刪除。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
