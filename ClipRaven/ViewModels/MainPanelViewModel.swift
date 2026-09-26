@@ -7,30 +7,39 @@ import Carbon
 import ApplicationServices
 import ClipRavenSync
 
-// MARK: - Accessibility Permission
-// ClipRaven needs Accessibility to synthesize ⌘V into the frontmost app.
-// Since macOS 10.14, CGEvent.post() silently drops keyboard events from
-// untrusted processes — without this permission, paste-to-app is dead.
-enum AccessibilityPrompter {
-    /// True if the app currently has Accessibility permission granted.
-    static var isTrusted: Bool { AXIsProcessTrusted() }
+// MARK: - 붙여넣기 권한 (PostEvent)
+//
+// ClipRaven 은 ⌘V 를 합성해 앞 앱에 붙여넣는다. 여기에 필요한 것은 **이벤트
+// 게시(PostEvent)** 권한이고, 전체 손쉬운 사용(Accessibility) 권한이 아니다.
+// 두 권한 모두 시스템 설정의 "손쉬운 사용" 목록에 보이지만 서로 다른 권한이다.
+//
+// Apple DTS (developer.apple.com/forums/thread/789896):
+//   "In general, App Sandbox blocks use of the Accessibility APIs."
+//   "You can post events using CGEvent.post(…). That uses its own privilege,
+//    one that's also compatible with App Sandbox."
+//
+// 이전에는 `AXIsProcessTrusted()` 로 확인하고 `AXIsProcessTrustedWithOptions`
+// 로 요청했다. 샌드박스 빌드에서는 이 API 가 막혀, 사용자가 권한을 줘도 false
+// 가 나와 붙여넣기가 영구히 막힐 수 있었다 (v1 리뷰 M1). 권한이 없어도 클립은
+// 클립보드에 복사되므로 사용자는 ⌘V 로 직접 붙여넣을 수 있다.
+enum PastePermission {
+    /// ⌘V 합성 권한이 있는가. 권한 창을 띄우지 않는다.
+    static var isGranted: Bool { CGPreflightPostEventAccess() }
+
+    /// 시스템 권한 창을 띄운다. 이미 허용돼 있으면 아무 일도 일어나지 않는다.
+    @discardableResult
+    static func requestSystemPrompt() -> Bool { CGRequestPostEventAccess() }
 
     /// Tracks whether we've already prompted this session (avoid repeated alerts).
     private static var didPromptThisSession = false
 
-    /// Show the one-shot system prompt + a guidance alert + deep-link to Settings.
-    /// Safe to call repeatedly — only shows the alert once per session.
+    /// 시스템 권한 창 + 안내 알림(시스템 설정 바로가기). 세션당 한 번만.
     @MainActor
     static func requestIfNeeded() {
-        // Session guard FIRST — `AXIsProcessTrustedWithOptions(prompt: true)` shows
-        // the native dialog every call in TCC-stale states, which is why the user
-        // sees the popup on every click. Gate it behind the session flag.
         guard !didPromptThisSession else { return }
         didPromptThisSession = true
 
-        // Fire the TCC prompt (native OS dialog).
-        let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
-        _ = AXIsProcessTrustedWithOptions([key: true] as CFDictionary)
+        requestSystemPrompt()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             let alert = NSAlert()
@@ -644,13 +653,14 @@ final class MainPanelViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             // Gate 1: Accessibility permission. Without it, CGEvent.post silently drops
             // since macOS 10.14 — this was the root cause of the long-standing paste bug.
-            if !AXIsProcessTrusted() {
-                ClipRavenLog.write(.paste, "[simulatePaste] BLOCKED: AXIsProcessTrusted=false — showing permission alert")
-                AccessibilityPrompter.requestIfNeeded()
+            if !PastePermission.isGranted {
+                // 클립은 이미 클립보드에 있다 — 사용자는 ⌘V 로 직접 붙여넣을 수 있다.
+                ClipRavenLog.write(.paste, "[simulatePaste] BLOCKED: PostEvent not granted — clip is on the pasteboard, showing permission alert")
+                PastePermission.requestIfNeeded()
                 return
             }
 
-            ClipRavenLog.write(.paste, "[simulatePaste] entering target=\(targetName) pid=\(targetPid) AXTrusted=true")
+            ClipRavenLog.write(.paste, "[simulatePaste] entering target=\(targetName) pid=\(targetPid) postEventGranted=true")
 
             let source = CGEventSource(stateID: .combinedSessionState)
 

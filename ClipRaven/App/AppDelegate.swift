@@ -118,7 +118,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItemController.panelController = panelController
         statusItemController.setup()
 
-        // Register global hotkey (reads from HotKeyStore, defaults to ⇧V)
+        // Register global hotkey (reads from HotKeyStore, defaults to ⇧⌘V)
         let store = HotKeyStore.shared
         hotKeyManager.register(keyCode: store.keyCode, modifiers: store.modifiers) { [weak self] in
             self?.panelController.toggle()
@@ -477,8 +477,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ClipRavenLog.app.info("terminating other instance PID=\(otherPID, privacy: .public)")
             app.terminate()
             // Synchronously wait for the old instance to actually exit — otherwise
-            // its Carbon hotkey registration blocks us (-9868 eventHotKeyExistsErr)
-            // and Shift+V silently stops working until the next restart.
+            // its Carbon hotkey registration blocks us (eventHotKeyExistsErr, -9878)
+            // and the panel hotkey silently stops working until the next restart.
             let softDeadline = Date().addingTimeInterval(2.0)
             while !app.isTerminated && Date() < softDeadline {
                 RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.05))

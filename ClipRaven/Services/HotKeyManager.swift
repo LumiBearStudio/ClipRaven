@@ -95,15 +95,20 @@ final class HotKeyManager {
             &hotKeyRef
         )
 
-        // Carbon returns -9868 (eventHotKeyExistsErr) when another process already owns
-        // the combo. The most common culprit is an old copy of ourselves that was
-        // killed before Carbon released the registration, so retry briefly before giving up.
+        // 다른 프로세스가 이미 이 조합을 점유하면 Carbon 은 `eventHotKeyExistsErr`
+        // (-9878) 를 돌려준다. 가장 흔한 원인은 막 종료된 우리 자신의 이전 인스턴스라
+        // 잠깐 재시도한다.
+        //
+        // 이전에는 -9868 로 비교했는데 그 값은 `eventInternalErr` 다 — macOS 15 가
+        // 샌드박스 앱의 ⇧·⌥ 단독 조합을 거부할 때 내는 오류다. 그래서 옛 기본값 ⇧V 가
+        // 거부되면 "점유 중" 으로 착각해 1초 재시도한 뒤 조용히 포기했다 (v1 리뷰 M2).
+        // 이제 그런 조합은 HotKeyRules 가 저장 단계에서 막는다.
         //
         // 품질 감사 B-R7: 이전엔 `Thread.sleep` 으로 메인 스레드가 최대 1초 (5 × 200ms)
         // 동안 완전 차단 — startup 시점이면 큰 문제 아니지만 hotkey 변경 모달처럼
         // 사용자가 trigger 하면 1초 freeze. `RunLoop.run(until:)` 으로 교체 —
         // 같은 시간 대기하지만 run loop event 처리는 계속됨 (마우스 트랙킹 등).
-        if registerStatus == -9868 {
+        if registerStatus == OSStatus(eventHotKeyExistsErr) {
             for attempt in 1...5 {
                 RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.2))
                 registerStatus = RegisterEventHotKey(

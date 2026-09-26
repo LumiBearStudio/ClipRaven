@@ -136,15 +136,11 @@ struct ShortcutRecorderSheet: View {
     /// Reject obvious conflicts before we waste a Carbon registration round-trip.
     /// Returns a Korean-language error string or nil if the combo looks acceptable.
     private func validate(keyCode: UInt32, modifiers: UInt32) -> String? {
-        // Require at least one non-shift modifier — plain ⇧X types a capital letter everywhere.
-        let meaningfulModifiers = modifiers & UInt32(cmdKey | controlKey | optionKey)
-        if meaningfulModifiers == 0 {
-            return "⌘ / ⌃ / ⌥ 중 하나 이상을 포함해야 합니다."
-        }
-
-        // Block the V key combined with just ⌘ — that IS paste; hijacking it breaks the paste action itself.
-        if keyCode == UInt32(kVK_ANSI_V), modifiers == UInt32(cmdKey) {
-            return "⌘V는 붙여넣기 단축키라 사용할 수 없습니다."
+        // 전역 단축키와 같은 규칙: 수정키 필수, ⌘ 단독 시스템 단축키(⌘C/⌘V/⌘Z/⌘A/⌘Q…)
+        // 금지. 이전에는 ⌘V 만 막아서 ⌘C 를 클립 단축키로 지정하면 모든 앱의
+        // 복사가 사라졌다 (v1 리뷰 M2).
+        if let problem = HotKeyRules.problem(keyCode: keyCode, modifiers: modifiers, scope: .perClip) {
+            return problem
         }
 
         // Warn if another clip already uses this exact combo

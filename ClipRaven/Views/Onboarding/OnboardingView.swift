@@ -17,8 +17,8 @@ import ClipRavenSync
 /// Critical invariants:
 /// - Window **cannot** be dismissed until user reaches the final page and taps Start.
 ///   The close button is removed and `windowShouldClose` returns false.
-/// - Accessibility permission is requested mid-flow because the paste feature is
-///   non-functional without it.
+/// - 붙여넣기 권한(PostEvent)은 흐름 중간에 **요청만** 하고 강제하지 않는다.
+///   권한이 없어도 클립은 복사되고 ⌘V 로 직접 붙여넣을 수 있다 (v1 리뷰 M1).
 /// - Crash reporting (Sentry) is strictly opt-in — toggle defaults to OFF and sits
 ///   on the final page above the Start button.
 final class OnboardingWindowController: NSObject, WKScriptMessageHandler, NSWindowDelegate {
@@ -137,9 +137,8 @@ final class OnboardingWindowController: NSObject, WKScriptMessageHandler, NSWind
                 self.reportAccessibilityStatus()
 
             } else if body == "accessibility:open" {
-                // Prompt + deep-link to Accessibility pane.
-                let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
-                _ = AXIsProcessTrustedWithOptions(options as CFDictionary)
+                // 시스템 권한 창(PostEvent) + 손쉬운 사용 패널로 이동.
+                PastePermission.requestSystemPrompt()
                 if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
                     NSWorkspace.shared.open(url)
                 }
@@ -180,7 +179,7 @@ final class OnboardingWindowController: NSObject, WKScriptMessageHandler, NSWind
     }
 
     private func reportAccessibilityStatus() {
-        let trusted = AXIsProcessTrusted()
+        let trusted = PastePermission.isGranted
         let js = "window.__axStatus && window.__axStatus(\(trusted ? "true" : "false"));"
         webView?.evaluateJavaScript(js, completionHandler: nil)
     }
@@ -740,7 +739,7 @@ h2{font-size:28px;font-weight:700;margin-bottom:10px;letter-spacing:-.3px;}
 <script>
 (function(){
 'use strict';
-var HOTKEY = window.CR_HOTKEY || '\u21e7V';
+var HOTKEY = window.CR_HOTKEY || '\u21e7\u2318V';
 var LANG   = window.CR_LANG   || 'ko';
 
 var I18N = {
@@ -764,7 +763,7 @@ var I18N = {
     ax_status_on:'Granted',
     ax_cta_open:'Open System Settings',
     ax_cta_granted:'Verify in System Settings',
-    ax_hint:"You can revoke this any time in System Settings \u2192 Privacy \u2192 Accessibility.",
+    ax_hint:'Optional. Without it, ClipRaven still copies the clip so you can press \u2318V yourself, and you can turn it on later. You can revoke it any time in System Settings \u2192 Privacy & Security \u2192 Accessibility.',
     crash_label:'Send anonymous crash reports',
     crash_desc:'If enabled, technical crash traces are sent to help fix bugs. Clipboard content is never included. You can change this any time in Settings.',
     final_title:'A Few Things You\u2019ll Love',
@@ -815,7 +814,7 @@ var I18N = {
     ax_status_on:'\ud5c8\uc6a9\ub428',
     ax_cta_open:'\uc2dc\uc2a4\ud15c \uc124\uc815 \uc5f4\uae30',
     ax_cta_granted:'\uc2dc\uc2a4\ud15c \uc124\uc815\uc5d0\uc11c \ud655\uc778',
-    ax_hint:'\uc2dc\uc2a4\ud15c \uc124\uc815 \u2192 \uac1c\uc778\uc815\ubcf4 \ubcf4\ud638 \ubc0f \ubcf4\uc548 \u2192 \uc811\uadfc\uc131\uc5d0\uc11c \uc5b8\uc81c\ub4e0 \ud574\uc81c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
+    ax_hint:'\uc120\ud0dd \uc0ac\ud56d\uc785\ub2c8\ub2e4. \uad8c\ud55c\uc774 \uc5c6\uc5b4\ub3c4 \ud074\ub9bd\uc740 \ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub418\ubbc0\ub85c \u2318V\ub85c \uc9c1\uc811 \ubd99\uc5ec\ub123\uc744 \uc218 \uc788\uace0, \ub098\uc911\uc5d0 \ucf24 \uc218\ub3c4 \uc788\uc2b5\ub2c8\ub2e4. \uc2dc\uc2a4\ud15c \uc124\uc815 \u2192 \uac1c\uc778\uc815\ubcf4 \ubcf4\ud638 \ubc0f \ubcf4\uc548 \u2192 \uc190\uc26c\uc6b4 \uc0ac\uc6a9\uc5d0\uc11c \uc5b8\uc81c\ub4e0 \ud574\uc81c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
     crash_label:'\uc775\uba85 \ud06c\ub798\uc2dc \ub9ac\ud3ec\ud2b8 \uc804\uc1a1',
     crash_desc:'\ud65c\uc131\ud654\ud558\uba74 \uc571 \ube44\uc815\uc0c1 \uc885\ub8cc \uc2dc \uae30\uc220\uc801 \ucd94\uc801 \uc815\ubcf4\ub9cc \uc804\uc1a1\ub418\uc5b4 \ubc84\uadf8 \uc218\uc815\uc5d0 \uc0ac\uc6a9\ub429\ub2c8\ub2e4. \ud074\ub9bd\ubcf4\ub4dc \ub0b4\uc6a9\uc740 \uc808\ub300 \ud3ec\ud568\ub418\uc9c0 \uc54a\uc73c\uba70, \uc124\uc815\uc5d0\uc11c \uc5b8\uc81c\ub4e0 \ubcc0\uacbd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.',
     final_title:'\ub9c8\uc9c0\ub9c9\uc73c\ub85c, \uc774\ub7f0 \uae30\ub2a5\ub3c4 \uc788\uc5b4\uc694',
@@ -866,7 +865,7 @@ var I18N = {
     ax_status_on:'\u8a31\u53ef\u6e08\u307f',
     ax_cta_open:'\u30b7\u30b9\u30c6\u30e0\u8a2d\u5b9a\u3092\u958b\u304f',
     ax_cta_granted:'\u30b7\u30b9\u30c6\u30e0\u8a2d\u5b9a\u3067\u78ba\u8a8d',
-    ax_hint:'\u30b7\u30b9\u30c6\u30e0\u8a2d\u5b9a \u2192 \u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u3068\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3 \u2192 \u30a2\u30af\u30bb\u30b7\u30d3\u30ea\u30c6\u30a3 \u3067\u3044\u3064\u3067\u3082\u5272\u308a\u5f53\u3066\u3092\u89e3\u9664\u3067\u304d\u307e\u3059\u3002',
+    ax_hint:'\u4efb\u610f\u3067\u3059\u3002\u8a31\u53ef\u3057\u306a\u304f\u3066\u3082\u30af\u30ea\u30c3\u30d7\u306f\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u306b\u30b3\u30d4\u30fc\u3055\u308c\u308b\u306e\u3067\u3001\u2318V \u3067\u81ea\u5206\u3067\u8cbc\u308a\u4ed8\u3051\u3089\u308c\u307e\u3059\u3002\u3042\u3068\u304b\u3089\u6709\u52b9\u306b\u3059\u308b\u3053\u3068\u3082\u3067\u304d\u307e\u3059\u3002\u30b7\u30b9\u30c6\u30e0\u8a2d\u5b9a \u2192 \u30d7\u30e9\u30a4\u30d0\u30b7\u30fc\u3068\u30bb\u30ad\u30e5\u30ea\u30c6\u30a3 \u2192 \u30a2\u30af\u30bb\u30b7\u30d3\u30ea\u30c6\u30a3\u3067\u3044\u3064\u3067\u3082\u89e3\u9664\u3067\u304d\u307e\u3059\u3002',
     crash_label:'\u533f\u540d\u30af\u30e9\u30c3\u30b7\u30e5\u30ec\u30dd\u30fc\u30c8\u3092\u9001\u4fe1',
     crash_desc:'\u6709\u52b9\u306b\u3059\u308b\u3068\u3001\u30d0\u30b0\u4fee\u6b63\u306e\u305f\u3081\u306e\u6280\u8853\u7684\u306a\u30af\u30e9\u30c3\u30b7\u30e5\u30c8\u30ec\u30fc\u30b9\u304c\u9001\u4fe1\u3055\u308c\u307e\u3059\u3002\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u306e\u5185\u5bb9\u306f\u7d76\u5bfe\u306b\u542b\u307e\u308c\u307e\u305b\u3093\u3002\u8a2d\u5b9a\u304b\u3089\u3044\u3064\u3067\u3082\u5909\u66f4\u3067\u304d\u307e\u3059\u3002',
     final_title:'\u304a\u6c17\u306b\u5165\u308a\u306e\u6a5f\u80fd\u305f\u3061',
@@ -917,7 +916,7 @@ var I18N = {
     ax_status_on:'\u5df2\u6388\u4e88',
     ax_cta_open:'\u6253\u5f00\u7cfb\u7edf\u8bbe\u7f6e',
     ax_cta_granted:'\u5728\u7cfb\u7edf\u8bbe\u7f6e\u4e2d\u786e\u8ba4',
-    ax_hint:'\u53ef\u968f\u65f6\u5728\u7cfb\u7edf\u8bbe\u7f6e \u2192 \u9690\u79c1\u4e0e\u5b89\u5168 \u2192 \u8f85\u52a9\u529f\u80fd \u4e2d\u64a4\u9500\u6388\u6743\u3002',
+    ax_hint:'\u6b64\u6743\u9650\u4e3a\u53ef\u9009\u3002\u4e0d\u6388\u6743\u65f6\uff0c\u526a\u8d34\u5185\u5bb9\u4ecd\u4f1a\u590d\u5236\u5230\u526a\u8d34\u677f\uff0c\u4f60\u53ef\u4ee5\u81ea\u5df1\u6309 \u2318V \u7c98\u8d34\uff0c\u4e5f\u53ef\u4ee5\u4e4b\u540e\u518d\u5f00\u542f\u3002\u53ef\u968f\u65f6\u5728\u7cfb\u7edf\u8bbe\u7f6e \u2192 \u9690\u79c1\u4e0e\u5b89\u5168\u6027 \u2192 \u8f85\u52a9\u529f\u80fd\u4e2d\u64a4\u9500\u3002',
     crash_label:'\u53d1\u9001\u533f\u540d\u5d29\u6e83\u62a5\u544a',
     crash_desc:'\u542f\u7528\u540e\u4f1a\u53d1\u9001\u6280\u672f\u5d29\u6e83\u8ffd\u8e2a\u4ee5\u5e2e\u52a9\u4fee\u590d\u95ee\u9898\u3002\u526a\u8d34\u677f\u5185\u5bb9\u7edd\u4e0d\u4f1a\u88ab\u5305\u542b\u5728\u5185\u3002\u53ef\u968f\u65f6\u5728\u8bbe\u7f6e\u4e2d\u66f4\u6539\u3002',
     final_title:'\u4f60\u4f1a\u559c\u6b22\u7684\u51e0\u9879\u529f\u80fd',
@@ -968,7 +967,7 @@ var I18N = {
     ax_status_on:'\u5df2\u6388\u4e88',
     ax_cta_open:'\u958b\u555f\u7cfb\u7d71\u8a2d\u5b9a',
     ax_cta_granted:'\u5728\u7cfb\u7d71\u8a2d\u5b9a\u4e2d\u78ba\u8a8d',
-    ax_hint:'\u53ef\u96a8\u6642\u5728\u7cfb\u7d71\u8a2d\u5b9a \u2192 \u96b1\u79c1\u8207\u5b89\u5168\u6027 \u2192 \u8f14\u52a9\u529f\u80fd \u4e2d\u64a4\u92b7\u6388\u6b0a\u3002',
+    ax_hint:'\u6b64\u6b0a\u9650\u70ba\u9078\u7528\u3002\u672a\u6388\u6b0a\u6642\uff0c\u526a\u8cbc\u5167\u5bb9\u4ecd\u6703\u62f7\u8c9d\u5230\u526a\u8cbc\u677f\uff0c\u4f60\u53ef\u4ee5\u81ea\u884c\u6309 \u2318V \u8cbc\u4e0a\uff0c\u4e5f\u53ef\u4ee5\u4e4b\u5f8c\u518d\u958b\u555f\u3002\u53ef\u96a8\u6642\u5728\u7cfb\u7d71\u8a2d\u5b9a \u2192 \u96b1\u79c1\u6b0a\u8207\u5b89\u5168\u6027 \u2192 \u8f14\u52a9\u4f7f\u7528\u4e2d\u64a4\u92b7\u3002',
     crash_label:'\u50b3\u9001\u533f\u540d\u5d29\u6f70\u5831\u544a',
     crash_desc:'\u555f\u7528\u5f8c\u6703\u50b3\u9001\u6280\u8853\u5d29\u6f70\u8ffd\u8e64\u4ee5\u5354\u52a9\u4fee\u5fa9\u554f\u984c\u3002\u526a\u8cbc\u677f\u5167\u5bb9\u7d55\u4e0d\u6703\u88ab\u5305\u542b\u5728\u5167\u3002\u53ef\u96a8\u6642\u5728\u8a2d\u5b9a\u4e2d\u66f4\u6539\u3002',
     final_title:'\u60a8\u6703\u559c\u6b61\u7684\u6578\u9805\u529f\u80fd',
@@ -1019,7 +1018,7 @@ var I18N = {
     ax_status_on:'Concedido',
     ax_cta_open:'Abrir Ajustes del Sistema',
     ax_cta_granted:'Verificar en Ajustes',
-    ax_hint:'Puedes revocarlo en cualquier momento en Ajustes del Sistema \u2192 Privacidad y seguridad \u2192 Accesibilidad.',
+    ax_hint:'Opcional. Sin este permiso, ClipRaven igualmente copia el clip para que lo pegues t\u00fa con \u2318V, y puedes activarlo m\u00e1s tarde. Puedes revocarlo en cualquier momento en Ajustes del Sistema \u2192 Privacidad y seguridad \u2192 Accesibilidad.',
     crash_label:'Enviar informes de fallo an\u00f3nimos',
     crash_desc:'Si est\u00e1 activado, se env\u00edan trazas t\u00e9cnicas de fallo para ayudar a corregir errores. El contenido del portapapeles nunca se incluye. Puedes cambiarlo en Ajustes.',
     final_title:'Algunas cosas que te van a encantar',
@@ -1070,7 +1069,7 @@ var I18N = {
     ax_status_on:'Accord\u00e9',
     ax_cta_open:'Ouvrir R\u00e9glages Syst\u00e8me',
     ax_cta_granted:'V\u00e9rifier dans R\u00e9glages Syst\u00e8me',
-    ax_hint:'Vous pouvez r\u00e9voquer \u00e0 tout moment dans R\u00e9glages Syst\u00e8me \u2192 Confidentialit\u00e9 et s\u00e9curit\u00e9 \u2192 Accessibilit\u00e9.',
+    ax_hint:'Facultatif. Sans cette autorisation, ClipRaven copie quand m\u00eame le clip pour que vous le colliez avec \u2318V, et vous pourrez l\u2019activer plus tard. Vous pouvez la r\u00e9voquer \u00e0 tout moment dans R\u00e9glages Syst\u00e8me \u2192 Confidentialit\u00e9 et s\u00e9curit\u00e9 \u2192 Accessibilit\u00e9.',
     crash_label:'Envoyer des rapports de plantage anonymes',
     crash_desc:'Si activ\u00e9, des traces techniques sont envoy\u00e9es pour aider \u00e0 corriger les bugs. Le contenu du presse-papiers n\u2019est jamais inclus. Modifiable dans R\u00e9glages.',
     final_title:'Quelques fonctionnalit\u00e9s que vous allez adorer',
@@ -1121,7 +1120,7 @@ var I18N = {
     ax_status_on:'Erteilt',
     ax_cta_open:'Systemeinstellungen \u00f6ffnen',
     ax_cta_granted:'In Systemeinstellungen pr\u00fcfen',
-    ax_hint:'Sie k\u00f6nnen den Zugriff jederzeit unter Systemeinstellungen \u2192 Datenschutz & Sicherheit \u2192 Bedienungshilfen entziehen.',
+    ax_hint:'Optional. Ohne diese Berechtigung kopiert ClipRaven den Clip trotzdem, sodass du ihn selbst mit \u2318V einf\u00fcgen kannst, und du kannst sie sp\u00e4ter aktivieren. Du kannst den Zugriff jederzeit unter Systemeinstellungen \u2192 Datenschutz & Sicherheit \u2192 Bedienungshilfen entziehen.',
     crash_label:'Anonyme Absturzberichte senden',
     crash_desc:'Wenn aktiviert, werden technische Absturz-Traces gesendet, um Fehler zu beheben. Zwischenablage-Inhalte werden niemals eingeschlossen. Jederzeit \u00e4nderbar.',
     final_title:'Ein paar Funktionen, die Sie lieben werden',
@@ -1172,7 +1171,7 @@ var I18N = {
     ax_status_on:'Concesso',
     ax_cta_open:'Apri Impostazioni di Sistema',
     ax_cta_granted:'Verifica in Impostazioni di Sistema',
-    ax_hint:'Puoi revocarlo in qualsiasi momento in Impostazioni di Sistema \u2192 Privacy e sicurezza \u2192 Accessibilit\u00e0.',
+    ax_hint:'Facoltativo. Senza questo permesso ClipRaven copia comunque il clip, cos\u00ec puoi incollarlo tu con \u2318V, e puoi attivarlo pi\u00f9 tardi. Puoi revocarlo in qualsiasi momento in Impostazioni di Sistema \u2192 Privacy e sicurezza \u2192 Accessibilit\u00e0.',
     crash_label:'Invia segnalazioni di arresto anonime',
     crash_desc:'Se attivato, vengono inviate tracce tecniche di arresto per aiutare a correggere i bug. Il contenuto degli appunti non \u00e8 mai incluso. Modificabile dalle Impostazioni.',
     final_title:'Alcune cose che adorerai',
@@ -1223,7 +1222,7 @@ var I18N = {
     ax_status_on:'Concedido',
     ax_cta_open:'Abrir Ajustes do Sistema',
     ax_cta_granted:'Verificar nos Ajustes do Sistema',
-    ax_hint:'Voc\u00ea pode revogar a qualquer momento em Ajustes do Sistema \u2192 Privacidade e Seguran\u00e7a \u2192 Acessibilidade.',
+    ax_hint:'Opcional. Sem essa permiss\u00e3o, o ClipRaven ainda copia o clipe para voc\u00ea colar com \u2318V, e voc\u00ea pode ativ\u00e1-la depois. Voc\u00ea pode revog\u00e1-la a qualquer momento em Ajustes do Sistema \u2192 Privacidade e Seguran\u00e7a \u2192 Acessibilidade.',
     crash_label:'Enviar relat\u00f3rios de falha an\u00f4nimos',
     crash_desc:'Se ativado, traces t\u00e9cnicos de falha s\u00e3o enviados para ajudar a corrigir bugs. O conte\u00fado da \u00e1rea de transfer\u00eancia nunca \u00e9 inclu\u00eddo. Modific\u00e1vel em Ajustes.',
     final_title:'Algumas coisas que voc\u00ea vai amar',
@@ -1339,12 +1338,13 @@ window.__axStatus=function(granted){
     btn.classList.toggle('granted',granted);
     btn.textContent=granted?s.ax_cta_granted:s.ax_cta_open;
   }
-  // Unblock the Next button only when the AX page is active and permission is granted.
+  // 상태 표시만 갱신한다. 다음 버튼은 잠그지 않는다.
   if(currentPage===2) updateAxGate();
 };
 function updateAxGate(){
-  nextBtn.disabled=!axGranted;
-  nextBtn.classList.toggle('locked',!axGranted);
+  // 다음 버튼은 권한과 무관하게 항상 활성 (위 goTo 주석 참고).
+  nextBtn.disabled=false;
+  nextBtn.classList.remove('locked');
 }
 
 /* Privacy preferences (final page) */
@@ -1407,9 +1407,9 @@ function setupNav(){
 
 function goTo(idx){
   if(idx<0||idx>=TOTAL||idx===currentPage)return;
-  // Block any forward navigation past the AX page unless permission is granted.
-  if(currentPage===2 && idx>2 && !axGranted)return;
-  if(currentPage<2 && idx>2 && !axGranted)return;
+  // 권한 페이지는 막지 않는다. 붙여넣기 권한은 선택 사항이다 — 권한이 없어도
+  // 클립은 복사되고 ⌘V 로 직접 붙여넣을 수 있다. 이전에는 권한 없이는 다음으로도,
+  // 창 닫기로도 넘어갈 수 없어서 권한을 강요했다 (App Review 5.1.1(iv), v1 리뷰 M1).
   var dir=idx>currentPage?1:-1;
   var op=pages[currentPage],np=pages[idx];
   onPageLeave(currentPage);

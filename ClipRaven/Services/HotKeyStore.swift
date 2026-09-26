@@ -20,17 +20,38 @@ final class HotKeyStore {
         self.notificationCenter = notificationCenter
     }
 
+    // MARK: - Defaults
+
+    /// 기본 전역 단축키 ⇧⌘V — 클립보드 매니저의 사실상 표준 조합.
+    ///
+    /// 이전 기본값은 **Shift+V 단독**이었다. 전역 단축키는 모든 앱의 입력보다
+    /// 먼저 가로채므로 등록에 성공하면 어느 앱에서도 대문자 V 를 칠 수 없고,
+    /// macOS 15 의 샌드박스 앱은 ⇧·⌥ 만의 조합을 아예 등록하지 못한다(-9868)
+    /// (v1 리뷰 M2).
+    static let defaultKeyCode = UInt32(kVK_ANSI_V)
+    static let defaultModifiers = UInt32(cmdKey | shiftKey)
+
     // MARK: - Persisted Values
 
-    var keyCode: UInt32 {
-        let v = defaults.integer(forKey: "hotkey.keyCode")
-        return v != 0 ? UInt32(v) : UInt32(kVK_ANSI_V)
+    /// 저장된 조합이 전역 단축키로 쓸 수 있는 것인가. 예전 기본값(⇧V)처럼 ⌘·⌃ 가
+    /// 없는 저장값은 버리고 기본값을 쓴다 — 그대로 두면 글자 입력을 가로채거나
+    /// 등록에 실패해 패널을 열 방법이 없어진다.
+    private var storedCombo: (keyCode: UInt32, modifiers: UInt32)? {
+        // 미설정은 "값이 없음(nil)" 으로 판정한다. 이전에는 0 을 미설정으로 봤는데
+        // A 키의 키코드(kVK_ANSI_A)가 0 이라, A 로 녹화한 단축키가 V 로 바뀌어
+        // 등록됐다 — ⌘A 를 녹화하면 실제로는 ⌘V(붙여넣기)가 전역으로 가로채였다.
+        guard let kc = defaults.object(forKey: "hotkey.keyCode") as? Int,
+              let mods = defaults.object(forKey: "hotkey.modifiers") as? Int
+        else { return nil }
+        let combo = (keyCode: UInt32(kc), modifiers: UInt32(mods))
+        guard HotKeyRules.problem(keyCode: combo.keyCode, modifiers: combo.modifiers, scope: .global) == nil
+        else { return nil }
+        return combo
     }
 
-    var modifiers: UInt32 {
-        let v = defaults.integer(forKey: "hotkey.modifiers")
-        return v != 0 ? UInt32(v) : UInt32(shiftKey)
-    }
+    var keyCode: UInt32 { storedCombo?.keyCode ?? Self.defaultKeyCode }
+
+    var modifiers: UInt32 { storedCombo?.modifiers ?? Self.defaultModifiers }
 
     var displayString: String {
         HotKeyFormatter.format(keyCode: keyCode, modifiers: modifiers)
@@ -46,6 +67,48 @@ final class HotKeyStore {
             forKey: "hotkey"
         )
         notificationCenter.post(name: .clipRavenHotKeyChanged, object: nil)
+    }
+}
+
+// MARK: - HotKeyRules
+
+/// 전역 단축키로 등록하면 안 되는 조합을 거른다. 전역 단축키와 클립별 단축키가
+/// 같은 규칙을 쓴다 (v1 리뷰 M2 — 이전에는 전역 녹화기에 검증이 아예 없었다).
+enum HotKeyRules {
+    enum Scope {
+        /// 패널 열기 단축키 — ⌘ 또는 ⌃ 필수.
+        case global
+        /// 클립별 단축키 — ⌥ 조합도 허용 (기존 동작 유지).
+        case perClip
+    }
+
+    /// ⌘ 하나만 붙은 시스템·편집 단축키. 전역으로 가로채면 모든 앱에서 해당
+    /// 기능이 사라진다.
+    private static let reservedCommandKeys: Set<Int> = [
+        kVK_ANSI_A, kVK_ANSI_C, kVK_ANSI_V, kVK_ANSI_X, kVK_ANSI_Z,
+        kVK_ANSI_Q, kVK_ANSI_W, kVK_ANSI_S, kVK_ANSI_N, kVK_ANSI_T,
+        kVK_ANSI_F, kVK_ANSI_P, kVK_ANSI_O, kVK_ANSI_H, kVK_ANSI_M,
+        kVK_Tab, kVK_Space,
+    ]
+
+    /// 문제가 있으면 사용자에게 보여줄 설명, 없으면 nil.
+    static func problem(keyCode: UInt32, modifiers: UInt32, scope: Scope) -> String? {
+        let hasCommandOrControl = modifiers & UInt32(cmdKey | controlKey) != 0
+        let hasOption = modifiers & UInt32(optionKey) != 0
+
+        switch scope {
+        case .global where !hasCommandOrControl:
+            return String(localized: "⌘ 또는 ⌃를 포함한 조합을 사용하세요. ⇧나 ⌥만 쓰면 글자 입력을 가로챕니다.")
+        case .perClip where !hasCommandOrControl && !hasOption:
+            return String(localized: "⌘ / ⌃ / ⌥ 중 하나 이상을 포함해야 합니다.")
+        default:
+            break
+        }
+
+        if modifiers == UInt32(cmdKey), reservedCommandKeys.contains(Int(keyCode)) {
+            return String(localized: "시스템 단축키(\(HotKeyFormatter.format(keyCode: keyCode, modifiers: modifiers)))는 사용할 수 없습니다.")
+        }
+        return nil
     }
 }
 

@@ -48,7 +48,7 @@ struct PasteClipIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         // Gate 1: accessibility — required for CGEvent paste synthesis
-        guard AccessibilityPrompter.isTrusted else {
+        guard PastePermission.isGranted else {
             intentLog("[PasteClipIntent] blocked: accessibility not trusted")
             throw ClipRavenIntentError.accessibilityRequired
         }

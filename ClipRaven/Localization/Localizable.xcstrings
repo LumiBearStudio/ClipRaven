@@ -2397,60 +2397,60 @@
       }
     },
     "⌘ / ⌃ / ⌥ 중 하나 이상을 포함해야 합니다." : {
-      "extractionState" : "stale",
+      "comment" : "Per-clip shortcut recorder — needs a modifier",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mindestens ⌘ / ⌃ / ⌥ erforderlich."
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shortcut must include at least one of ⌘ / ⌃ / ⌥."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Debe incluir al menos ⌘ / ⌃ / ⌥."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Doit inclure au moins ⌘ / ⌃ / ⌥."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deve includere almeno ⌘ / ⌃ / ⌥."
+            "value" : "Include at least one of ⌘, ⌃ or ⌥."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⌘ / ⌃ / ⌥のいずれかを含める必要があります。"
+            "value" : "⌘・⌃・⌥ のいずれかを含めてください。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwende mindestens ⌘, ⌃ oder ⌥."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluez au moins ⌘, ⌃ ou ⌥."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluye al menos ⌘, ⌃ o ⌥."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Includi almeno ⌘, ⌃ o ⌥."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deve incluir pelo menos ⌘ / ⌃ / ⌥."
+            "value" : "Inclua pelo menos ⌘, ⌃ ou ⌥."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "必须包含 ⌘ / ⌃ / ⌥ 中至少一个。"
+            "value" : "请至少包含 ⌘、⌃ 或 ⌥ 之一。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "必須包含 ⌘ / ⌃ / ⌥ 其中之一。"
+            "value" : "請至少包含 ⌘、⌃ 或 ⌥ 其中之一。"
           }
         }
       }
@@ -24715,6 +24715,124 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "要求 macOS 在螢幕分享、錄影與截圖中隱藏 ClipRaven 視窗。在 macOS 15 及更新版本中，部分分享或錄影 App 仍可能顯示這些視窗，因此分享敏感內容前請先關閉面板。需要拍攝面板時，請暫時關閉此項。"
+          }
+        }
+      }
+    },
+    "⌘ 또는 ⌃를 포함한 조합을 사용하세요. ⇧나 ⌥만 쓰면 글자 입력을 가로챕니다." : {
+      "comment" : "Global hotkey recorder — combo must include ⌘ or ⌃",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use a combination with ⌘ or ⌃. Shortcuts with only ⇧ or ⌥ take over normal typing."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⌘ または ⌃ を含む組み合わせを使ってください。⇧ や ⌥ だけの組み合わせは文字入力を横取りします。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwende eine Kombination mit ⌘ oder ⌃. Kürzel nur mit ⇧ oder ⌥ fangen normale Eingaben ab."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisez une combinaison avec ⌘ ou ⌃. Un raccourci avec seulement ⇧ ou ⌥ intercepte la saisie normale."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa una combinación con ⌘ o ⌃. Los atajos solo con ⇧ o ⌥ interceptan la escritura normal."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa una combinazione con ⌘ o ⌃. Le scorciatoie con solo ⇧ o ⌥ intercettano la digitazione normale."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use uma combinação com ⌘ ou ⌃. Atalhos só com ⇧ ou ⌥ capturam a digitação normal."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请使用包含 ⌘ 或 ⌃ 的组合。只有 ⇧ 或 ⌥ 的快捷键会拦截正常输入。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請使用包含 ⌘ 或 ⌃ 的組合。只有 ⇧ 或 ⌥ 的快速鍵會攔截正常輸入。"
+          }
+        }
+      }
+    },
+    "시스템 단축키(%@)는 사용할 수 없습니다." : {
+      "comment" : "Shortcut recorder — combo is a reserved system shortcut; %@ is the combo like ⌘C",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is a system shortcut and can't be used."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ はシステムのショートカットのため使用できません。"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist ein Systemkürzel und kann nicht verwendet werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est un raccourci système et ne peut pas être utilisé."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ es un atajo del sistema y no se puede usar."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ è una scorciatoia di sistema e non può essere usata."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ é um atalho do sistema e não pode ser usado."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 是系统快捷键，无法使用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 是系統快速鍵，無法使用。"
           }
         }
       }
