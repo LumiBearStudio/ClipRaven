@@ -182,12 +182,10 @@ public final class TrialManager {
     /// iOS = SystemKeychain.
     public static let shared: TrialManager = makeShared()
 
-    /// macOS sandbox keychain TCC 회귀 회피를 위한 App Group 이름. 모든 앱
-    /// (macOS / iOS / extensions) entitlement 와 `AppGroupDatabase.appGroupID`
-    /// 가 동일한 값을 써야 sandbox profile 의 case-sensitive 검증을 통과한다.
-    /// 회귀: 이전엔 macOS 만 소문자(`group.com.lumibear.clipraven`)를 써서
-    /// 매 실행마다 "다른 앱의 데이터에 접근" TCC prompt 가 떴다.
-    public static let trialAppGroup = "63ZN5B3LHU.com.lumibear.ClipRaven"
+    /// 체험 시작일을 저장하는 App Group (macOS 전용 — iOS 는 키체인을 쓴다).
+    /// macOS entitlement 와 같은 값이어야 권한 창 없이 접근된다.
+    /// 플랫폼별 형식은 `AppGroupDatabase.appGroupID` 문서 참고.
+    public static let trialAppGroup = AppGroupDatabase.appGroupID
 
     private let clock: any AppClock
     private let storage: any KeychainStorage

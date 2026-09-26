@@ -645,7 +645,7 @@ class KeyboardViewController: UIInputViewController {
             let mergedClips: [Clip]
             if trimmed.isEmpty {
                 let pending = KeyboardCaptureBuffer.peekAll(
-                    appGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
+                    appGroupIdentifier: AppGroupDatabase.appGroupID
                 )
                 let pendingClips = pending.compactMap(Self.clipFromPending)
                 // pending 이 더 최신 (capturedAt 내림차순) — 카드 앞쪽에
@@ -758,10 +758,34 @@ class KeyboardViewController: UIInputViewController {
     }
 
     @objc private func pasteQueueTapped() {
-        let texts = pasteQueue.compactMap { $0.contentText }.filter { !$0.isEmpty }
+        // 목록 행의 contentText 는 미리보기 길이로 잘라 온 값이다 (X2). 여러 개를
+        // 붙일 때도 DB 에서 원문을 다시 읽어야 한다 — 이전에는 잘린 300자를
+        // 그대로 붙여 긴 코드·메일이 조용히 잘렸다.
+        guard let fullTexts = fullContentTexts(for: pasteQueue) else {
+            showToast(String(localized: "클립을 불러오지 못했습니다. 다시 시도해 주세요."))
+            return
+        }
+        let texts: [String] = pasteQueue.compactMap { clip in
+            // DB 에 있는 클립은 반드시 원문만 쓴다. pending 클립(id 없음)은
+            // 메모리 값이 이미 원문이다.
+            let text = clip.id.map { fullTexts[$0] } ?? clip.contentText
+            guard let text, !text.isEmpty else { return nil }   // 이미지 등 본문 없음
+            // 단일 붙여넣기와 같은 위험 URL 차단을 큐에도 적용한다.
+            if clip.contentType == .url, Self.isDangerousURLScheme(text) { return nil }
+            return text
+        }
         guard !texts.isEmpty else { return }
         textDocumentProxy.insertText(texts.joined(separator: "\n"))
         clearQueueTapped()
+    }
+
+    /// 큐 항목 식별자. DB 에 아직 없는 pending 클립은 `id` 가 모두 nil 이라
+    /// id 로 비교하면 서로 같은 항목이 되어 두 번째부터 큐에 들어가지 않는다.
+    /// pending 클립은 `pending-<시각>` 형태의 고유 uuid 를 갖는다.
+    private static func queueKey(_ clip: Clip) -> String {
+        if let uuid = clip.uuid, !uuid.isEmpty { return uuid }
+        if let id = clip.id { return "id:\(id)" }
+        return "text:\(clip.contentText ?? "")"
     }
 
     @objc private func clearQueueTapped() {
@@ -1100,7 +1124,7 @@ class KeyboardViewController: UIInputViewController {
             )
             KeyboardCaptureBuffer.append(
                 capture,
-                appGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
+                appGroupIdentifier: AppGroupDatabase.appGroupID
             )
             // 즉시 표시 — in-memory clips 에 prepend
             let tempClip = Clip(
@@ -1316,7 +1340,12 @@ class KeyboardViewController: UIInputViewController {
         // 목록 쿼리는 본문을 미리보기 길이로 잘라 오므로(감사 X2), 붙여넣기
         // 시점에 id 로 전체 본문을 다시 읽는다. pending capture 처럼 DB 에
         // 없는 클립(id == nil)은 메모리 값이 이미 전체라 그대로 쓴다.
-        guard let text = fullContentText(for: clip), !text.isEmpty else { return }
+        guard let fullTexts = fullContentTexts(for: [clip]) else {
+            showToast(String(localized: "클립을 불러오지 못했습니다. 다시 시도해 주세요."))
+            return
+        }
+        let resolved = clip.id.map { fullTexts[$0] } ?? clip.contentText
+        guard let text = resolved, !text.isEmpty else { return }
 
         // 보안 감사 A-H4: URL 타입 클립이 위험 scheme (`javascript:`, `data:`,
         // `file:`) 일 때 paste 차단. 호스트 앱이 Safari 주소창 / WebView 같은
@@ -1340,17 +1369,30 @@ class KeyboardViewController: UIInputViewController {
         return dangerous.contains { trimmed.hasPrefix($0) }
     }
 
-    /// 붙여넣을 전체 본문. 목록 쿼리가 잘라온 미리보기 대신 DB 의 원본을 읽는다.
+    /// 붙여넣을 원문을 DB 에서 한 번에 다시 읽는다. 목록 쿼리는 미리보기 길이로
+    /// 잘라 오므로(X2) 붙여넣기에 그 값을 쓰면 안 된다.
     ///
-    /// 단일 행 primary-key 조회라 비용이 작고, 잘린 텍스트를 붙여넣는 기능
-    /// 회귀를 막는다. DB 에 아직 없는 pending capture(id == nil)나 조회 실패
-    /// 시에는 메모리 값으로 폴백한다.
-    private func fullContentText(for clip: Clip) -> String? {
-        guard let id = clip.id, let dbPool else { return clip.contentText }
-        let full = try? dbPool.read { db in
-            try String.fetchOne(db, sql: "SELECT contentText FROM clips WHERE id = ?", arguments: [id])
+    /// - Returns: `[id: 원문]`. 본문이 NULL 인 행(이미지 등)은 빠진다.
+    ///   **읽기 자체가 실패하면 nil** — 호출자는 잘린 미리보기로 대신 붙이지 말고
+    ///   사용자에게 알려야 한다. DB 에 없는 pending 클립(id 없음)은 조회하지 않는다.
+    private func fullContentTexts(for clips: [Clip]) -> [Int64: String]? {
+        let ids = clips.compactMap(\.id)
+        guard !ids.isEmpty else { return [:] }
+        guard let dbPool else { return nil }
+        let placeholders = ids.map { _ in "?" }.joined(separator: ",")
+        return try? dbPool.read { db in
+            var result: [Int64: String] = [:]
+            for row in try Row.fetchAll(
+                db,
+                sql: "SELECT id, contentText FROM clips WHERE id IN (\(placeholders))",
+                arguments: StatementArguments(ids)
+            ) {
+                if let id: Int64 = row["id"], let text: String = row["contentText"] {
+                    result[id] = text
+                }
+            }
+            return result
         }
-        return full ?? clip.contentText
     }
 
     /// App Group `ClipRaven/images/` 에서 이미지 **raw bytes** 와 pasteboard
@@ -1361,7 +1403,7 @@ class KeyboardViewController: UIInputViewController {
     /// target 이라 직접 import 못 하므로 inline.
     private static func imageBytesFromAppGroup(relativePath: String) -> (Data, String)? {
         guard let containerURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "63ZN5B3LHU.com.lumibear.ClipRaven"
+            forSecurityApplicationGroupIdentifier: AppGroupDatabase.appGroupID
         ) else { return nil }
         let fileURL = containerURL
             .appendingPathComponent("ClipRaven/images", isDirectory: true)
@@ -1454,7 +1496,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             for: indexPath
         ) as! ClipCardCell
         let clip = clips[indexPath.item]
-        let queueIndex = pasteQueue.firstIndex { $0.id == clip.id }
+        let queueIndex = pasteQueue.firstIndex { Self.queueKey($0) == Self.queueKey(clip) }
         cell.configure(with: clip, queueIndex: queueIndex.map { $0 + 1 })
         if queueIndex != nil { cv.selectItem(at: indexPath, animated: false, scrollPosition: []) }
         return cell
@@ -1476,7 +1518,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             insertClip(clip)
             cv.deselectItem(at: indexPath, animated: true)
         } else {
-            if !pasteQueue.contains(where: { $0.id == clip.id }) {
+            if !pasteQueue.contains(where: { Self.queueKey($0) == Self.queueKey(clip) }) {
                 pasteQueue.append(clip)
             }
             updateQueueBar()
@@ -1486,7 +1528,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
 
     func collectionView(_ cv: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let clip = clips[indexPath.item]
-        pasteQueue.removeAll { $0.id == clip.id }
+        pasteQueue.removeAll { Self.queueKey($0) == Self.queueKey(clip) }
         updateQueueBar()
         cv.reloadItems(at: [indexPath])
     }
@@ -1505,7 +1547,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
               let indexPath = collectionView.indexPathForItem(at: gesture.location(in: collectionView))
         else { return }
         let clip = clips[indexPath.item]
-        if !pasteQueue.contains(where: { $0.id == clip.id }) {
+        if !pasteQueue.contains(where: { Self.queueKey($0) == Self.queueKey(clip) }) {
             pasteQueue.append(clip)
             collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
             updateQueueBar()

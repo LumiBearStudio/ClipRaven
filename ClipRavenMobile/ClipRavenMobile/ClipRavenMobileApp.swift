@@ -315,7 +315,7 @@ final class SyncAppDelegate: NSObject, UIApplicationDelegate {
 /// 메인 앱이 깨어날 때 여기서 처리 → ClipRepository 정상 path → SyncChangeCapture
 /// 가 자동으로 sync queue 에 넣음.
 private func drainKeyboardCaptures() async {
-    let appGroupID = "63ZN5B3LHU.com.lumibear.ClipRaven"
+    let appGroupID = AppGroupDatabase.appGroupID
     let captures = KeyboardCaptureBuffer.drainAll(appGroupIdentifier: appGroupID)
     guard !captures.isEmpty else { return }
 

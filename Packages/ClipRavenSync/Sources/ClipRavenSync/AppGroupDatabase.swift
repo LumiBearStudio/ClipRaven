@@ -15,8 +15,25 @@ import GRDB
 /// 추가 설정 불필요.
 public enum AppGroupDatabase {
 
-    /// 메인 앱 + Extension 이 공유하는 App Group ID.
+    /// 메인 앱 + Extension 이 공유하는 App Group ID. **플랫폼마다 형식이 다르다.**
+    ///
+    /// - macOS: Team ID 접두사 형식. macOS 프로비저닝 프로파일은
+    ///   `63ZN5B3LHU.*` 와일드카드만 허가하므로 `group.*` 를 쓰면 매 실행마다
+    ///   "다른 앱의 데이터에 접근" 권한 창이 뜬다 (ef170b5 에서 고친 문제).
+    /// - iOS: 반드시 `group.` 접두사. iOS 는 Team ID 형식 App Group 을 허용하지
+    ///   않는다 — 실기기·아카이브 서명이 되지 않고, 억지로 서명하면
+    ///   `containerURL` 이 nil 이 되어 키보드·공유 확장이 DB 를 못 연다.
+    ///   ef170b5 가 iOS 까지 Team ID 형식으로 바꿔서 그 뒤로 iOS 는
+    ///   시뮬레이터(서명 검사 없음)에서만 빌드되고 있었다.
+    ///
+    /// 두 플랫폼의 컨테이너는 서로 다른 기기에 있으므로 ID 가 달라도 문제없다.
+    /// App Group ID 가 필요한 곳은 반드시 이 상수를 쓸 것 — 문자열을 흩어 두면
+    /// 이번처럼 한쪽만 바뀐다.
+    #if os(iOS)
+    public static let appGroupID = "group.com.lumibear.ClipRaven"
+    #else
     public static let appGroupID = "63ZN5B3LHU.com.lumibear.ClipRaven"
+    #endif
 
     /// App Group 컨테이너 안의 sqlite 파일 URL. nil 이면 entitlement 누락.
     public static var sharedSQLiteURL: URL? {
