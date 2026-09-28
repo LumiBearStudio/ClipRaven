@@ -36,6 +36,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// because `syncEngineBox` is nil there.
     private var syncChangeCapture: SyncChangeCapture?
 
+    /// 첫 실행 기본값. 보호 기능은 켜 두고, 데이터를 기기 밖으로 보내는 기능(크래시
+    /// 리포트·링크 미리보기·iCloud 동기화)은 넣지 않는다 — 사용자가 직접 켠다
+    /// (`CRSentryConsentTests` 가 확인).
+    static let registeredDefaults: [String: Any] = [
+        "blockSensitive": true,           // 1Password / 2FA / API key 자동 차단
+        "filter2FA": true,                // 4~8자리 OTP 코드 패턴 차단
+        "stripInvisibleChars": true,      // BOM/ZWSP 등 invisible 자동 제거
+        "stripURLTracking": true,         // utm_* 등 추적 파라미터 제거
+        "maxClipCount": AppConstants.maxClipCount,
+        "maxDaysToKeep": 90,
+        "selectiveMode": false,
+        "doubleCopyWindowMs": 500,
+    ]
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         #if QA
         // DB·설정을 읽기 전에 QA 실행 옵션(-qaReset 등)을 적용한다.
@@ -57,16 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Register default UserDefaults values
         // 보안 감사 A-C2: 보호 관련 토글은 명시적으로 ON 으로 등록해 신규
         // 사용자가 토글을 본 적 없어도 디폴트 보호가 적용되도록 한다.
-        UserDefaults.standard.register(defaults: [
-            "blockSensitive": true,           // 1Password / 2FA / API key 자동 차단
-            "filter2FA": true,                // 4~8자리 OTP 코드 패턴 차단
-            "stripInvisibleChars": true,      // BOM/ZWSP 등 invisible 자동 제거
-            "stripURLTracking": true,         // utm_* 등 추적 파라미터 제거
-            "maxClipCount": AppConstants.maxClipCount,
-            "maxDaysToKeep": 90,
-            "selectiveMode": false,
-            "doubleCopyWindowMs": 500,
-        ])
+        UserDefaults.standard.register(defaults: Self.registeredDefaults)
 
         // Phase C — sync 패키지에 Mac 측 이미지 저장 어댑터 등록.
         // SyncRecordMapper 가 CKAsset round-trip 시 이 어댑터를 통해 우리

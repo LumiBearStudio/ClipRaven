@@ -26,39 +26,43 @@ enum CRSentry {
     /// 설정에서 켠 즉시 반영하기 위해 런타임에도 호출할 수 있다.
     /// (앱 재시작을 요구하지 않기 위한 것 — 재시작 안내는 나쁜 UX 다.)
     static func start() {
-        SentrySDK.start { options in
-            options.dsn = "https://2e87dafa4228a756923fbb0e0d914949@o4510949994266624.ingest.de.sentry.io/4511348636778576"
-            // Sentry dashboard 의 environment 필터로 dev / prod 구분.
-            #if DEBUG
-            options.environment = "development"
-            #else
-            options.environment = "production"
-            #endif
-            options.sendDefaultPii = false
-            options.maxBreadcrumbs = 200
-            // 크래시가 없을 때는 아무것도 보내지 않는다. Sentry 9 는 기본값으로 세션
-            // 추적과 앱 멈춤 추적이 켜져 있어, 크래시가 없어도 세션·멈춤 데이터를
-            // 보냈다 — "비정상 종료 시에만" 이라는 동의 문구와 개인정보 라벨(충돌
-            // 데이터만)이 사실이 되도록 끈다 (v1 리뷰).
-            options.enableAutoSessionTracking = false
-            options.enableAppHangTracking = false
-            // 같은 이유로 크래시와 무관한 자동 전송도 끈다. 기본값은 앱 안의 HTTP 요청
-            // URL 을 breadcrumb 으로 기록하고(링크 미리보기가 사용자가 복사한 URL 을
-            // 여는 경로), 5xx 응답을 별도 이벤트로 보내고, 폐기 통계(client report)를
-            // 보낸다 — 모두 "크래시 시에만, 클립 내용 없이" 약속 밖이다.
-            options.enableNetworkBreadcrumbs = false
-            options.enableCaptureFailedRequests = false
-            options.enableNetworkTracking = false
-            options.sendClientReports = false
-            // iOS 의 자동 breadcrumb 은 화면이 나타날 때 뷰 컨트롤러 제목과 버튼 제목을
-            // 기록한다(SentryBreadcrumbTracker). 클립 상세 화면은 제목이 클립 내용
-            // (`clip.displayTitle`)이라 클립 내용이 크래시 리포트에 실릴 수 있었다.
-            // 앱이 직접 남기는 breadcrumb 은 이 옵션과 무관하게 계속 남는다.
-            // (macOS 의 자동 breadcrumb 은 활성/비활성 상태만 기록해 켜 둔다.)
-            options.enableAutoBreadcrumbTracking = false
-            // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
-        }
+        SentrySDK.start(configureOptions: configure)
         breadcrumb("crash reporting enabled", category: "app")
+    }
+
+    /// SDK 옵션. 동의 범위("비정상 종료 시에만, 클립 내용 없이")를 지키는 설정이
+    /// 모여 있어 테스트(`CRSentryConsentTests`)가 이 함수로 만든 값을 검사한다.
+    static func configure(_ options: Options) {
+        options.dsn = "https://2e87dafa4228a756923fbb0e0d914949@o4510949994266624.ingest.de.sentry.io/4511348636778576"
+        // Sentry dashboard 의 environment 필터로 dev / prod 구분.
+        #if DEBUG
+        options.environment = "development"
+        #else
+        options.environment = "production"
+        #endif
+        options.sendDefaultPii = false
+        options.maxBreadcrumbs = 200
+        // 크래시가 없을 때는 아무것도 보내지 않는다. Sentry 9 는 기본값으로 세션
+        // 추적과 앱 멈춤 추적이 켜져 있어, 크래시가 없어도 세션·멈춤 데이터를
+        // 보냈다 — "비정상 종료 시에만" 이라는 동의 문구와 개인정보 라벨(충돌
+        // 데이터만)이 사실이 되도록 끈다 (v1 리뷰).
+        options.enableAutoSessionTracking = false
+        options.enableAppHangTracking = false
+        // 같은 이유로 크래시와 무관한 자동 전송도 끈다. 기본값은 앱 안의 HTTP 요청
+        // URL 을 breadcrumb 으로 기록하고(링크 미리보기가 사용자가 복사한 URL 을
+        // 여는 경로), 5xx 응답을 별도 이벤트로 보내고, 폐기 통계(client report)를
+        // 보낸다 — 모두 "크래시 시에만, 클립 내용 없이" 약속 밖이다.
+        options.enableNetworkBreadcrumbs = false
+        options.enableCaptureFailedRequests = false
+        options.enableNetworkTracking = false
+        options.sendClientReports = false
+        // iOS 의 자동 breadcrumb 은 화면이 나타날 때 뷰 컨트롤러 제목과 버튼 제목을
+        // 기록한다(SentryBreadcrumbTracker). 클립 상세 화면은 제목이 클립 내용
+        // (`clip.displayTitle`)이라 클립 내용이 크래시 리포트에 실릴 수 있었다.
+        // 앱이 직접 남기는 breadcrumb 은 이 옵션과 무관하게 계속 남는다.
+        // (macOS 의 자동 breadcrumb 은 활성/비활성 상태만 기록해 켜 둔다.)
+        options.enableAutoBreadcrumbTracking = false
+        // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
     }
 
     /// 설정에서 끄면 즉시 전송을 멈춘다.

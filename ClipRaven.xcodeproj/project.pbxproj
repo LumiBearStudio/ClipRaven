@@ -177,6 +177,11 @@
 		SYNC001200000000000002CC /* SyncChangeCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SYNC001200000000000001CC /* SyncChangeCaptureTests.swift */; };
 		6ADB808317E84C98AC29DFCE /* AppRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7553E5D5A82ACE3212087B /* AppRuntime.swift */; };
 		4763E2BC99296453A5C201E3 /* QALaunchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BF7FF59D889F52CE6D7806 /* QALaunchOptions.swift */; };
+		CB733AACB95DB3FE54B8563E /* StoreKitPurchaseFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8900BEE26044085BC12F6E /* StoreKitPurchaseFlowTests.swift */; };
+		B83BFA9E09021007019BBED7 /* PasteGateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89133890B37A2297BCE26D1C /* PasteGateTests.swift */; };
+		1B54B04A7B61C48805DAFBF1 /* LocalizationCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3F9136317FD3512E4DF563 /* LocalizationCatalogTests.swift */; };
+		FF8C74D1A6C2044A1C9A65B0 /* OnboardingI18NTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DCC9D8904C47EFAA956429 /* OnboardingI18NTests.swift */; };
+		6A7242B0FA0DD5824B0E8888 /* CRSentryConsentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2C0E4C1F375C70309CCCEA /* CRSentryConsentTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -363,6 +368,11 @@
 		SKCONF000100000000000001AA /* ClipRaven.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = "ClipRaven.storekit"; path = "../ClipRaven.storekit"; sourceTree = "<group>"; };
 		4D7553E5D5A82ACE3212087B /* AppRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRuntime.swift; sourceTree = "<group>"; };
 		05BF7FF59D889F52CE6D7806 /* QALaunchOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QALaunchOptions.swift; sourceTree = "<group>"; };
+		7A8900BEE26044085BC12F6E /* StoreKitPurchaseFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitPurchaseFlowTests.swift; sourceTree = "<group>"; };
+		89133890B37A2297BCE26D1C /* PasteGateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteGateTests.swift; sourceTree = "<group>"; };
+		7B3F9136317FD3512E4DF563 /* LocalizationCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationCatalogTests.swift; sourceTree = "<group>"; };
+		F3DCC9D8904C47EFAA956429 /* OnboardingI18NTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingI18NTests.swift; sourceTree = "<group>"; };
+		5D2C0E4C1F375C70309CCCEA /* CRSentryConsentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRSentryConsentTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -643,6 +653,11 @@
 		AC00BD47A04FEA305FF099B9 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5D2C0E4C1F375C70309CCCEA /* CRSentryConsentTests.swift */,
+				F3DCC9D8904C47EFAA956429 /* OnboardingI18NTests.swift */,
+				7B3F9136317FD3512E4DF563 /* LocalizationCatalogTests.swift */,
+				89133890B37A2297BCE26D1C /* PasteGateTests.swift */,
+				7A8900BEE26044085BC12F6E /* StoreKitPurchaseFlowTests.swift */,
 				7C17CEE80C266ABC8B3A2760 /* SmartRuleEngineTests.swift */,
 				623CD093E0C19735F7254259 /* DuplicateDetectorTests.swift */,
 				HKEYFMT00000000000000CC /* HotKeyFormatterTests.swift */,
@@ -1178,6 +1193,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A7242B0FA0DD5824B0E8888 /* CRSentryConsentTests.swift in Sources */,
+				FF8C74D1A6C2044A1C9A65B0 /* OnboardingI18NTests.swift in Sources */,
+				1B54B04A7B61C48805DAFBF1 /* LocalizationCatalogTests.swift in Sources */,
+				B83BFA9E09021007019BBED7 /* PasteGateTests.swift in Sources */,
+				CB733AACB95DB3FE54B8563E /* StoreKitPurchaseFlowTests.swift in Sources */,
 				1BE0A39A2C1DD884A1D7D867 /* URLNormalizerTests.swift in Sources */,
 				6D2E19C0E9754F7C5B0DAC48 /* ChosungConverterTests.swift in Sources */,
 				8C049AAC7E1FAD988BC1ABE7 /* TextNormalizerTests.swift in Sources */,

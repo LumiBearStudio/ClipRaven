@@ -29,32 +29,36 @@ enum CRSentry {
 
     /// 설정에서 켠 즉시 반영하기 위해 런타임에도 호출한다 (재시작 불필요).
     static func start() {
-        SentrySDK.start { options in
-            options.dsn = "https://c5f56450b1edd3c00bbe4efb757a3bc1@o4510949994266624.ingest.de.sentry.io/4511348541489232"
-            // Sentry dashboard 의 environment 필터로 dev / prod 구분.
-            #if DEBUG
-            options.environment = "development"
-            #else
-            options.environment = "production"
-            #endif
-            options.sendDefaultPii = false
-            options.maxBreadcrumbs = 200
-            // 크래시가 없을 때는 아무것도 보내지 않는다. Sentry 9 는 기본값으로 세션
-            // 추적과 앱 멈춤 추적이 켜져 있어, 크래시가 없어도 세션·멈춤 데이터를
-            // 보냈다 — "비정상 종료 시에만" 이라는 동의 문구와 개인정보 라벨(충돌
-            // 데이터만)이 사실이 되도록 끈다 (v1 리뷰).
-            options.enableAutoSessionTracking = false
-            options.enableAppHangTracking = false
-            // 같은 이유로 크래시와 무관한 자동 전송도 끈다. 기본값은 앱 안의 HTTP 요청
-            // URL 을 breadcrumb 으로 기록하고(링크 미리보기가 사용자가 복사한 URL 을
-            // 여는 경로), 5xx 응답을 별도 이벤트로 보내고, 폐기 통계(client report)를
-            // 보낸다 — 모두 "크래시 시에만, 클립 내용 없이" 약속 밖이다.
-            options.enableNetworkBreadcrumbs = false
-            options.enableCaptureFailedRequests = false
-            options.enableNetworkTracking = false
-            options.sendClientReports = false
-            // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
-        }
+        SentrySDK.start(configureOptions: configure)
+    }
+
+    /// SDK 옵션. 동의 범위("비정상 종료 시에만, 클립 내용 없이")를 지키는 설정이
+    /// 모여 있어 테스트(`CRSentryConsentTests`)가 이 함수로 만든 값을 검사한다.
+    static func configure(_ options: Options) {
+        options.dsn = "https://c5f56450b1edd3c00bbe4efb757a3bc1@o4510949994266624.ingest.de.sentry.io/4511348541489232"
+        // Sentry dashboard 의 environment 필터로 dev / prod 구분.
+        #if DEBUG
+        options.environment = "development"
+        #else
+        options.environment = "production"
+        #endif
+        options.sendDefaultPii = false
+        options.maxBreadcrumbs = 200
+        // 크래시가 없을 때는 아무것도 보내지 않는다. Sentry 9 는 기본값으로 세션
+        // 추적과 앱 멈춤 추적이 켜져 있어, 크래시가 없어도 세션·멈춤 데이터를
+        // 보냈다 — "비정상 종료 시에만" 이라는 동의 문구와 개인정보 라벨(충돌
+        // 데이터만)이 사실이 되도록 끈다 (v1 리뷰).
+        options.enableAutoSessionTracking = false
+        options.enableAppHangTracking = false
+        // 같은 이유로 크래시와 무관한 자동 전송도 끈다. 기본값은 앱 안의 HTTP 요청
+        // URL 을 breadcrumb 으로 기록하고(링크 미리보기가 사용자가 복사한 URL 을
+        // 여는 경로), 5xx 응답을 별도 이벤트로 보내고, 폐기 통계(client report)를
+        // 보낸다 — 모두 "크래시 시에만, 클립 내용 없이" 약속 밖이다.
+        options.enableNetworkBreadcrumbs = false
+        options.enableCaptureFailedRequests = false
+        options.enableNetworkTracking = false
+        options.sendClientReports = false
+        // 진단 정보는 breadcrumb 으로만 보낸다 (보안 감사 P2).
     }
 
     /// 설정에서 끄면 즉시 전송을 멈춘다. 이전에는 macOS 에 끄는 방법이 없었다 —

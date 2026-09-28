@@ -38,7 +38,10 @@ public final class PurchaseManager: ObservableObject {
 
     private var transactionTask: Task<Void, Never>?
 
-    private init() {
+    /// 앱은 `shared` 만 쓴다. 테스트는 새 인스턴스를 만들어 StoreKit 로컬 세션
+    /// (`SKTestSession`)으로 구매·복원·환불 흐름을 검증한다 — `shared` 는 상품 캐시와
+    /// 잠금 상태가 테스트 사이에 남는다.
+    init() {
         transactionTask = listenForTransactions()
     }
 

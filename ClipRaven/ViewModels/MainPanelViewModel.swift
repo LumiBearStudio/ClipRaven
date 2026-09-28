@@ -106,7 +106,7 @@ extension ClipDateRange {
 }
 
 // 로컬 `vmDebugLog` 함수도 `ClipRavenLog.write(.ui, …)` 으로 통합됨.
-// (이전엔 /tmp/clipraven_debug.log 에 별도 기록했지만 이제 동일 경로로 합쳐짐.)
+// (이전엔 /tmp/clipraven_debug.log 에 별도 기록했지만 이제 `ClipRavenLog.debugLogFileURL` 로 합쳐짐.)
 
 /// 메인 패널의 ViewModel — macOS 앱의 핵심 상태 컨테이너.
 ///
@@ -358,11 +358,15 @@ final class MainPanelViewModel: ObservableObject {
     static func blockPasteIfExpired() -> Bool {
         PurchaseManager.shared.recomputeTrialState()
         if PurchaseManager.shared.lockState == .expired {
-            PaywallWindowController.shared.show()
+            presentPaywall()
             return true
         }
         return false
     }
+
+    /// 만료 시 구매 창을 띄우는 동작. 테스트는 이것을 바꿔 창을 띄우지 않고 호출만
+    /// 기록한다 (`PasteGateTests`).
+    static var presentPaywall: () -> Void = { PaywallWindowController.shared.show() }
 
     private func guardExpiredLockAndShowPaywall() -> Bool {
         Self.blockPasteIfExpired()
