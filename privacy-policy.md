@@ -55,12 +55,12 @@ To stop syncing, turn off iCloud Sync in ClipRaven. To delete what is already in
 
 ### Purchases and the free trial
 
-Apple handles all purchases. We never receive your payment details or your Apple ID. The date your free trial started is stored in your device's Keychain, on that device only, so the trial is not restarted by reinstalling the app.
+Apple handles all purchases. We never receive your payment details or your Apple ID. The date your free trial started is saved only on your device: in ClipRaven's app data on Mac, and in the Keychain on iPhone and iPad.
 
 ### Keeping and deleting your data
 
 - Clips stay on your device until you delete them or they pass the limits you set in Settings (number of clips to keep and days to keep them).
-- Deleting the app on iPhone or iPad deletes its data. On Mac, macOS keeps an app's data after the app is deleted. To remove it, delete your clips in ClipRaven first, or delete the folder `~/Library/Containers/com.lumibear.ClipRaven`.
+- Deleting the app on iPhone or iPad deletes its data. On Mac, macOS keeps an app's data after the app is deleted. To remove it, delete your clips in ClipRaven first, or delete the folders `~/Library/Containers/com.lumibear.ClipRaven` and `~/Library/Group Containers/63ZN5B3LHU.com.lumibear.ClipRaven`.
 - iCloud data and crash reports: see above.
 
 ### Your choices and rights
@@ -131,12 +131,12 @@ ClipRaven은 복사한 내용을 다시 찾아 붙여넣을 수 있도록 저장
 
 ### 구매와 무료 체험
 
-모든 구매는 Apple이 처리합니다. 개발자는 결제 정보나 Apple ID를 받지 않습니다. 무료 체험 시작일은 앱을 다시 설치해도 체험이 새로 시작되지 않도록 해당 기기의 키체인에만 저장합니다.
+모든 구매는 Apple이 처리합니다. 개발자는 결제 정보나 Apple ID를 받지 않습니다. 무료 체험 시작일은 해당 기기에만 저장합니다. Mac에서는 ClipRaven 앱 데이터에, iPhone과 iPad에서는 키체인에 저장합니다.
 
 ### 보관과 삭제
 
 - 클립은 사용자가 지우거나 설정에서 정한 한도(보관 개수, 보관 기간)를 넘을 때까지 기기에 남습니다.
-- iPhone과 iPad에서는 앱을 삭제하면 데이터도 함께 삭제됩니다. Mac에서는 앱을 삭제해도 macOS가 앱 데이터를 남겨 둡니다. 지우려면 ClipRaven에서 클립을 먼저 삭제하거나 `~/Library/Containers/com.lumibear.ClipRaven` 폴더를 삭제하세요.
+- iPhone과 iPad에서는 앱을 삭제하면 데이터도 함께 삭제됩니다. Mac에서는 앱을 삭제해도 macOS가 앱 데이터를 남겨 둡니다. 지우려면 ClipRaven에서 클립을 먼저 삭제하거나 `~/Library/Containers/com.lumibear.ClipRaven` 폴더와 `~/Library/Group Containers/63ZN5B3LHU.com.lumibear.ClipRaven` 폴더를 삭제하세요.
 - iCloud 데이터와 크래시 리포트는 위 설명을 참고하세요.
 
 ### 선택권과 권리
