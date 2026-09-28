@@ -3,25 +3,20 @@ import AppKit
 import Foundation
 import ClipRavenSync
 
+/// 단축어 실행 기록. 시스템 로그(`ClipRavenLog.paste`)로 보내고, DEBUG 빌드만 파일로도
+/// 남는다. 이전에는 모든 빌드에서 앱 번들 옆에 `clipraven_debug.log` 를 직접 써서,
+/// App Store 판에서는 `/Applications` 쓰기가 샌드박스에 막혀 실행할 때마다 위반이
+/// 기록됐다 (테스트 계획 A6).
 private func intentLog(_ msg: String) {
-    // Reuse the debug log convention from other parts of the app — write next to the .app bundle.
-    let line = "\(Date()): \(msg)\n"
-    let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-        .appendingPathComponent("clipraven_debug.log").path
-    let data = Data(line.utf8)
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(data)
-        handle.closeFile()
-    } else {
-        FileManager.default.createFile(atPath: logPath, contents: data)
-    }
+    ClipRavenLog.write(.paste, msg)
 }
 
 /// Pastes a `ClipEntity` into the currently frontmost application.
 ///
 /// Behavior notes (important for App Store review and users):
-/// - Requires Accessibility permission (Apple's TCC).
+/// - Needs the paste (event-posting) permission, which macOS lists under
+///   Privacy & Security › Accessibility. Without it the intent throws
+///   `accessibilityRequired`.
 /// - Designed to be triggered from **Spotlight**, **Siri**, or an **Automation** —
 ///   the launcher dismisses itself before the paste fires, so the "frontmost"
 ///   app is whatever the user was working in.

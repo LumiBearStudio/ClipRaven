@@ -1,20 +1,9 @@
 import AppKit
 
+/// 패널 키 입력 진단 로그. `ClipRavenLog` 로 보낸다(DEBUG 파일 mirror 도 거기서 처리).
+/// 이전에는 여기서 따로 `.app` 번들 옆에 파일을 써서 샌드박스 위반이 났다.
 private func debugLog(_ msg: String) {
-    ClipRavenLog.ui.debug("\(msg, privacy: .public)")
-    #if DEBUG
-    let line = "\(Date()): \(msg)\n"
-    let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-        .appendingPathComponent("clipraven_debug.log").path
-    let data = Data(line.utf8)
-    if let handle = FileHandle(forWritingAtPath: logPath) {
-        handle.seekToEndOfFile()
-        handle.write(data)
-        handle.closeFile()
-    } else {
-        FileManager.default.createFile(atPath: logPath, contents: data)
-    }
-    #endif
+    ClipRavenLog.write(.ui, msg)
 }
 
 /// NSPanel subclass that intercepts vertical scroll wheel events and converts

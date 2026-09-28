@@ -13,7 +13,8 @@ import OSLog
 ///   ```
 ///   ClipRavenLog.write(.processor, "captured: \(text)")
 ///   ```
-///   `clipraven_debug.log` 파일(.app 번들과 같은 폴더)에 mirror 된다.
+///   앱 컨테이너의 `Library/Logs/clipraven_debug.log` 에 mirror 된다
+///   (`debugLogFileURL` — 예: `~/Library/Containers/com.lumibear.ClipRaven/Data/Library/Logs/`).
 ///
 /// 이전엔 각 서비스마다 로컬 `debugLog` private 함수를 4중복 정의했으나
 /// 모두 이 단일 진입점으로 통합되었다.
@@ -67,9 +68,8 @@ enum ClipRavenLog {
 
     /// 로그 한 줄을 기록한다.
     ///
-    /// 항상 `os.Logger` 에 기록되며, DEBUG 빌드에선 `.app` 번들 옆의
-    /// `clipraven_debug.log` 파일에도 append 된다. RELEASE 빌드에선 파일 mirror 가
-    /// 일어나지 않아 디스크 부담이 없다.
+    /// 항상 `os.Logger` 에 기록되며, DEBUG 빌드에선 `debugLogFileURL` 파일에도
+    /// append 된다. RELEASE 빌드에선 파일 mirror 가 일어나지 않아 디스크 부담이 없다.
     ///
     /// - Important: **사용자 콘텐츠(클립 본문, 파일 경로 등)를 message 에 그대로
     ///   보간하지 말 것.** `redacted(_:)` 로 감싸거나 `sensitive: true` 를 쓴다.
@@ -131,9 +131,18 @@ enum ClipRavenLog {
         qos: .utility
     )
 
+    /// DEBUG 파일 로그 위치. 샌드박스 앱이 쓸 수 있는 컨테이너의 `Library/Logs`.
+    /// 이전에는 `.app` 번들 옆에 썼는데, 샌드박스가 그 쓰기를 막아 로그를 남길 때마다
+    /// 위반이 기록됐고 파일도 생기지 않았다 (테스트 계획 A6).
+    static let debugLogFileURL: URL = {
+        let logs = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Logs", isDirectory: true)
+        try? FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)
+        return logs.appendingPathComponent("clipraven_debug.log")
+    }()
+
     private static func appendToFile(category: String, message: String) {
-        let logPath = Bundle.main.bundleURL.deletingLastPathComponent()
-            .appendingPathComponent("clipraven_debug.log").path
+        let logPath = debugLogFileURL.path
         let line = "\(Date()): [\(category)] \(message)\n"
         let data = Data(line.utf8)
         if let handle = FileHandle(forWritingAtPath: logPath) {

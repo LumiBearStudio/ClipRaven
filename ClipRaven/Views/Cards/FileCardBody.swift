@@ -125,11 +125,12 @@ struct FileCardBody: View {
                 loaded.append(icon)
             }
 
+            // 크기만 필요하므로 `fileSizeKey` 로 읽는다. `attributesOfItem` 은 날짜도 돌려주는
+            // "파일 타임스탬프" 필수 사유 API 라 개인정보 매니페스트에 사유 선언이 따로 필요했다.
             var sizeStr: String? = nil
             if let first = loadPaths.first,
-               let attrs = try? FileManager.default.attributesOfItem(atPath: first),
-               let bytes = attrs[.size] as? Int64 {
-                sizeStr = Self.formatFileSize(bytes)
+               let bytes = try? URL(fileURLWithPath: first).resourceValues(forKeys: [.fileSizeKey]).fileSize {
+                sizeStr = Self.formatFileSize(Int64(bytes))
             }
 
             DispatchQueue.main.async {

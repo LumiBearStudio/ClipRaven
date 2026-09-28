@@ -8,6 +8,12 @@
             "state" : "translated",
             "value" : "·"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "·"
+          }
         }
       }
     },
@@ -18,12 +24,24 @@
             "state" : "translated",
             "value" : "%lld"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
         }
       }
     },
     "ClipRaven" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClipRaven"
@@ -68,6 +86,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClipRavenロック画面"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven 잠금 화면"
           }
         },
         "pt-BR" : {
@@ -129,6 +153,12 @@
             "value" : "コピー"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -186,6 +216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピーした内容がありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사한 내용이 없습니다"
           }
         },
         "pt-BR" : {
@@ -247,6 +283,12 @@
             "value" : "選択したクリップをクリップボードにコピーします。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 클립을 클립보드에 복사합니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -304,6 +346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "他 %lld件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "외 %lld개"
           }
         },
         "pt-BR" : {
@@ -365,6 +413,12 @@
             "value" : "ロック画面から最近のクリップを確認します。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠금 화면에서 최근 클립을 확인합니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -422,6 +476,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最近のクリップをホーム画面から直接確認してコピーできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 복사한 클립을 홈 화면에서 바로 확인하고 복사합니다."
           }
         },
         "pt-BR" : {
@@ -484,6 +544,12 @@
             "value" : "最近のクリップ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 클립"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -543,6 +609,12 @@
             "value" : "クリップID"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 ID"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -600,6 +672,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップをコピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 복사"
           }
         },
         "pt-BR" : {
@@ -662,6 +740,12 @@
             "value" : "クリップなし"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 없음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -718,6 +802,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금"
           }
         },
         "pt-BR" : {
@@ -778,6 +868,12 @@
             "value" : "%lld分"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld분"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -834,6 +930,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간"
           }
         },
         "pt-BR" : {
@@ -894,6 +996,12 @@
             "value" : "%lld日"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -952,6 +1060,12 @@
             "value" : "%lld週"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld주"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -974,28 +1088,16 @@
     },
     "어제" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yesterday"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "昨日"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gestern"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier"
+            "value" : "Yesterday"
           }
         },
         "es" : {
@@ -1004,10 +1106,28 @@
             "value" : "Ayer"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ieri"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昨日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어제"
           }
         },
         "pt-BR" : {
@@ -1032,28 +1152,16 @@
     },
     "회의 메모" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meeting notes"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "会議メモ"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Besprechungsnotizen"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notes de réunion"
+            "value" : "Meeting notes"
           }
         },
         "es" : {
@@ -1062,10 +1170,28 @@
             "value" : "Notas de la reunión"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes de réunion"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Note della riunione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会議メモ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회의 메모"
           }
         },
         "pt-BR" : {

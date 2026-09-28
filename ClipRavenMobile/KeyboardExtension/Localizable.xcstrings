@@ -4,28 +4,16 @@
     "'전체 접근 허용'을 활성화해주세요\n설정 → 일반 → 키보드 → ClipRaven" : {
       "comment" : "Hint shown when keyboard extension lacks Full Access permission",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turn on “Allow Full Access”\nSettings → General → Keyboard → Keyboards → ClipRaven"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「フルアクセスを許可」をオンにしてください\n設定 → 一般 → キーボード → キーボード → ClipRaven"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aktiviere „Vollen Zugriff erlauben“\nEinstellungen → Allgemein → Tastatur → Tastaturen → ClipRaven"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activez « Autoriser l’accès complet »\nRéglages → Général → Clavier → Claviers → ClipRaven"
+            "value" : "Turn on “Allow Full Access”\nSettings → General → Keyboard → Keyboards → ClipRaven"
           }
         },
         "es" : {
@@ -34,10 +22,28 @@
             "value" : "Activa «Permitir acceso completo»\nAjustes → General → Teclado → Teclados → ClipRaven"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez « Autoriser l’accès complet »\nRéglages → Général → Clavier → Claviers → ClipRaven"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Attiva «Consenti accesso completo»\nImpostazioni → Generali → Tastiera → Tastiere → ClipRaven"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「フルアクセスを許可」をオンにしてください\n設定 → 一般 → キーボード → キーボード → ClipRaven"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'전체 접근 허용'을 활성화해주세요\n설정 → 일반 → 키보드 → ClipRaven"
           }
         },
         "pt-BR" : {
@@ -99,6 +105,12 @@
             "value" : "%lld件"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -156,6 +168,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld分"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld분"
           }
         },
         "pt-BR" : {
@@ -217,6 +235,12 @@
             "value" : "%lld時間"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld시간"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -274,6 +298,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld일"
           }
         },
         "pt-BR" : {
@@ -335,6 +365,12 @@
             "value" : "%lld週"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld주"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -392,6 +428,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIカテゴリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 카테고리"
           }
         },
         "pt-BR" : {
@@ -453,6 +495,12 @@
             "value" : "その他"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기타"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -510,6 +558,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日付"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "날짜"
           }
         },
         "pt-BR" : {
@@ -571,6 +625,12 @@
             "value" : "リンク"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "링크"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -628,6 +688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금"
           }
         },
         "pt-BR" : {
@@ -689,6 +755,12 @@
             "value" : "コピーしたクリップがありません"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사한 클립이 없습니다"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -746,6 +818,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "貼り付け"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "붙여넣기"
           }
         },
         "pt-BR" : {
@@ -807,6 +885,12 @@
             "value" : "貼り付け (%lld)"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "붙여넣기 (%lld)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -864,6 +948,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ソースアプリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "소스 앱"
           }
         },
         "pt-BR" : {
@@ -925,6 +1015,12 @@
             "value" : "領収書"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영수증"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -984,6 +1080,12 @@
             "value" : "今日"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1006,28 +1108,16 @@
     },
     "위험할 수 있는 URL — 붙여넣기 차단" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Possibly unsafe link — not pasted"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "危険な可能性があるURLのため貼り付けませんでした"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Möglicherweise unsicherer Link – nicht eingefügt"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lien potentiellement dangereux — non collé"
+            "value" : "Possibly unsafe link — not pasted"
           }
         },
         "es" : {
@@ -1036,10 +1126,28 @@
             "value" : "Enlace posiblemente peligroso: no se pegó"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lien potentiellement dangereux — non collé"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Link potenzialmente pericoloso: non incollato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "危険な可能性があるURLのため貼り付けませんでした"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위험할 수 있는 URL — 붙여넣기 차단"
           }
         },
         "pt-BR" : {
@@ -1101,6 +1209,12 @@
             "value" : "メール"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이메일"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1158,6 +1272,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지"
           }
         },
         "pt-BR" : {
@@ -1219,6 +1339,12 @@
             "value" : "画像をコピー — 入力欄を長押しして貼り付け"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 복사됨 — 입력란을 길게 눌러 붙여넣기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1276,6 +1402,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像を読み込めません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지를 불러올 수 없습니다"
           }
         },
         "pt-BR" : {
@@ -1337,6 +1469,12 @@
             "value" : "今月"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 달"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1394,6 +1532,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今週"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주"
           }
         },
         "pt-BR" : {
@@ -1455,6 +1599,12 @@
             "value" : "すべて"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1512,6 +1662,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべての期間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 기간"
           }
         },
         "pt-BR" : {
@@ -1573,6 +1729,12 @@
             "value" : "電話"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1630,6 +1792,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "住所"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주소"
           }
         },
         "pt-BR" : {
@@ -1691,6 +1859,12 @@
             "value" : "コード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1748,6 +1922,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "タグ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그"
           }
         },
         "pt-BR" : {
@@ -1809,6 +1989,12 @@
             "value" : "テキスト"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1866,6 +2052,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留め"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핀 고정"
           }
         },
         "pt-BR" : {
@@ -1927,6 +2119,12 @@
             "value" : "会議"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회의"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1950,28 +2148,16 @@
     "원본이 너무 커서 미리보기 크기로 복사했습니다" : {
       "comment" : "Keyboard toast — original image too large, pasted the preview-size copy instead",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Original was too large — copied at preview size"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "元画像が大きすぎるため、プレビューサイズでコピーしました"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Original zu groß — in Vorschaugröße kopiert"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Original trop volumineux — copié en taille aperçu"
+            "value" : "Original was too large — copied at preview size"
           }
         },
         "es" : {
@@ -1980,10 +2166,28 @@
             "value" : "El original era demasiado grande: copiado en tamaño de vista previa"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Original trop volumineux — copié en taille aperçu"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Originale troppo grande — copiato in dimensione anteprima"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元画像が大きすぎるため、プレビューサイズでコピーしました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본이 너무 커서 미리보기 크기로 복사했습니다"
           }
         },
         "pt-BR" : {
@@ -2009,28 +2213,16 @@
     "클립을 불러오지 못했습니다. 다시 시도해 주세요." : {
       "comment" : "Keyboard toast — full clip text could not be re-read from the database, nothing was pasted",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't load the clip. Please try again."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "クリップを読み込めませんでした。もう一度お試しください。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clip konnte nicht geladen werden. Bitte erneut versuchen."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de charger le clip. Veuillez réessayer."
+            "value" : "Couldn't load the clip. Please try again."
           }
         },
         "es" : {
@@ -2039,10 +2231,28 @@
             "value" : "No se pudo cargar el clip. Inténtalo de nuevo."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de charger le clip. Veuillez réessayer."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile caricare il clip. Riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップを読み込めませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립을 불러오지 못했습니다. 다시 시도해 주세요."
           }
         },
         "pt-BR" : {

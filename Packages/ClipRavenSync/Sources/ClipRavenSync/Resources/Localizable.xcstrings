@@ -40,6 +40,12 @@
             "value" : "10 MB以下のみ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 MB 이하만"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -97,6 +103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "25 MB以下のみ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "25 MB 이하만"
           }
         },
         "pt-BR" : {
@@ -158,6 +170,12 @@
             "value" : "50 MB以下のみ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 MB 이하만"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -180,28 +198,16 @@
     },
     "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't load the purchase from the App Store. Check your internet connection and try again."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App Storeから購入情報を読み込めませんでした。インターネット接続を確認して、もう一度お試しください。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Der Kauf konnte nicht aus dem App Store geladen werden. Prüfe deine Internetverbindung und versuche es erneut."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de charger l’achat depuis l’App Store. Vérifiez votre connexion Internet et réessayez."
+            "value" : "Couldn't load the purchase from the App Store. Check your internet connection and try again."
           }
         },
         "es" : {
@@ -210,10 +216,28 @@
             "value" : "No se pudo cargar la compra desde el App Store. Comprueba tu conexión a internet e inténtalo de nuevo."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de charger l’achat depuis l’App Store. Vérifiez votre connexion Internet et réessayez."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile caricare l’acquisto dall’App Store. Controlla la connessione a Internet e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Storeから購入情報を読み込めませんでした。インターネット接続を確認して、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store에서 상품 정보를 찾을 수 없습니다. 인터넷 연결을 확인해 주세요."
           }
         },
         "pt-BR" : {
@@ -238,28 +262,16 @@
     },
     "결제 대기 중입니다. 승인 후 자동으로 잠금이 해제됩니다." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Payment is pending. ClipRaven unlocks automatically once it's approved."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "支払いが保留中です。承認されると自動的にロックが解除されます。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Zahlung steht noch aus. ClipRaven wird automatisch freigeschaltet, sobald sie genehmigt ist."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le paiement est en attente. ClipRaven se déverrouillera automatiquement une fois celui-ci approuvé."
+            "value" : "Payment is pending. ClipRaven unlocks automatically once it's approved."
           }
         },
         "es" : {
@@ -268,10 +280,28 @@
             "value" : "El pago está pendiente. ClipRaven se desbloqueará automáticamente cuando se apruebe."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le paiement est en attente. ClipRaven se déverrouillera automatiquement une fois celui-ci approuvé."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Il pagamento è in attesa. ClipRaven si sbloccherà automaticamente dopo l’approvazione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支払いが保留中です。承認されると自動的にロックが解除されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결제 대기 중입니다. 승인 후 자동으로 잠금이 해제됩니다."
           }
         },
         "pt-BR" : {
@@ -296,28 +326,16 @@
     },
     "구매 검증에 실패했습니다." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The purchase couldn't be verified."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入を確認できませんでした。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Der Kauf konnte nicht überprüft werden."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’achat n’a pas pu être vérifié."
+            "value" : "The purchase couldn't be verified."
           }
         },
         "es" : {
@@ -326,10 +344,28 @@
             "value" : "No se pudo verificar la compra."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’achat n’a pas pu être vérifié."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile verificare l’acquisto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入を確認できませんでした。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구매 검증에 실패했습니다."
           }
         },
         "pt-BR" : {
@@ -354,28 +390,16 @@
     },
     "구매 중 오류가 발생했습니다: %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The purchase couldn't be completed: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入を完了できませんでした：%@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Der Kauf konnte nicht abgeschlossen werden: %@"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’achat n’a pas pu être effectué : %@"
+            "value" : "The purchase couldn't be completed: %@"
           }
         },
         "es" : {
@@ -384,10 +408,28 @@
             "value" : "No se pudo completar la compra: %@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’achat n’a pas pu être effectué : %@"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile completare l’acquisto: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入を完了できませんでした：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구매 중 오류가 발생했습니다: %@"
           }
         },
         "pt-BR" : {
@@ -449,6 +491,12 @@
             "value" : "オフ (テキストのみ)"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끄기 (텍스트만)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -471,28 +519,16 @@
     },
     "복원 중 오류가 발생했습니다: %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purchases couldn't be restored: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入を復元できませんでした：%@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Käufe konnten nicht wiederhergestellt werden: %@"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de restaurer les achats : %@"
+            "value" : "Purchases couldn't be restored: %@"
           }
         },
         "es" : {
@@ -501,10 +537,28 @@
             "value" : "No se pudieron restaurar las compras: %@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de restaurer les achats : %@"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile ripristinare gli acquisti: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入を復元できませんでした：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복원 중 오류가 발생했습니다: %@"
           }
         },
         "pt-BR" : {
@@ -529,28 +583,16 @@
     },
     "복원할 구매 내역이 없습니다." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "There are no purchases to restore for this Apple Account."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このApple Accountで復元できる購入はありません。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Für diesen Apple Account gibt es keine Käufe zum Wiederherstellen."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun achat à restaurer pour ce compte Apple."
+            "value" : "There are no purchases to restore for this Apple Account."
           }
         },
         "es" : {
@@ -559,10 +601,28 @@
             "value" : "No hay compras que restaurar para esta cuenta de Apple."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun achat à restaurer pour ce compte Apple."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Non ci sono acquisti da ripristinare per questo Apple Account."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このApple Accountで復元できる購入はありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복원할 구매 내역이 없습니다."
           }
         },
         "pt-BR" : {
@@ -587,28 +647,16 @@
     },
     "상품 정보 로드에 실패했습니다: %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couldn't load the purchase information: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入情報を読み込めませんでした：%@"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kaufinformationen konnten nicht geladen werden: %@"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de charger les informations d’achat : %@"
+            "value" : "Couldn't load the purchase information: %@"
           }
         },
         "es" : {
@@ -617,10 +665,28 @@
             "value" : "No se pudo cargar la información de compra: %@"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de charger les informations d’achat : %@"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile caricare le informazioni di acquisto: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入情報を読み込めませんでした：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상품 정보 로드에 실패했습니다: %@"
           }
         },
         "pt-BR" : {
@@ -645,28 +711,16 @@
     },
     "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Still loading the purchase information. Please try again in a moment."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "購入情報を読み込んでいます。しばらくしてからもう一度お試しください。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Kaufinformationen werden noch geladen. Bitte versuche es gleich noch einmal."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chargement des informations d’achat en cours. Réessayez dans un instant."
+            "value" : "Still loading the purchase information. Please try again in a moment."
           }
         },
         "es" : {
@@ -675,10 +729,28 @@
             "value" : "Todavía se está cargando la información de compra. Inténtalo de nuevo en un momento."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chargement des informations d’achat en cours. Réessayez dans un instant."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Caricamento delle informazioni di acquisto in corso. Riprova tra poco."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入情報を読み込んでいます。しばらくしてからもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상품 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요."
           }
         },
         "pt-BR" : {
@@ -740,6 +812,12 @@
             "value" : "サムネイルのみ (小)"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "썸네일만 (작게)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -797,6 +875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オリジナルを貼り付け可、iCloudストレージを使用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 paste 가능, iCloud 저장공간 사용"
           }
         },
         "pt-BR" : {
@@ -858,6 +942,12 @@
             "value" : "オリジナルを含む"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 포함"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -915,6 +1005,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지"
           }
         },
         "pt-BR" : {
@@ -976,6 +1072,12 @@
             "value" : "画像は他のデバイスには表示されません"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지는 다른 기기에 보이지 않음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1033,6 +1135,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "制限なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제한 없음"
           }
         },
         "pt-BR" : {
@@ -1094,6 +1202,12 @@
             "value" : "推奨 — プレビューのみ、データ節約"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 — 이미지 미리보기만, 데이터 절약"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1151,6 +1265,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "カラー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컬러"
           }
         },
         "pt-BR" : {
@@ -1212,6 +1332,12 @@
             "value" : "コード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1271,6 +1397,12 @@
             "value" : "テキスト"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1328,6 +1460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일"
           }
         },
         "pt-BR" : {

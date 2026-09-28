@@ -40,6 +40,12 @@
             "value" : "「新しいキーボードを追加」→ ClipRaven"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'새로운 키보드 추가' → ClipRaven"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -63,6 +69,12 @@
     "%@" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -106,6 +118,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@件"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@개"
           }
         },
         "pt-BR" : {
@@ -168,6 +186,12 @@
             "value" : "%lld件"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -228,6 +252,12 @@
             "value" : "%lld件のアイテム"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld개 항목"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -250,10 +280,64 @@
     },
     "%lld자" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Zeichen"
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld chars"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld caracteres"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld caractères"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld caratteri"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld文字"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld자"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld caracteres"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个字符"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個字元"
           }
         }
       }
@@ -261,6 +345,12 @@
     "© 2026 LumiBear Studio. All rights reserved." : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© 2026 LumiBear Studio. All rights reserved."
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "© 2026 LumiBear Studio. All rights reserved."
@@ -305,6 +395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1時間前"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1시간 전"
           }
         },
         "pt-BR" : {
@@ -366,6 +462,12 @@
             "value" : "1回限りのお支払い・サブスクリプションなし"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1회 결제 · 구독 없음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -423,6 +525,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2要素認証コードを自動フィルター"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2단계 인증 코드 자동 필터"
           }
         },
         "pt-BR" : {
@@ -484,6 +592,12 @@
             "value" : "5分前"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5분 전"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -541,6 +655,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AIカテゴリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 카테고리"
           }
         },
         "pt-BR" : {
@@ -601,6 +721,12 @@
             "value" : "by LumiBear Studio"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "by LumiBear Studio"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -624,6 +750,12 @@
     "ClipRaven" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClipRaven"
@@ -668,6 +800,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClipRaven → フルアクセスを許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven → 전체 접근 허용"
           }
         },
         "pt-BR" : {
@@ -726,6 +864,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClipRavenへ\nようこそ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven에 오신 걸\n환영합니다"
           }
         },
         "pt-BR" : {
@@ -787,6 +931,12 @@
             "value" : "ClipRavenがクリップボードにアクセスしました"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven에서 클립보드에 접근했습니다"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -843,6 +993,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClipRavenは以下のオープンソースライブラリを使用しています:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven은 다음 오픈소스 라이브러리를 사용합니다:"
           }
         },
         "pt-BR" : {
@@ -904,6 +1060,12 @@
             "value" : "ClipRavenはすべてのクリップをこのデバイスに保存します。iCloud同期はオプションです。広告も追跡も外部サーバーもありません。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClipRaven은 모든 클립을 이 기기에 저장하며, iCloud 동기화는 옵션입니다. 광고도, 추적도, 외부 서버도 없습니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -927,6 +1089,12 @@
     "Deutsch" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deutsch"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deutsch"
@@ -972,6 +1140,12 @@
             "value" : "English"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -999,6 +1173,12 @@
             "state" : "translated",
             "value" : "Español"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Español"
+          }
         }
       }
     },
@@ -1009,12 +1189,24 @@
             "state" : "translated",
             "value" : "Français"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Français"
+          }
         }
       }
     },
     "HD" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HD"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "HD"
@@ -1059,6 +1251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloudアカウント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 계정"
           }
         },
         "pt-BR" : {
@@ -1120,6 +1318,12 @@
             "value" : "iCloud同期"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 동기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1177,6 +1381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud同期の設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 동기화 설정"
           }
         },
         "pt-BR" : {
@@ -1238,6 +1448,12 @@
             "value" : "iCloudへのサインインが必要"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 로그인 필요"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1297,6 +1513,12 @@
             "value" : "iCloudで自動共有"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud로 자동 공유"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1320,6 +1542,12 @@
     "Italiano" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Italiano"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Italiano"
@@ -1365,6 +1593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mac + iPhone/iPad で無制限に利用可能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac + iPhone/iPad 영구 무제한 사용"
           }
         },
         "pt-BR" : {
@@ -1426,6 +1660,12 @@
             "value" : "MacのClipRavenと同期するには\niCloud同期をオンにしてください。\n後から設定でいつでも変更できます。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac ClipRaven과 동기화하려면\niCloud 동기화를 켜세요.\n나중에 설정에서 언제든지 변경할 수 있어요."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1484,6 +1724,12 @@
             "value" : "MacのClipRavenでコピーすると\n自動的にここに同期されます"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac ClipRaven에서 복사하면\n자동으로 동기화됩니다"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1540,6 +1786,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MacのClipRavenでコピーした内容は\niCloud経由でこのiPhoneに\n自動的に同期されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac ClipRaven에서 복사한 내용이\niCloud를 통해 이 iPhone으로\n자동 동기화됩니다."
           }
         },
         "pt-BR" : {
@@ -1601,6 +1853,12 @@
             "value" : "Mac同期"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 동기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1657,6 +1915,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Macがなくても、このiPhone単体で\nクリップボードマネージャーとして使えます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 이 없어도 iPhone 단독으로\n클립보드 매니저로 사용할 수 있어요"
           }
         },
         "pt-BR" : {
@@ -1718,6 +1982,12 @@
             "value" : "Mac専用"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 전용"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1775,6 +2045,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Macのクリップボード履歴をiPhoneですぐ使い、\nどこでも素早く貼り付けできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac 클립보드 기록을 아이폰에서 바로 사용하고,\n어디서든 빠르게 붙여넣기 하세요."
           }
         },
         "pt-BR" : {
@@ -1835,6 +2111,12 @@
             "value" : "Macと自動同期"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac과 자동으로 동기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1891,6 +2173,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Macとクリップを自動共有"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac과 클립 자동 공유"
           }
         },
         "pt-BR" : {
@@ -1952,6 +2240,12 @@
             "value" : "Macで自動分類"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mac에서 자동 분류"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1975,6 +2269,12 @@
     "Português (Brasil)" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Português (Brasil)"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Português (Brasil)"
@@ -2021,6 +2321,12 @@
             "value" : "URLのトラッキングパラメータを自動削除"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL 트래킹 파라미터 자동 제거"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2043,28 +2349,16 @@
     },
     "Wi-Fi에서만 원본을 보냅니다. 다른 기기가 보낸 원본은 셀룰러에서도 받을 수 있습니다 (Apple iCloud 정책)." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Originals are sent only over Wi-Fi. Originals sent from your other devices can still arrive over cellular (Apple iCloud policy)."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オリジナルはWi-Fi接続時のみ送信します。ほかのデバイスから送られたオリジナルは、モバイルデータ通信でも受信されることがあります（Apple iCloudの仕様）。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Originale werden nur über WLAN gesendet. Originale von deinen anderen Geräten können auch über Mobilfunk ankommen (Apple-iCloud-Richtlinie)."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les originaux ne sont envoyés qu’en Wi-Fi. Ceux envoyés par vos autres appareils peuvent arriver en données cellulaires (règle d’Apple iCloud)."
+            "value" : "Originals are sent only over Wi-Fi. Originals sent from your other devices can still arrive over cellular (Apple iCloud policy)."
           }
         },
         "es" : {
@@ -2073,10 +2367,28 @@
             "value" : "Los originales solo se envían por Wi-Fi. Los originales enviados desde tus otros dispositivos pueden llegar por datos móviles (política de Apple iCloud)."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les originaux ne sont envoyés qu’en Wi-Fi. Ceux envoyés par vos autres appareils peuvent arriver en données cellulaires (règle d’Apple iCloud)."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gli originali vengono inviati solo tramite Wi-Fi. Quelli inviati dagli altri dispositivi possono arrivare anche tramite rete cellulare (criterio di Apple iCloud)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オリジナルはWi-Fi接続時のみ送信します。ほかのデバイスから送られたオリジナルは、モバイルデータ通信でも受信されることがあります（Apple iCloudの仕様）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi에서만 원본을 보냅니다. 다른 기기가 보낸 원본은 셀룰러에서도 받을 수 있습니다 (Apple iCloud 정책)."
           }
         },
         "pt-BR" : {
@@ -2136,6 +2448,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ハングルサンプル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ㄱㄴ다"
           }
         },
         "pt-BR" : {
@@ -2198,6 +2516,12 @@
             "value" : "ファミリー共有対応"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가족 공유 지원"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2257,6 +2581,12 @@
             "value" : "個人"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2313,6 +2643,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "プライバシー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인정보"
           }
         },
         "pt-BR" : {
@@ -2374,6 +2710,12 @@
             "value" : "プライバシーポリシー"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인정보 처리방침"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2432,6 +2774,12 @@
             "value" : "拒否済み"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거부됨"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2488,6 +2836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "スキップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "건너뛰기"
           }
         },
         "pt-BR" : {
@@ -2549,6 +2903,12 @@
             "value" : "検索結果"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검색 결과"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2605,6 +2965,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "結果なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결과 없음"
           }
         },
         "pt-BR" : {
@@ -2666,6 +3032,12 @@
             "value" : "続ける"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계속"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2723,6 +3095,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "共有"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공유"
           }
         },
         "pt-BR" : {
@@ -2784,6 +3162,12 @@
             "value" : "広告なし"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "광고 없음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2840,6 +3224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "広告なし。\nサブスクなし。追跡なし。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "광고 없음.\n구독 없음. 추적 없음."
           }
         },
         "pt-BR" : {
@@ -2900,6 +3290,12 @@
             "value" : "広告も追跡もない、\n一生使えるクリップボード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "광고도 추적도 없는,\n평생 쓰는 클립보드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2957,6 +3353,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サブスクリプション情報"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구독 정보"
           }
         },
         "pt-BR" : {
@@ -3019,6 +3421,12 @@
             "value" : "購入を復元"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구매 복원"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3077,6 +3485,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "デバイス間のiCloud同期"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기기 간 iCloud 동기화"
           }
         },
         "pt-BR" : {
@@ -3138,6 +3552,12 @@
             "value" : "その他"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기타"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3196,6 +3616,12 @@
             "value" : "後でClipRavenの設定からもご案内できます"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나중에 ClipRaven 설정에서도 안내받을 수 있어요"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3252,6 +3678,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "後で設定からいつでも変更できます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나중에 설정에서 언제든 변경할 수 있어요"
           }
         },
         "pt-BR" : {
@@ -3313,6 +3745,12 @@
             "value" : "日付"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "날짜"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3369,6 +3807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "内容"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내용"
           }
         },
         "pt-BR" : {
@@ -3429,6 +3873,12 @@
             "value" : "ニックネーム (任意)"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닉네임 (선택)"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3485,6 +3935,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "別の検索ワードやフィルターをお試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 검색어나 필터를 시도해 보세요"
           }
         },
         "pt-BR" : {
@@ -3546,6 +4002,12 @@
             "value" : "もう一度見る"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 보기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3603,6 +4065,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダーク"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다크"
           }
         },
         "pt-BR" : {
@@ -3664,6 +4132,12 @@
             "value" : "もっと前のクリップ…"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 이전 클립…"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3720,6 +4194,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同期"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화"
           }
         },
         "pt-BR" : {
@@ -3781,6 +4261,12 @@
             "value" : "同期オン"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 ON"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3837,6 +4323,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同期待機中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 대기 중"
           }
         },
         "pt-BR" : {
@@ -3898,6 +4390,12 @@
             "value" : "同期対象 / 完了"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 대상 / 완료"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3954,6 +4452,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同期済 · "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 됨 · "
           }
         },
         "pt-BR" : {
@@ -4014,6 +4518,12 @@
             "value" : "同期設定の変更はClipRavenを再起動すると反映されます。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 설정 변경은 ClipRaven을 다시 실행한 후 적용됩니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4070,6 +4580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同期から除外"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 제외"
           }
         },
         "pt-BR" : {
@@ -4131,6 +4647,12 @@
             "value" : "同期に含める"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화 포함"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4188,6 +4710,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同期をオフにするとクリップはこのiPhoneのみに保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동기화를 끄면 클립이 이 iPhone에만 저장됩니다."
           }
         },
         "pt-BR" : {
@@ -4249,6 +4777,12 @@
             "value" : "ドレイン完了 — テキスト %1$@件、画像 %2$@件追加、重複スキップ %3$@件"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "드레인 완료 — 텍스트 %@개, 이미지 %@개 추가, dedup skip %@개"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4306,6 +4840,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ライト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "라이트"
           }
         },
         "pt-BR" : {
@@ -4367,6 +4907,12 @@
             "value" : "サインイン済み"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인됨"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4423,6 +4969,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リストと詳細画面で内容の代わりに優先表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리스트와 디테일 화면에서 내용 대신 우선 표시됩니다."
           }
         },
         "pt-BR" : {
@@ -4484,6 +5036,12 @@
             "value" : "リンク"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "링크"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4540,6 +5098,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最後のステップ — カスタマイズ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 단계 — 개인화"
           }
         },
         "pt-BR" : {
@@ -4601,6 +5165,12 @@
             "value" : "最終同期"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마지막 동기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4657,6 +5227,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべてのクリップはこのデバイスに保存され、\niCloud同期はオプションです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 클립은 이 기기에 저장되며,\niCloud 동기화는 선택 사항입니다."
           }
         },
         "pt-BR" : {
@@ -4718,6 +5294,12 @@
             "value" : "無料体験が終了しました"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 체험이 종료되었습니다"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4775,6 +5357,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "プレビュー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리보기"
           }
         },
         "pt-BR" : {
@@ -4836,6 +5424,12 @@
             "value" : "機密データを自動でブロック"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "민감한 데이터 자동 차단"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4893,6 +5487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "機密情報を自動で除外"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "민감한 정보 자동 제외"
           }
         },
         "pt-BR" : {
@@ -4954,6 +5554,12 @@
             "value" : "ニックネーム"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별명"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5011,6 +5617,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ボード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보드"
           }
         },
         "pt-BR" : {
@@ -5072,6 +5684,12 @@
             "value" : "見えない制御文字を自動削除"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보이지 않는 제어 문자 자동 제거"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5129,6 +5747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사"
           }
         },
         "pt-BR" : {
@@ -5190,6 +5814,12 @@
             "value" : "コピー時のサウンド"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사 시 사운드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5247,6 +5877,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー時のハプティック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사 시 햅틱"
           }
         },
         "pt-BR" : {
@@ -5308,6 +5944,12 @@
             "value" : "コピー済み！"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사됨!"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5365,6 +6007,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "貼り付け時のサウンド"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "붙여넣기 시 사운드"
           }
         },
         "pt-BR" : {
@@ -5426,6 +6074,12 @@
             "value" : "貼り付け時のハプティック"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "붙여넣기 시 햅틱"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5483,6 +6137,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "高速検索"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빠른 검색"
           }
         },
         "pt-BR" : {
@@ -5544,6 +6204,12 @@
             "value" : "使用制限"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 제한됨"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5600,6 +6266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サウンド / ハプティック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사운드 / 햅틱"
           }
         },
         "pt-BR" : {
@@ -5661,6 +6333,12 @@
             "value" : "削除"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5717,6 +6395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "状態"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상태"
           }
         },
         "pt-BR" : {
@@ -5778,6 +6462,12 @@
             "value" : "新規クリップ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 클립"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5837,6 +6527,12 @@
             "value" : "新規タグ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 태그"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5894,6 +6590,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "색상"
           }
         },
         "pt-BR" : {
@@ -5956,6 +6658,12 @@
             "value" : "任意"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택 사항"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6015,6 +6723,12 @@
             "value" : "設定"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6071,6 +6785,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定方法"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 방법"
           }
         },
         "pt-BR" : {
@@ -6132,6 +6852,12 @@
             "value" : "設定を開く"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 앱 열기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6189,6 +6915,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "モバイル通信でも原本を送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "셀룰러로도 원본 보내기"
           }
         },
         "pt-BR" : {
@@ -6250,6 +6982,12 @@
             "value" : "ソースアプリ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "소스 앱"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6308,6 +7046,12 @@
             "value" : "スワイプして次へ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스와이프하여 다음으로 진행하세요"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6364,6 +7108,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "システム標準"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 기본값"
           }
         },
         "pt-BR" : {
@@ -6425,6 +7175,12 @@
             "value" : "始める"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작하기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6484,6 +7240,12 @@
             "value" : "サムネイルのみ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "썸네일만"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6540,6 +7302,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "まだクリップがありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 클립이 없습니다"
           }
         },
         "pt-BR" : {
@@ -6601,6 +7369,12 @@
             "value" : "不明"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6658,6 +7432,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通知"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림"
           }
         },
         "pt-BR" : {
@@ -6719,6 +7499,12 @@
             "value" : "アニメーション"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "애니메이션"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6775,6 +7561,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オフにすると画面遷移が即時表示になります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "애니메이션을 끄면 화면 전환이 즉시 표시됩니다."
           }
         },
         "pt-BR" : {
@@ -6836,6 +7628,12 @@
             "value" : "アプリのバージョン"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 버전"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6893,6 +7691,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アプリを再起動するとオンボーディングが再表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱을 다시 실행하면 온보딩 화면이 다시 표시됩니다."
           }
         },
         "pt-BR" : {
@@ -6953,6 +7757,12 @@
             "value" : "どこでもすぐに貼り付け"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어디서나 바로 붙여넣기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7011,6 +7821,12 @@
             "value" : "どのアプリでもテキストをコピーすると\nClipRavenに自動保存されます。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어떤 앱에서든 텍스트를 복사하면\nClipRaven에 자동으로 저장됩니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7067,6 +7883,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "どのアプリでもテキストをコピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어떤 앱이든 텍스트를 복사하세요"
           }
         },
         "pt-BR" : {
@@ -7128,6 +7950,12 @@
             "value" : "言語"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7186,6 +8014,12 @@
             "value" : "言語の変更はアプリ再起動後に適用されます。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어 변경은 앱 재시작 후 적용됩니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7242,6 +8076,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "言語を適用するにはClipRavenを終了して再起動してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어 설정을 적용하려면 ClipRaven을 종료하고 다시 실행해주세요."
           }
         },
         "pt-BR" : {
@@ -7304,6 +8144,12 @@
             "value" : "アップグレード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업그레이드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7361,6 +8207,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "仕事"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업무"
           }
         },
         "pt-BR" : {
@@ -7422,6 +8274,12 @@
             "value" : "領収書"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영수증"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7479,6 +8337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "例: 仕事、個人、コード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예: 업무, 개인, 코드"
           }
         },
         "pt-BR" : {
@@ -7540,6 +8404,12 @@
             "value" : "今日"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7597,6 +8467,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オープンソースライセンス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오픈소스 라이선스"
           }
         },
         "pt-BR" : {
@@ -7658,6 +8534,12 @@
             "value" : "オンボーディングをもう一度見る"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "온보딩 다시 보기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7715,6 +8597,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
           }
         },
         "pt-BR" : {
@@ -7776,6 +8664,12 @@
             "value" : "外部サーバーへの送信なし"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "외부 서버 전송 없음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7833,6 +8727,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "オリジナルのサイズ制限"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 사이즈 제한"
           }
         },
         "pt-BR" : {
@@ -7894,6 +8794,12 @@
             "value" : "原本あり"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 있음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7951,6 +8857,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "このiPhoneのクリップが他のデバイスと自動同期します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone의 클립이 다른 기기와 자동으로 동기화됩니다."
           }
         },
         "pt-BR" : {
@@ -8012,6 +8924,12 @@
             "value" : "これはテキストクリップのプレビューです。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이것은 텍스트 클립 미리보기입니다."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8069,6 +8987,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これはテキストクリップのプレビューです。韓国語の可読性のためトラッキングと行間を調整しています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이것은 텍스트 클립 미리보기입니다. 한국어 가독성을 위해 트래킹과 줄간격을 조정했습니다."
           }
         },
         "pt-BR" : {
@@ -8129,6 +9053,12 @@
             "value" : "こんなことができます"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이런 일을 할 수 있어요"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8185,6 +9115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "こうして使います"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이렇게 쓰는 거예요"
           }
         },
         "pt-BR" : {
@@ -8246,6 +9182,12 @@
             "value" : "名前"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8305,6 +9247,12 @@
             "value" : "メール"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이메일"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8361,6 +9309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지"
           }
         },
         "pt-BR" : {
@@ -8422,6 +9376,12 @@
             "value" : "画像を共有"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 공유"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8481,6 +9441,12 @@
             "value" : "画像同期"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 동기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8537,6 +9503,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画像の原本はiCloudストレージを使用します。30日以上経過した原本は自動削除され、ピン留めしたクリップは永久保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 원본은 iCloud 저장공간을 사용합니다. 30일 이상 된 원본은 자동 삭제되며, 핀 고정한 클립은 영구 보관됩니다."
           }
         },
         "pt-BR" : {
@@ -8598,6 +9570,12 @@
             "value" : "今月"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 달"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8655,6 +9633,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今週"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 주"
           }
         },
         "pt-BR" : {
@@ -8716,6 +9700,12 @@
             "value" : "前のクリップ…"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 클립…"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8772,6 +9762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一般"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일반"
           }
         },
         "pt-BR" : {
@@ -8833,6 +9829,12 @@
             "value" : "一般 → キーボード → キーボード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일반 → 키보드 → 키보드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8890,6 +9892,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一時的に利用不可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일시적 사용 불가"
           }
         },
         "pt-BR" : {
@@ -8951,6 +9959,12 @@
             "value" : "一度の購入 — 永久に使える"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일회성 구매 — 평생 사용"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9010,6 +10024,12 @@
             "value" : "再起動が必要"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재시작 필요"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9066,6 +10086,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장"
           }
         },
         "pt-BR" : {
@@ -9127,6 +10153,12 @@
             "value" : "保存済み画像の容量"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장된 이미지 용량"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9184,6 +10216,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "すべて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체"
           }
         },
         "pt-BR" : {
@@ -9245,6 +10283,12 @@
             "value" : "すべての期間"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 기간"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9302,6 +10346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フルアクセス未許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 접근 허용 안 됨"
           }
         },
         "pt-BR" : {
@@ -9363,6 +10413,12 @@
             "value" : "すべてのクリップ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 클립"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9422,6 +10478,12 @@
             "value" : "電話"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9478,6 +10540,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "情報"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정보"
           }
         },
         "pt-BR" : {
@@ -9539,6 +10607,12 @@
             "value" : "住所"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주소"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9596,6 +10670,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重要"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중요"
           }
         },
         "pt-BR" : {
@@ -9657,6 +10737,12 @@
             "value" : "今すぐ購入"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 구매하기"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9714,6 +10800,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今すぐ同期"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 동기화"
           }
         },
         "pt-BR" : {
@@ -9775,6 +10867,12 @@
             "value" : "今すぐキャプチャ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 캡처"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9832,6 +10930,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "短い名前で簡単に検索"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "짧은 이름으로 쉽게 찾기"
           }
         },
         "pt-BR" : {
@@ -9893,6 +10997,12 @@
             "value" : "短いテキスト"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "짧은 텍스트"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9950,6 +11060,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "処理中 — %lld件のキャプチャ保留"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "처리 중 — %lld개 pending capture"
           }
         },
         "pt-BR" : {
@@ -10011,6 +11127,12 @@
             "value" : "リセット"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10068,6 +11190,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップ合計"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "총 클립"
           }
         },
         "pt-BR" : {
@@ -10129,6 +11257,12 @@
             "value" : "追加"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추가"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10186,6 +11320,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キャンセル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소"
           }
         },
         "pt-BR" : {
@@ -10247,6 +11387,12 @@
             "value" : "コード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10306,6 +11452,12 @@
             "value" : "クリップを検索"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 검색"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10362,6 +11514,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップを読み込み中…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립 불러오는 중…"
           }
         },
         "pt-BR" : {
@@ -10423,6 +11581,12 @@
             "value" : "クリップボード"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립보드"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10480,6 +11644,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クリップボードにコピー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립보드에 복사"
           }
         },
         "pt-BR" : {
@@ -10541,6 +11711,12 @@
             "value" : "クリップボードにコピー済み"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립보드에 복사됨"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10563,28 +11739,16 @@
     },
     "클립을 선택하면\n상세 정보가 표시됩니다" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select a clip\nto see its details"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "クリップを選択すると\n詳細が表示されます"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wähle einen Clip aus,\num Details zu sehen"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionnez un clip\npour afficher ses détails"
+            "value" : "Select a clip\nto see its details"
           }
         },
         "es" : {
@@ -10593,10 +11757,28 @@
             "value" : "Selecciona un clip\npara ver sus detalles"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sélectionnez un clip\npour afficher ses détails"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seleziona un clip\nper vederne i dettagli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップを選択すると\n詳細が表示されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립을 선택하면\n상세 정보가 표시됩니다"
           }
         },
         "pt-BR" : {
@@ -10657,6 +11839,12 @@
             "value" : "キーボード拡張を有効にすれば、\n他のアプリでもクリップをすぐ使えます。"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키보드 익스텐션을 활성화하면\n다른 앱에서도 클립을 바로 사용할 수 있어요."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10713,6 +11901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キーボードを有効にしました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "키보드를 활성화 했어요"
           }
         },
         "pt-BR" : {
@@ -10774,6 +11968,12 @@
             "value" : "タイプ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "타입"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10830,6 +12030,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "タグ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그"
           }
         },
         "pt-BR" : {
@@ -10891,6 +12097,12 @@
             "value" : "タグを削除"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 삭제"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10948,6 +12160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "タグ名"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 이름"
           }
         },
         "pt-BR" : {
@@ -11009,6 +12227,12 @@
             "value" : "タグを追加"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 추가"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11068,6 +12292,12 @@
             "value" : "テーマ"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테마"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11095,6 +12325,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Test auto-fill"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테스트 자동 채우기"
           }
         }
       }
@@ -11136,6 +12372,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テキスト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트"
           }
         },
         "pt-BR" : {
@@ -11197,6 +12439,12 @@
             "value" : "ファイル"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11256,6 +12504,12 @@
             "value" : "プロジェクトごとに整理"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로젝트별 정리"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11312,6 +12566,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留め"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핀 고정"
           }
         },
         "pt-BR" : {
@@ -11373,6 +12633,12 @@
             "value" : "ピン解除"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핀 해제"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11430,6 +12696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フィルター結果"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필터 결과"
           }
         },
         "pt-BR" : {
@@ -11490,6 +12762,12 @@
             "value" : "フィルターをリセット"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필터 초기화"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11543,6 +12821,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한국어"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "한국어"
@@ -11607,6 +12891,12 @@
             "value" : "ハングル子音検索対応"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한글 초성 검색 지원"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11663,6 +12953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "主要機能のプレビュー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핵심 기능 미리보기"
           }
         },
         "pt-BR" : {
@@ -11724,6 +13020,12 @@
             "value" : "ハプティックフィードバック"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "햅틱 피드백"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11783,6 +13085,12 @@
             "value" : "許可"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "허용"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11839,6 +13147,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画面"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면"
           }
         },
         "pt-BR" : {
@@ -11900,6 +13214,12 @@
             "value" : "OK"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11957,6 +13277,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確認失敗"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인 실패"
           }
         },
         "pt-BR" : {
@@ -12018,6 +13344,12 @@
             "value" : "確認中…"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인 중…"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12074,6 +13406,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ウェルカム画面を最初から見ます。クリップデータは保持されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "환영 화면을 처음부터 다시 봅니다. 클립 데이터는 유지됩니다."
           }
         },
         "pt-BR" : {
@@ -12135,6 +13473,12 @@
             "value" : "会議"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회의"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12163,12 +13507,24 @@
             "state" : "translated",
             "value" : "Meeting notes — Q4 OKR summary"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회의 노트 — 4분기 OKR 정리"
+          }
         }
       }
     },
     "日本語" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日本語"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "日本語"
@@ -12183,6 +13539,12 @@
             "state" : "translated",
             "value" : "简体中文"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "简体中文"
+          }
         }
       }
     },
@@ -12193,34 +13555,28 @@
             "state" : "translated",
             "value" : "繁體中文"
           }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繁體中文"
+          }
         }
       }
     },
     "크래시 리포트 보내기" : {
       "comment" : "iOS Settings — opt-in crash reporting toggle",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send crash reports"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "クラッシュレポートを送信"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Absturzberichte senden"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envoyer les rapports de plantage"
+            "value" : "Send crash reports"
           }
         },
         "es" : {
@@ -12229,10 +13585,28 @@
             "value" : "Enviar informes de fallos"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyer les rapports de plantage"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Invia rapporti di arresto anomalo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラッシュレポートを送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "크래시 리포트 보내기"
           }
         },
         "pt-BR" : {
@@ -12258,28 +13632,16 @@
     "비밀번호, 신용카드, API 키 등 민감한 데이터는 자동으로 동기화에서 제외됩니다. 크래시 리포트는 익명이며 클립보드 내용을 포함하지 않습니다." : {
       "comment" : "iOS Settings privacy footer — sensitive data exclusion + anonymous crash reports",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passwords, credit cards, API keys and similar sensitive data are automatically excluded from sync. Crash reports are anonymous and never include clipboard contents."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスワード、クレジットカード、APIキーなどの機密データは自動的に同期から除外されます。クラッシュレポートは匿名で、クリップボードの内容は含まれません。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Passwörter, Kreditkarten, API-Schlüssel und ähnliche sensible Daten werden automatisch von der Synchronisierung ausgenommen. Absturzberichte sind anonym und enthalten niemals Zwischenablage-Inhalte."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les mots de passe, cartes bancaires, clés d’API et autres données sensibles sont automatiquement exclus de la synchronisation. Les rapports de plantage sont anonymes et ne contiennent jamais le contenu du presse-papiers."
+            "value" : "Passwords, credit cards, API keys and similar sensitive data are automatically excluded from sync. Crash reports are anonymous and never include clipboard contents."
           }
         },
         "es" : {
@@ -12288,10 +13650,28 @@
             "value" : "Las contraseñas, tarjetas de crédito, claves de API y datos sensibles similares se excluyen automáticamente de la sincronización. Los informes de fallos son anónimos y nunca incluyen el contenido del portapapeles."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots de passe, cartes bancaires, clés d’API et autres données sensibles sont automatiquement exclus de la synchronisation. Les rapports de plantage sont anonymes et ne contiennent jamais le contenu du presse-papiers."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Password, carte di credito, chiavi API e dati sensibili simili sono esclusi automaticamente dalla sincronizzazione. I rapporti di arresto anomalo sono anonimi e non includono mai il contenuto degli appunti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パスワード、クレジットカード、APIキーなどの機密データは自動的に同期から除外されます。クラッシュレポートは匿名で、クリップボードの内容は含まれません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호, 신용카드, API 키 등 민감한 데이터는 자동으로 동기화에서 제외됩니다. 크래시 리포트는 익명이며 클립보드 내용을 포함하지 않습니다."
           }
         },
         "pt-BR" : {
@@ -12316,28 +13696,16 @@
     },
     "이미지 원본은 iCloud 저장공간을 사용합니다. 원본은 클립이 남아 있는 동안 보관되고, 클립을 삭제하면 함께 삭제됩니다." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Image originals use your iCloud storage. An original is kept as long as its clip, and is deleted when you delete the clip."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画像のオリジナルは iCloud ストレージを使用します。オリジナルはクリップがある間保存され、クリップを削除すると一緒に削除されます。"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bildoriginale belegen iCloud-Speicher. Ein Original bleibt erhalten, solange der Clip existiert, und wird mit dem Clip gelöscht."
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les originaux d’image utilisent votre stockage iCloud. Un original est conservé tant que son clip existe et supprimé avec lui."
+            "value" : "Image originals use your iCloud storage. An original is kept as long as its clip, and is deleted when you delete the clip."
           }
         },
         "es" : {
@@ -12346,10 +13714,28 @@
             "value" : "Los originales de imagen usan tu almacenamiento de iCloud. Se conservan mientras exista el clip y se eliminan al eliminarlo."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les originaux d’image utilisent votre stockage iCloud. Un original est conservé tant que son clip existe et supprimé avec lui."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gli originali delle immagini usano lo spazio iCloud. Un originale resta finché esiste il clip e viene eliminato insieme a esso."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像のオリジナルは iCloud ストレージを使用します。オリジナルはクリップがある間保存され、クリップを削除すると一緒に削除されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 원본은 iCloud 저장공간을 사용합니다. 원본은 클립이 남아 있는 동안 보관되고, 클립을 삭제하면 함께 삭제됩니다."
           }
         },
         "pt-BR" : {
@@ -12374,28 +13760,16 @@
     },
     "지원" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Support"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サポート"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Support"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Assistance"
+            "value" : "Support"
           }
         },
         "es" : {
@@ -12404,10 +13778,28 @@
             "value" : "Soporte"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assistance"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supporto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サポート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원"
           }
         },
         "pt-BR" : {
@@ -12469,6 +13861,12 @@
             "value" : "無料体験 残り **%lld日**"
           }
         },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 체험 **%lld일** 남음"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12491,28 +13889,16 @@
     },
     "어제" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yesterday"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "昨日"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gestern"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier"
+            "value" : "Yesterday"
           }
         },
         "es" : {
@@ -12521,10 +13907,28 @@
             "value" : "Ayer"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ieri"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昨日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "어제"
           }
         },
         "pt-BR" : {
@@ -12549,28 +13953,16 @@
     },
     "최근 7일" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last 7 Days"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "過去7日間"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Letzte 7 Tage"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 derniers jours"
+            "value" : "Last 7 Days"
           }
         },
         "es" : {
@@ -12579,10 +13971,28 @@
             "value" : "Últimos 7 días"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 derniers jours"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultimi 7 giorni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "過去7日間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 7일"
           }
         },
         "pt-BR" : {
@@ -12607,28 +14017,16 @@
     },
     "최근 30일" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last 30 Days"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "過去30日間"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Letzte 30 Tage"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30 derniers jours"
+            "value" : "Last 30 Days"
           }
         },
         "es" : {
@@ -12637,10 +14035,28 @@
             "value" : "Últimos 30 días"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 derniers jours"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultimi 30 giorni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "過去30日間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 30일"
           }
         },
         "pt-BR" : {
@@ -12665,28 +14081,16 @@
     },
     "사용자 지정" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カスタム"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eigene"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Personnalisé"
+            "value" : "Custom"
           }
         },
         "es" : {
@@ -12695,10 +14099,28 @@
             "value" : "Personalizado"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personnalisé"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personalizzato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カスタム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 지정"
           }
         },
         "pt-BR" : {
@@ -12723,28 +14145,16 @@
     },
     "햅틱" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Haptics"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "触覚フィードバック"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haptik"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retour haptique"
+            "value" : "Haptics"
           }
         },
         "es" : {
@@ -12753,10 +14163,28 @@
             "value" : "Háptica"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retour haptique"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feedback aptico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "触覚フィードバック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "햅틱"
           }
         },
         "pt-BR" : {
@@ -12781,28 +14209,16 @@
     },
     "방금" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Just now"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gerade eben"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À l’instant"
+            "value" : "Just now"
           }
         },
         "es" : {
@@ -12811,10 +14227,28 @@
             "value" : "Justo ahora"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À l’instant"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ora"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "방금"
           }
         },
         "pt-BR" : {
