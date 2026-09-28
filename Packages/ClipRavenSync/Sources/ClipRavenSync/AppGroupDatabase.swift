@@ -32,7 +32,11 @@ public enum AppGroupDatabase {
     #if os(iOS)
     public static let appGroupID = "group.com.lumibear.ClipRaven"
     #else
-    public static let appGroupID = "63ZN5B3LHU.com.lumibear.ClipRaven"
+    /// QA 빌드(`QARuntime.isQABuild`)는 끝에 `.qa` 를 붙인 별도 그룹을 쓴다. 같은
+    /// 그룹이면 개발용 앱과 체험 시작일(`trial.dat`)·공유 설정을 함께 쓰게 된다.
+    public static let appGroupID = QARuntime.isQABuild
+        ? "63ZN5B3LHU.com.lumibear.ClipRaven.qa"
+        : "63ZN5B3LHU.com.lumibear.ClipRaven"
     #endif
 
     /// App Group 컨테이너 안의 sqlite 파일 URL. nil 이면 entitlement 누락.

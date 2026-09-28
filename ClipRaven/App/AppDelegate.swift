@@ -36,7 +36,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// because `syncEngineBox` is nil there.
     private var syncChangeCapture: SyncChangeCapture?
 
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        #if QA
+        // DB·설정을 읽기 전에 QA 실행 옵션(-qaReset 등)을 적용한다.
+        QALaunchOptions.applyBeforeLaunch()
+        #endif
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // 단위 테스트 호스트로 뜬 경우 앱을 시작하지 않는다. 테스트는 필요한 객체를
+        // 직접 만든다. 이전에는 테스트마다 클립보드 감시·정리·단축키·동기화가 켜지고
+        // 실행 중인 다른 ClipRaven 을 종료하려 했다 (테스트 계획 T1).
+        guard !AppRuntime.isRunningUnitTests else { return }
+
         // Crash reporting — 온보딩 마지막 페이지·설정 › 개인정보에서 켜고 끈다 (기본 OFF).
         CRSentry.startIfEnabled()
         // 실행 자체는 크래시가 아니므로 이벤트는 보내지 않고 breadcrumb 만 남긴다.
@@ -387,6 +399,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        // 테스트 호스트는 아무것도 시작하지 않았으므로 정리할 것도 없다 — lazy 프로퍼티를
+        // 여기서 처음 만들지 않게 한다.
+        guard !AppRuntime.isRunningUnitTests else { return }
         clipboardMonitor.stop()
         hotKeyManager.unregister()
 

@@ -9,10 +9,8 @@ enum ImageStorageService {
     /// Base directory for storing original images.
     /// Exposed for BackupService — kept internal so only in-app code can read it.
     static var imagesDirectory: URL {
-        let appSupport = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        ).first!.appendingPathComponent("ClipRaven/images", isDirectory: true)
+        // DB 와 같은 `AppRuntime.dataDirectory` 아래 (테스트 중에는 임시 폴더).
+        let appSupport = AppRuntime.dataDirectory.appendingPathComponent("images", isDirectory: true)
 
         try? FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
         return appSupport

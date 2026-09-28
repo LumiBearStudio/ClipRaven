@@ -213,10 +213,12 @@ public final class TrialManager {
     /// 0 로 만들기 위해 skip. 출시 후 keychain 기반 잔존 사용자가 생긴 뒤
     /// 마이그레이션 필요가 생기면 file-based flag 로 1회 재시도 도입.
     private static func makeShared() -> TrialManager {
+        // QA 빌드만 `-qaTrialOffsetDays` 로 시계를 앞당길 수 있다 (배포판은 항상 SystemClock).
+        let clock: any AppClock = QARuntime.isQABuild ? QAOffsetClock() : SystemClock()
         #if os(macOS)
-        return TrialManager(storage: AppGroupStorage(groupIdentifier: trialAppGroup))
+        return TrialManager(clock: clock, storage: AppGroupStorage(groupIdentifier: trialAppGroup))
         #else
-        return TrialManager(storage: SystemKeychain())
+        return TrialManager(clock: clock, storage: SystemKeychain())
         #endif
     }
 

@@ -27,9 +27,15 @@ enum SettingsSection: String, CaseIterable, Identifiable {
 
     /// The primary group in the sidebar (top). The remaining cases render
     /// under the "meta" group below a visual divider.
-    static let primaryCases: [SettingsSection] = [
-        .general, .capture, .shortcuts, .appearance, .privacy, .iCloud, .aiAutomation,
-    ]
+    static let primaryCases: [SettingsSection] = {
+        #if QA
+        // QA 빌드에는 iCloud 엔타이틀먼트가 없다. 이 탭은 열리자마자 CKContainer 로
+        // 계정 상태를 조회하므로 엔타이틀먼트 없이 열면 앱이 비정상 종료될 수 있다.
+        return [.general, .capture, .shortcuts, .appearance, .privacy, .aiAutomation]
+        #else
+        return [.general, .capture, .shortcuts, .appearance, .privacy, .iCloud, .aiAutomation]
+        #endif
+    }()
     static let metaCases: [SettingsSection] = [.backup, .about]
 
     var title: LocalizedStringKey {

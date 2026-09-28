@@ -128,6 +128,12 @@ public final class SyncEngine: NSObject {
             Self.log.info("sync disabled by flag; engine not started")
             return
         }
+        // QA 빌드에는 iCloud 엔타이틀먼트가 없다. 플래그가 켜져 있어도 CloudKit 을
+        // 만들지 않는다 (플래그 자체는 정리·툼스톤 동작 테스트에 쓰이므로 그대로 둔다).
+        guard !QARuntime.isQABuild else {
+            Self.log.info("QA build has no iCloud entitlement; engine not started")
+            return
+        }
 
         let container = CKContainer(identifier: containerIdentifier)
         let status: CKAccountStatus

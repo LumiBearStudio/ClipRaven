@@ -23,14 +23,10 @@ final class AppDatabase {
 
     private static func makeShared() -> AppDatabase {
         let fileManager = FileManager.default
-        let appSupportURL: URL
+        // 위치는 `AppRuntime.dataDirectory` 한 곳에서 정한다 — 단위 테스트 중에는 임시
+        // 폴더라서 테스트가 실제 기록을 열지 않는다 (테스트 계획 T1).
+        let appSupportURL = AppRuntime.dataDirectory
         do {
-            appSupportURL = try fileManager.url(
-                for: .applicationSupportDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: true
-            ).appendingPathComponent("ClipRaven", isDirectory: true)
             try fileManager.createDirectory(at: appSupportURL, withIntermediateDirectories: true)
         } catch {
             // Application Support 디렉토리 생성도 실패하는 케이스는 진짜
