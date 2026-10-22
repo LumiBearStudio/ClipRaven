@@ -32,6 +32,11 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         // QA 빌드에는 iCloud 엔타이틀먼트가 없다. 이 탭은 열리자마자 CKContainer 로
         // 계정 상태를 조회하므로 엔타이틀먼트 없이 열면 앱이 비정상 종료될 수 있다.
         return [.general, .capture, .shortcuts, .appearance, .privacy, .aiAutomation]
+        #elseif !DEBUG
+        // v1.0 은 Mac 만 출시하고 iCloud 동기화는 넣지 않는다. 탭이 없으면 동기화를
+        // 켤 길이 없어(`SyncFeatureFlag` 기본 꺼짐) CloudKit 도 쓰지 않는다.
+        // Debug 빌드에는 개발용으로 남겨 둔다.
+        return [.general, .capture, .shortcuts, .appearance, .privacy, .aiAutomation]
         #else
         return [.general, .capture, .shortcuts, .appearance, .privacy, .iCloud, .aiAutomation]
         #endif
