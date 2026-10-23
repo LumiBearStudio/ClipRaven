@@ -32,6 +32,15 @@ Scripts/qa/run.sh --default-hotkey   # 기본 단축키 ⇧⌘V 로 (평소 앱�
 
 기본 단축키는 ⌃⌥⌘V 로 바꿔 실행한다. 평소 앱이 ⇧⌘V 를 쓰고 있기 때문이다.
 
+### 출시 설정 빌드 시험 (Release-QA)
+
+빌드 구성 `Release-QA` 는 Release 와 같은 코드·최적화(QA 플래그 없음)에 번들 ID·App Group 만 QA 것으로
+바꾼 것이다. 제출할 빌드가 실제 기록을 건드리지 않고도 제대로 뜨는지 볼 때 쓴다(QA 장면 명령은 없다).
+
+```bash
+xcodebuild -scheme ClipRaven -configuration Release-QA -derivedDataPath build/release-qa build
+```
+
 ## 클립보드 주입
 
 ```bash
