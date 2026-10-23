@@ -111,6 +111,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItemController.panelController = panelController
         statusItemController.setup()
 
+        #if QA
+        // 스크린샷용 장면 명령 (`Scripts/qa/scene.swift`).
+        QALaunchOptions.listenForScenes(panel: panelController) { [weak self] section in
+            self?.statusItemController.openSettingsWindow(navigateTo: section)
+        }
+        #endif
+
         // Register global hotkey (reads from HotKeyStore, defaults to ⇧⌘V)
         let store = HotKeyStore.shared
         hotKeyManager.register(keyCode: store.keyCode, modifiers: store.modifiers) { [weak self] in

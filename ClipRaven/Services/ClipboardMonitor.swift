@@ -171,7 +171,11 @@ final class ClipboardMonitor: ObservableObject {
         let types = pasteboard.types?.map { $0.rawValue } ?? []
         ClipRavenLog.write(.clipboard, "[ClipMon] CHANGE \(prevCount)→\(currentCount) types=[\(types.joined(separator: ", "))]")
 
+        #if QA
+        let sourceApp = QALaunchOptions.sourceApp(from: pasteboard) ?? SourceAppTracker.currentApp()
+        #else
         let sourceApp = SourceAppTracker.currentApp()
+        #endif
         if shouldSkip(pasteboardTypes: pasteboard.types ?? [], sourceApp: sourceApp) {
             return
         }

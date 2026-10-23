@@ -43,6 +43,23 @@ swift Scripts/qa/pbwrite.swift image ~/Desktop/shot.png
 일반 클립보드에 쓰면 평소 앱도 기록한다. E2E 중에는 평소 앱의 캡처를 일시정지하거나
 종료해 둔다. `--pasteboard <이름>` 을 주면 이름 붙은 보드에 써서 도구만 점검할 수 있다.
 
+## App Store 스크린샷
+
+```bash
+Scripts/qa/run.sh --reset --skip-onboarding --start-trial --lang en --screenshots
+swift Scripts/qa/pbwrite.swift text "…" --source com.apple.Notes   # 카드에 메모 앱 아이콘
+swift Scripts/qa/scene.swift 'stage:Everything you copy|One keystroke away'
+swift Scripts/qa/scene.swift panel      # 배경 위에 패널
+swift Scripts/qa/scene.swift settings:privacy
+swift Scripts/qa/scene.swift paywall
+swift Scripts/qa/scene.swift snap       # 앱이 ⇧⌘3 을 눌러 데스크탑에 저장
+swift Scripts/qa/scene.swift clear
+```
+
+`--screenshots` 는 "화면 공유 시 패널 숨기기"를 이번 실행에서만 끈다. 켜져 있으면 화면
+캡처에 패널이 빠진다. 캡처는 시스템 단축키(⇧⌘3)로 한다(`snap` 이 앱 안에서 누른다 — 다른 앱이 앞으로 오면 패널이 닫히기 때문) — 15인치 MacBook Air 기준
+2880×1864 이므로 위 64px 를 잘라 App Store 규격 2880×1800 을 만든다.
+
 ## 사람이 해야 하는 것
 
 QA 빌드의 붙여넣기 권한(시스템 설정 › 개인정보 보호 및 보안 › 손쉬운 사용 › ClipRaven QA)

@@ -318,7 +318,7 @@ final class StatusItemController {
         openSettingsWindow(navigateTo: .about)
     }
 
-    private func openSettingsWindow(navigateTo section: SettingsSection? = nil) {
+    func openSettingsWindow(navigateTo section: SettingsSection? = nil) {
         if let section {
             // 특정 탭으로 이동할 때는 창을 항상 새로 만들어야
             // SwiftUI의 List 내부 상태 복원에 영향을 받지 않음
