@@ -2,6 +2,8 @@
 //
 //   swift Scripts/qa/scene.swift 'stage:Everything you copy|One keystroke away'
 //   swift Scripts/qa/scene.swift panel
+//   swift Scripts/qa/scene.swift search:launch
+//   swift Scripts/qa/scene.swift stack:3
 //   swift Scripts/qa/scene.swift settings:privacy
 //   swift Scripts/qa/scene.swift paywall
 //   swift Scripts/qa/scene.swift snap      # 앱이 ⇧⌘3 을 누른다 (붙여넣기 권한 필요)
@@ -11,7 +13,7 @@
 import Foundation
 
 guard let scene = CommandLine.arguments.dropFirst().first else {
-    FileHandle.standardError.write("usage: scene.swift <stage:제목|부제|panel|settings:<탭>|paywall|snap|clear>\n".data(using: .utf8)!)
+    FileHandle.standardError.write("usage: scene.swift <stage:제목|부제|panel|search:<검색어>|stack:<개수>|settings:<탭>|paywall|snap|clear>\n".data(using: .utf8)!)
     exit(64)
 }
 DistributedNotificationCenter.default().postNotificationName(

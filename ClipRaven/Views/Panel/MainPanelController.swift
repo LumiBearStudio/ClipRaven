@@ -145,6 +145,25 @@ final class MainPanelController {
 
     }
 
+    /// QA 빌드에서 스크린샷 배경이 떠 있는 동안에는 다른 곳 클릭·다른 앱 활성화로 닫지 않는다
+    /// (촬영 중에 사용자가 다른 앱을 써도 패널이 남아 있게).
+    private static var isStagingScreenshot: Bool {
+        #if QA
+        return QALaunchOptions.stageScreenInUse != nil
+        #else
+        return false
+        #endif
+    }
+
+    /// 패널을 띄울 화면. QA 빌드에서 스크린샷 배경이 떠 있으면 그 화면에 띄운다
+    /// (다른 앱을 쓰는 중이면 macOS 가 활성화를 미뤄 NSScreen.main 이 다른 모니터가 된다).
+    private static var targetScreen: NSScreen? {
+        #if QA
+        if let screen = QALaunchOptions.stageScreenInUse { return screen }
+        #endif
+        return NSScreen.main
+    }
+
     func toggle() {
         ClipRavenLog.hotkey.info("toggle() invoked, isVisible=\(self.isVisible, privacy: .public)")
         if isVisible {
@@ -167,7 +186,7 @@ final class MainPanelController {
         isVisible = true
 
         // Full-width, at absolute bottom of screen, in front of Dock
-        if let screen = NSScreen.main {
+        if let screen = Self.targetScreen {
             let screenFrame = screen.frame
             let x = screenFrame.origin.x
             let y = screenFrame.origin.y  // Very bottom of screen
@@ -194,6 +213,7 @@ final class MainPanelController {
             guard let self, self.isVisible, !self.isExternalDrag else { return }
             // StoreKit presents its sheet from an external process — don't hide during purchase
             guard !PurchaseManager.shared.isPurchasing else { return }
+            guard !Self.isStagingScreenshot else { return }
             // If activated app is not ClipRaven, hide panel
             if let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
                app.bundleIdentifier != Bundle.main.bundleIdentifier {
@@ -204,6 +224,7 @@ final class MainPanelController {
         // Watch for clicks outside the panel → auto hide
         clickOutsideMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
             guard let self, self.isVisible, let panel = self.panel else { return }
+            guard !Self.isStagingScreenshot else { return }
             _ = event.locationInWindow
             if !panel.frame.contains(NSEvent.mouseLocation) {
                 self.hide()

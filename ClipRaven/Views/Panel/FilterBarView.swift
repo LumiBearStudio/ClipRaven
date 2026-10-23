@@ -236,6 +236,14 @@ struct FilterBarView: View {
         .onReceive(NotificationCenter.default.publisher(for: .clipRavenPauseStateChanged)) { notification in
             isPaused = notification.userInfo?["isPaused"] as? Bool ?? false
         }
+        #if QA
+        // 스크린샷 장면 `search:<검색어>` — 검색창을 열고 검색어를 넣는다 (QALaunchOptions).
+        .onReceive(NotificationCenter.default.publisher(for: QALaunchOptions.panelSceneNotification)) { notification in
+            guard let scene = notification.object as? String, scene.hasPrefix("search:") else { return }
+            openSearch()
+            searchText = String(scene.dropFirst("search:".count))
+        }
+        #endif
     }
 
     // MARK: - Filter Segment Group (compact: 검색 중 아이콘만 표시)

@@ -50,11 +50,15 @@ Scripts/qa/run.sh --reset --skip-onboarding --start-trial --lang en --screenshot
 swift Scripts/qa/pbwrite.swift text "…" --source com.apple.Notes   # 카드에 메모 앱 아이콘
 swift Scripts/qa/scene.swift 'stage:Everything you copy|One keystroke away'
 swift Scripts/qa/scene.swift panel      # 배경 위에 패널
+swift Scripts/qa/scene.swift search:launch   # 패널을 열고 검색 (한국어 초성도 된다: search:ㄱㅅ)
+swift Scripts/qa/scene.swift 'stage:…|…|light'  # 밝은 배경 (run.sh … -- -theme light 와 함께)
 swift Scripts/qa/scene.swift settings:privacy
 swift Scripts/qa/scene.swift paywall
 swift Scripts/qa/scene.swift snap       # 앱이 ⇧⌘3 을 눌러 데스크탑에 저장
 swift Scripts/qa/scene.swift clear
 ```
+
+배경은 내장 화면에 깔리고 패널도 그 화면에 뜬다(외장 모니터를 쓰는 중이어도). 촬영 중에는 다른 곳을 클릭해도 패널이 닫히지 않는다.
 
 `--screenshots` 는 "화면 공유 시 패널 숨기기"를 이번 실행에서만 끈다. 켜져 있으면 화면
 캡처에 패널이 빠진다. 캡처는 시스템 단축키(⇧⌘3)로 한다(`snap` 이 앱 안에서 누른다 — 다른 앱이 앞으로 오면 패널이 닫히기 때문) — 15인치 MacBook Air 기준

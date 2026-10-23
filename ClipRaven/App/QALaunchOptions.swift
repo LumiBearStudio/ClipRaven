@@ -60,6 +60,9 @@ enum QALaunchOptions {
         return SourceAppInfo(bundleId: bundleID, name: name, icon: NSWorkspace.shared.icon(forFile: url.path))
     }
 
+    /// 패널 안의 상태(검색어, 붙여넣기 스택)를 바꾸는 장면은 `MainPanelViewModel` 이 듣는다.
+    static let panelSceneNotification = Notification.Name("com.lumibear.clipraven.qa.panelScene")
+
     /// `Scripts/qa/scene.swift` 가 보내는 분산 알림. 알림의 object 가 장면 이름이다.
     private static let sceneNotification = Notification.Name("com.lumibear.clipraven.qa.scene")
     @MainActor private static var sceneObserver: NSObjectProtocol?
@@ -68,10 +71,12 @@ enum QALaunchOptions {
     @MainActor private static var stageLayout: (width: CGFloat?, top: CGFloat) = (nil, 170)
 
     /// 장면:
-    /// - `stage:<제목>|<부제>[|width=<pt>][|top=<pt>]` — 화면 전체에 스크린샷 배경과
+    /// - `stage:<제목>|<부제>[|width=<pt>][|top=<pt>][|light]` — 화면 전체에 스크린샷 배경과
     ///   문구를 깐다. width 를 주면 문구를 화면 왼쪽 그 너비 안에서 가운데 맞춘다(왼쪽부터
-    ///   잘라 쓸 때), top 은 문구 위 여백
+    ///   잘라 쓸 때), top 은 문구 위 여백, light 는 밝은 배경(밝은 테마 장면용)
     /// - `panel` — 클립 패널을 연다 (`stage` 다음에 부르면 배경 위에 뜬다)
+    /// - `search:<검색어>` — 패널을 열고 검색어를 넣는다
+    /// - `stack:<개수>` — 패널을 열고 앞에서부터 그 개수만큼 붙여넣기 스택에 담는다 (0 이면 스택을 비운다)
     /// - `settings:<탭>` — 설정 창을 그 탭으로 연다 (`SettingsSection` 의 rawValue)
     /// - `paywall` — 구매 창을 연다
     /// - `snap` — 시스템 스크린샷(⇧⌘3)을 누른다. 이 앱이 맨 앞에 있어야 패널이 닫히지
@@ -101,10 +106,16 @@ enum QALaunchOptions {
                         title: parts[0],
                         subtitle: parts.count > 1 ? parts[1] : nil,
                         width: options["width"],
-                        top: options["top"] ?? 170
+                        top: options["top"] ?? 170,
+                        light: parts.dropFirst(2).contains("light")
                     )
                 case "panel":
                     panel.show()
+                case "search", "stack":
+                    panel.show()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        NotificationCenter.default.post(name: panelSceneNotification, object: scene)
+                    }
                 case "settings":
                     openSettings(SettingsSection(rawValue: argument) ?? .general)
                     raiseAboveStage()
@@ -148,9 +159,9 @@ enum QALaunchOptions {
     /// 배경은 메뉴 막대와 Dock 을 덮도록 패널과 같은 `.statusBar` 레벨에 둔다.
     /// 패널은 나중에 앞으로 나오므로 배경 위에 뜬다.
     @MainActor
-    private static func showStage(title: String, subtitle: String?, width: CGFloat?, top: CGFloat) {
-        guard let screen = NSScreen.main else { return }
-        let window = stageWindow ?? NSWindow(
+    private static func showStage(title: String, subtitle: String?, width: CGFloat?, top: CGFloat, light: Bool) {
+        guard let screen = stageScreen else { return }
+        let window = stageWindow ?? QAStageWindow(
             contentRect: screen.frame, styleMask: [.borderless], backing: .buffered, defer: false
         )
         window.isReleasedWhenClosed = false
@@ -158,16 +169,37 @@ enum QALaunchOptions {
         window.level = .statusBar
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.contentView = NSHostingView(
-            rootView: QAStageView(title: title, subtitle: subtitle, width: width, top: top)
+            rootView: QAStageView(title: title, subtitle: subtitle, width: width, top: top, light: light)
         )
         window.setFrame(screen.frame, display: true)
-        window.orderFrontRegardless()
+        // 배경을 키 창으로 만들어 NSScreen.main 을 이 화면으로 맞춘다. 패널은 NSScreen.main 에 뜬다.
+        window.makeKeyAndOrderFront(nil)
         stageWindow = window
         stageLayout = (width, top)
     }
 
+    /// 스크린샷 배경이 떠 있는 화면. 패널이 이 화면에 뜨도록 `MainPanelController` 가 묻는다.
+    /// 패널 컨트롤러는 메인 액터로 표시돼 있지 않지만 항상 메인 스레드에서 부른다.
+    static var stageScreenInUse: NSScreen? {
+        MainActor.assumeIsolated {
+            guard let stage = stageWindow, stage.isVisible else { return nil }
+            return stage.screen
+        }
+    }
+
+    /// App Store 규격(2880×1800 이상)은 레티나 화면에서만 나오므로 내장 화면을 쓴다.
+    /// 내장 화면이 없으면(외장 모니터만 쓰는 Mac) 현재 주 화면.
+    @MainActor
+    private static var stageScreen: NSScreen? {
+        NSScreen.screens.first { screen in
+            guard let id = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID
+            else { return false }
+            return CGDisplayIsBuiltin(id) != 0
+        } ?? NSScreen.main
+    }
+
     /// 설정·구매 창은 일반 레벨이라 배경 뒤로 숨는다. 배경이 떠 있으면 그 위로 올리고,
-    /// 문구 영역 가운데, 문구(약 190pt) 아래로 옮긴다.
+    /// 문구 영역 가운데, 아이콘과 문구(약 250pt) 아래로 옮긴다.
     @MainActor
     private static func raiseAboveStage() {
         guard let stage = stageWindow, stage.isVisible, let screen = stage.screen else { return }
@@ -177,7 +209,7 @@ enum QALaunchOptions {
                 var frame = window.frame
                 let regionWidth = stageLayout.width ?? screen.frame.width
                 frame.origin.x = screen.frame.minX + (regionWidth - frame.width) / 2
-                frame.origin.y = screen.frame.maxY - (stageLayout.top + 190) - frame.height
+                frame.origin.y = screen.frame.maxY - (stageLayout.top + 270) - frame.height
                 window.setFrame(frame, display: true)
                 window.orderFrontRegardless()
             }
@@ -200,27 +232,53 @@ enum QALaunchOptions {
         }
     }
 }
-/// 스크린샷 배경: 앱 아이콘 색(남색 그라데이션)에 제목과 청록색 부제.
+/// 테두리 없는 창은 기본으로 키 창이 될 수 없다. 배경을 키 창으로 만들어야 패널이 같은 화면에 뜬다.
+private final class QAStageWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
+}
+
+/// 스크린샷 배경. 앱 아이콘 색(청록·보라·남색)이 은은하게 번지는 오로라 빛, 제목 둘레만 보이는
+/// 점 격자, 가장자리 비네트. light 는 밝은 테마 장면용.
+///
+/// 색 번짐은 문구 영역(`width`, 없으면 화면 전체) 기준으로 놓는다 — 스크린샷은 화면 왼쪽
+/// 그 너비만큼 잘라 쓰기 때문이다. 패널은 반투명 재질이라 뒤의 번짐이 비친다.
 private struct QAStageView: View {
     let title: String
     let subtitle: String?
     let width: CGFloat?
     let top: CGFloat
+    let light: Bool
+
+    private let teal = Color(red: 0.30, green: 0.85, blue: 0.75)
+    private let violet = Color(red: 0.55, green: 0.38, blue: 0.95)
+    private let indigo = Color(red: 0.25, green: 0.30, blue: 0.85)
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            LinearGradient(
-                colors: [Color(red: 0.10, green: 0.12, blue: 0.23), Color(red: 0.18, green: 0.20, blue: 0.35)],
-                startPoint: .top, endPoint: .bottom
-            )
+            GeometryReader { geometry in
+                background(in: geometry.size)
+            }
             VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(teal.opacity(light ? 0.35 : 0.45))
+                        .frame(width: 150, height: 150)
+                        .blur(radius: 40)
+                    Image(nsImage: NSApp.applicationIconImage)
+                        .resizable()
+                        .frame(width: 96, height: 96)
+                        .shadow(color: .black.opacity(light ? 0.18 : 0.40), radius: 18, y: 10)
+                }
+                .frame(height: 96)
+                .padding(.bottom, 6)
                 Text(title)
                     .font(.system(size: 64, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(light ? Color(red: 0.10, green: 0.12, blue: 0.23) : .white)
+                    .shadow(color: .black.opacity(light ? 0 : 0.25), radius: 12, y: 4)
                 if let subtitle {
                     Text(subtitle)
                         .font(.system(size: 30, weight: .medium))
-                        .foregroundStyle(Color(red: 0.30, green: 0.85, blue: 0.75))
+                        .foregroundStyle(light ? Color(red: 0.05, green: 0.55, blue: 0.48) : teal)
                 }
             }
             .multilineTextAlignment(.center)
@@ -230,6 +288,58 @@ private struct QAStageView: View {
             .padding(.top, top)
         }
         .ignoresSafeArea()
+    }
+
+    @ViewBuilder
+    private func background(in size: CGSize) -> some View {
+        let regionWidth = width ?? size.width
+        let height = size.height
+        ZStack {
+            (light ? Color(red: 0.95, green: 0.96, blue: 0.99) : Color(red: 0.05, green: 0.06, blue: 0.14))
+            blob(teal, diameter: regionWidth * 0.55, at: CGPoint(x: regionWidth * 0.10, y: height * 0.28),
+                 opacity: light ? 0.30 : 0.42)
+            blob(violet, diameter: regionWidth * 0.50, at: CGPoint(x: regionWidth * 0.92, y: height * 0.22),
+                 opacity: light ? 0.24 : 0.40)
+            blob(indigo, diameter: regionWidth * 0.75, at: CGPoint(x: regionWidth * 0.50, y: height * 0.95),
+                 opacity: light ? 0.16 : 0.38)
+            dotGrid
+                .mask(
+                    RadialGradient(
+                        colors: [.white, .clear],
+                        center: UnitPoint(x: regionWidth / 2 / max(size.width, 1), y: (top + 120) / max(height, 1)),
+                        startRadius: 0, endRadius: regionWidth * 0.55
+                    )
+                )
+            RadialGradient(
+                colors: [.clear, .black.opacity(light ? 0.05 : 0.35)],
+                center: UnitPoint(x: regionWidth / 2 / max(size.width, 1), y: 0.55),
+                startRadius: regionWidth * 0.35, endRadius: regionWidth * 0.85
+            )
+        }
+    }
+
+    private func blob(_ color: Color, diameter: CGFloat, at point: CGPoint, opacity: Double) -> some View {
+        Circle()
+            .fill(color.opacity(opacity))
+            .frame(width: diameter, height: diameter)
+            .blur(radius: diameter * 0.28)
+            .position(point)
+    }
+
+    private var dotGrid: some View {
+        Canvas { context, size in
+            let step: CGFloat = 26
+            let dot = light ? Color.black.opacity(0.07) : Color.white.opacity(0.09)
+            var y: CGFloat = step / 2
+            while y < size.height {
+                var x: CGFloat = step / 2
+                while x < size.width {
+                    context.fill(Path(ellipseIn: CGRect(x: x - 1, y: y - 1, width: 2, height: 2)), with: .color(dot))
+                    x += step
+                }
+                y += step
+            }
+        }
     }
 }
 #endif

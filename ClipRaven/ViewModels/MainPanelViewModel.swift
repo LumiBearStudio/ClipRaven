@@ -221,6 +221,9 @@ final class MainPanelViewModel: ObservableObject {
     private var quickPasteObserver: Any?
     private var plainTextPasteObserver: Any?
     private var optionKeyObserver: Any?
+    #if QA
+    private var qaSceneObserver: Any?
+    #endif
 
     init(
         clipRepository: ClipRepository = ClipRepository(),
@@ -296,6 +299,20 @@ final class MainPanelViewModel: ObservableObject {
             let pressed = notification.userInfo?["pressed"] as? Bool ?? false
             self?.optionKeyHeld = pressed
         }
+
+        #if QA
+        // 스크린샷 장면 `stack:<개수>` (QALaunchOptions). 검색어 장면은 FilterBarView 가 받는다.
+        qaSceneObserver = NotificationCenter.default.addObserver(
+            forName: QALaunchOptions.panelSceneNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self, let scene = notification.object as? String,
+                  scene.hasPrefix("stack:"), let count = Int(scene.dropFirst("stack:".count)) else { return }
+            if count == 0 { self.pasteStackEngine.clear() }
+            for clip in self.clips.prefix(count) { self.addToStack(clip) }
+        }
+        #endif
     }
 
     func stopObserving() {

@@ -2,7 +2,7 @@
 # QA 빌드를 만들고 실행한다 (테스트 계획 0단계).
 #
 #   Scripts/qa/run.sh [--reset] [--skip-onboarding] [--start-trial] [--trial-offset <일>]
-#                     [--lang <코드>] [--default-hotkey] [--screenshots] [--preview-price <가격>] [--no-build]
+#                     [--lang <코드>] [--default-hotkey] [--screenshots] [--preview-price <가격>] [--no-build] [-- <앱 인자…>]
 #
 #   --reset           QA 컨테이너의 기록·설정·체험 상태를 지우고 첫 실행으로 시작
 #   --skip-onboarding 온보딩을 건너뜀
@@ -11,6 +11,7 @@
 #   --lang ko|en|de…  앱 언어 (시스템 언어는 바꾸지 않는다)
 #   --screenshots     화면 캡처에 패널이 찍히게 한다 (App Store 스크린샷용)
 #   --preview-price <가격>  구매 창에 이 가격을 보여 준다 (앱 내 구입 심사용 스크린샷)
+#   -- <인자…>        나머지를 앱 실행 인자로 넘긴다 (예: -- -theme light -colorPreset ocean)
 #   --default-hotkey  앱 기본 단축키(⇧⌘V) 사용. 없으면 ⌃⌥⌘V — 평소 쓰는 ClipRaven 과
 #                     겹치지 않게 하기 위해서다.
 #   --no-build        빌드 없이 마지막 QA 빌드를 실행
@@ -23,6 +24,7 @@ export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Develope
 
 DERIVED="$PWD/build/qa"
 APP="$DERIVED/Build/Products/Debug-QA/ClipRaven.app"
+extra=()
 reset=0; skip_onb=0; start_trial=0; lang=""; offset=""; default_hotkey=0; screenshots=0; preview_price=""; build=1
 while (( $# )); do
   case "$1" in
@@ -35,6 +37,7 @@ while (( $# )); do
     --screenshots) screenshots=1 ;;
     --preview-price) preview_price="$2"; shift ;;
     --no-build) build=0 ;;
+    --) shift; extra=("$@"); break ;;
     *) print -u2 "unknown option: $1"; exit 64 ;;
   esac
   shift
@@ -65,5 +68,6 @@ if (( ! default_hotkey )); then
   args+=(-hotkey.keyCode "<integer>9</integer>" -hotkey.modifiers "<integer>6400</integer>")
 fi
 
+args+=("${extra[@]}")
 open -n "$APP" --args "${args[@]}"
 print "launched ClipRaven QA ${args[*]}"
