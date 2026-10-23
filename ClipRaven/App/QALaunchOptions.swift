@@ -76,7 +76,7 @@ enum QALaunchOptions {
     /// - `paywall` — 구매 창을 연다
     /// - `snap` — 시스템 스크린샷(⇧⌘3)을 누른다. 이 앱이 맨 앞에 있어야 패널이 닫히지
     ///   않으므로 다른 도구 대신 앱이 직접 누른다 (붙여넣기 권한으로 키 이벤트를 보낸다)
-    /// - `clear` — 패널·배경을 닫는다
+    /// - `clear` — 패널·배경과 배경 위로 올린 창을 닫는다
     ///
     /// 패널은 다른 앱이 활성화되면 닫히므로, 장면마다 이 앱을 먼저 활성화한다.
     @MainActor
@@ -116,6 +116,12 @@ enum QALaunchOptions {
                 case "clear":
                     panel.hide()
                     stageWindow?.orderOut(nil)
+                    // 배경 위로 올렸던 설정·구매 창도 닫는다.
+                    let raised = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 1)
+                    for window in NSApp.windows where window.level == raised {
+                        window.orderOut(nil)
+                        window.level = .normal
+                    }
                 default:
                     break
                 }

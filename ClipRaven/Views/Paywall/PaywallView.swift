@@ -5,6 +5,17 @@ import ClipRavenSync
 struct PaywallView: View {
     @ObservedObject private var pm = PurchaseManager.shared
 
+    /// QA 빌드에서 `-qaPreviewPrice '$8.99'` 를 주면 상품을 불러오지 못해도 이 가격을 보여
+    /// 주고 오류 문구를 숨긴다. QA 빌드는 번들 ID 가 달라 App Store 상품이 없으므로 앱 내
+    /// 구입 심사용 스크린샷을 찍을 때만 쓴다. 출시 빌드에서는 항상 nil.
+    private static var qaPreviewPrice: String? {
+        #if QA
+        return QARuntime.isQABuild ? UserDefaults.standard.string(forKey: "qaPreviewPrice") : nil
+        #else
+        return nil
+        #endif
+    }
+
     var body: some View {
         ZStack {
             // Blurred backdrop
@@ -29,8 +40,8 @@ struct PaywallView: View {
                 }
 
                 // Price
-                if let product = pm.product {
-                    Text(product.displayPrice)
+                if let price = pm.product?.displayPrice ?? Self.qaPreviewPrice {
+                    Text(price)
                         .font(.system(size: 28, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.accentColor)
                 } else {
@@ -46,7 +57,7 @@ struct PaywallView: View {
                     .multilineTextAlignment(.center)
 
                 // Error message
-                if let error = pm.errorMessage {
+                if let error = pm.errorMessage, Self.qaPreviewPrice == nil {
                     Text(error)
                         .font(.caption)
                         .foregroundStyle(.red)
